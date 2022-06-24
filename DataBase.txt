@@ -1,0 +1,35 @@
+use test_31jan
+select * from country
+create table State
+(
+sid int primary key identity,
+cid int,
+sname varchar(50)
+)
+
+insert into State(cid,sname)values(2,'Sindh')
+insert into State(cid,sname)values(2,'baloochistan')
+insert into State(cid,sname)values(1,'UP')
+insert into State(cid,sname)values(1,'Bihar')
+insert into State(cid,sname)values(3,'Newyork')
+insert into State(cid,sname)values(4,'Perth')
+insert into State(cid,sname)values(1,'Delhi')
+insert into State(cid,sname)values(2,'Khayber')
+insert into State(cid,sname)values(4,'Canbara')
+insert into State(cid,sname)values(3,'California')
+
+alter proc usp_state_get
+@cid int
+as
+begin
+select * from State where cid=@cid
+end
+
+select * from Emp
+
+
+
+select Emp.*,Country.*,State.*
+from Emp inner join Country
+on Country.cid=Emp.ctr inner join State
+on State.sid=Emp.str
