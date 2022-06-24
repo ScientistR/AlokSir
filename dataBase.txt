@@ -1,0 +1,57 @@
+create database test_17119
+use test_17119
+create table Registration
+(
+regid int primary key identity,
+fname varchar(50),
+lname varchar(50),
+salary int
+)
+---------------------------------------------------------------
+
+create proc usp_registration_insert
+@a varchar(50),//
+@b varchar(50),
+@c int
+as
+begin
+insert into Registration(fname,lname,salary)
+values(@a,@b,@c)
+end
+
+
+create proc usp_registration_update
+@a varchar(50),
+@b varchar(50),
+@c int,
+@d int
+as
+begin
+update registration set fname=@a,lname=@b,salary=@c
+where regid=@d
+end
+
+create proc usp_registration_delete
+@a int
+as
+begin
+delete from registration where regid=@a
+end
+
+
+create proc usp_registration_edit
+@a int
+as
+begin
+select * from registration where regid=@a
+end
+
+create proc usp_registration_get
+as
+begin
+select * from Registration
+end
+
+
+usp_registration_get
+usp_registration_insert 'aaaa','ppp',88,'ppp'
