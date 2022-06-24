@@ -1,0 +1,157 @@
+
+@{
+    ViewBag.Title = "insert";
+}
+
+<h2>insert</h2>
+<table>
+    <tr>
+        <td>Name</td> 
+        <td><input type="text" id="txtnm" /></td>
+    </tr>
+    <tr>
+        <td>City</td>
+        <td><input type="text" id="txtcity" /></td>
+    </tr>
+    
+</table>
+<select id="ddlCounty">
+    <option value="0">--select--</option>
+</select>
+
+<input type="button" id="BtnSave" name="Save" value="Save" onclick="insert1()" />
+<table id="t1" border="1">
+    <tr  >
+        <th>Name</th>
+        <th>City</th>
+        <td>Country</td>
+        <th>Delete_Buttin</th>
+        <th>Edit_Button</th>
+    </tr >
+</table>
+<script src="~/jquery-3.3.1.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        get();
+        getCounrty();
+    });
+    function  insert1()
+    {
+        $.ajax({
+            url: 'Employee/InsertData',
+            type: 'post',
+            data: { A: $("#txtnm").val(), B: $("#txtcity").val(), G: $("#ddlCounty").val() },
+            success: function ()
+            {
+                alert("done");
+                get();
+            },
+            error: function ()
+            {
+                alert("fail");
+            }
+
+        });
+    }
+    
+    function get() {
+        $.ajax({
+            url: 'Employee/showData',
+            type: 'post',
+            data: {},
+            success: function (p) {
+                p = JSON.parse(p);
+                
+                $("#t1").find("tr:gt(0)").remove();
+                for (var i = 0; i < p.length; i++) {
+                    $("#t1").append('<tr> <td>' + p[i].name + '</td>  <td>' + p[i].city + '</td> <td>' + p[i].country + '</td>  <td><input type="button" id="BtnDelete" value="Delete" onclick="Delete1(' + p[i].eid + ')" /> </td> <td><input type="button" id="BtnEdit" value="Edit" onclick="Edit1(' + p[i].eid + ')" /></td></tr>');
+                   
+                }
+
+                
+            },
+            error: function () {
+                alert("fail Show");
+            }
+        });
+    }
+
+    function Delete1(empid)
+    {
+        $.ajax({
+            url: 'Employee/deleleData',
+            typ: 'post',
+            data: { E: empid },
+            success:function()
+            {
+                get();
+            },
+            error: function ()
+            {
+                alert("Delete Fail");
+            }
+        });
+    }
+    var UdID=0;
+    function Edit1(empid)
+    {
+        $.ajax({
+            url: 'Employee/EditData',
+            type: 'post',
+            data: {Edit_ID:empid},
+            success: function (p)
+            {
+                p = JSON.parse(p);
+                $("#txtnm").val(p[0].name);
+                $("#txtcity").val(p[0].city);
+                $("#BtnSave").replaceWith('<input type="button" id="BtnUpade"  value="Update" onclick="UpdateData()" />')
+               // $().attr();
+                $("#BtnSave").val("Update");
+                alert("Edit Done")
+                UdID = empid;
+                
+            },
+            error: function ()
+            { alert("Edit Fail")}
+        });
+    }
+    
+   
+        function UpdateData()//
+        {
+
+            $.ajax({
+                url: 'Employee/upadeData',
+                type: 'post',
+                data: { A: $("#txtnm").val(), B: $("#txtcity").val(), D: $("#ddlCounty").val(), C: UdID },
+                success: function (p) {
+             
+                    alert("Upadete Done")
+                    get();
+                },
+                error: function ()
+                { alert("Update Fail") }
+            });
+        }
+
+        function getCounrty() {
+            $.ajax({
+                url: 'Employee/getCont',
+                type: 'post',
+                data: {},
+                success: function (arr) {
+                    arr = JSON.parse(arr);
+                    for (var i = 0; i < arr.length; i++) {
+                        $("#ddlCounty").append($('<Option/>').attr("value", arr[i].cid).text(arr[i].cname));
+
+                    }
+                },
+                error:function(){
+                    alert('country error');
+                }
+            });
+        }
+
+</script>
