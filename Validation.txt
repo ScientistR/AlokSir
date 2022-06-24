@@ -1,0 +1,650 @@
+       var catid = $("#sel1").val(); //dropdown
+            if (catid == "0") {
+                $("#errorDiv").html("Select Partner Category Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+            if (partnerName == "") {
+                $("#errorDiv").html("Please enter partner name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            if (partnerMobile == "") {
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+            if (partnerEmail == "") {
+                $("#errorDiv").html("Please enter partner email");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+
+            var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+
+
+            var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+
+            var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+-------------------------------------------------------------------------------------------------------
+ 
+            //var catid = $("#sel1").val();
+            ////if (catid == "0") {
+            ////    $('#errorDiv').show();
+            ////    $("#errorDiv").html("Select Partner Category Name");
+            ////    $('#errorDiv').removeClass().addClass("alert alert-danger");
+            ////    return false;
+            ////}
+
+            //if (!catid.match(DropDownListValidate(catid))) {
+            //    return false;
+            //}
+            //
+              //-------------Patrner name---------------------------------------//
+            <%--  var partnerName = $("#<%=txtParName.ClientID%>").val();
+            if (partnerName.match(inputCharacter(partnerName))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter Empty Fild");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }--%>
+
+          <%--  var partnerName = $("#<%=txtParName.ClientID%>").val();
+            if (!partnerName.match(inputcharacter(partnerName))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }--%>
+
+   var partnerName = $("#<%=txtParName.ClientID%>").val();
+
+            //if (partnerName.match(inputcharacter(partnerName))) {
+            // if (partnerName=="") {
+            var A = inputcharacter(partnerName)
+             if (partnerName.match(A)) {
+               $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+        
+            //---------------------------Mobile Validation-----------------//
+
+            <%--var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+           
+            if (!partnerMobile.match(inputcharacter(partnerMobile))) {
+                return false;
+            }
+            var Mobile = MobileNumberRange(partnerMobile);
+            if (!partnerMobile.match(Mobile)) {
+                     return false; 
+                }}
+         
+         //------------------------------Phone Validation-------------------------------------//
+           var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+        
+
+            if (!partnerPhone.match(inputcharacter(partnerPhone))) {
+                return false;
+            }
+
+           // var Phone = PhoneNumberRange(partnerPhone);
+            if (!partnerPhone.match(PhoneNumberRange(partnerPhone)))
+            {
+             return false;
+            }
+
+           
+         
+    //--------------------Email Validation------------//
+         var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+
+         if (!partnerEmail.match(inputcharacter(partnerEmail))) {
+             return false;
+         }
+ 
+         if (!partnerEmail.match(EmailValidation(partnerEmail))){
+             return false;
+         }
+
+        
+
+            //----------------------Website Validation-------------//
+
+         var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+         
+            if (!partnerWebsite.match(inputcharacter(partnerWebsite))) {
+             return false;
+         }
+
+            if (!partnerWebsite.match(WebsiteValidation(partnerWebsite))) {
+             return false;
+         }
+
+
+        //---------------------Contect Partner--------------------//
+             var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+            if (!partnerContactPerson.match(inputcharacter(partnerContactPerson))) {
+                    return false;
+                }
+
+        
+
+        //---------------------------Adress Validation-------------------------//
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (!partnerAddress.match(inputcharacter(partnerAddress))) {
+                return false;
+            }
+
+            if (!partnerAddress.match(AddressRange(partnerAddress))) {
+                return false;
+            }--%>
+
+
+
+
+	var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+
+            if (!partnerPhone.match(inputcharacter(partnerPhone))) {  
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            
+
+            if (!partnerPhone.match(isNotNubmer(partnerPhone))) {    
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Only Number In Phone");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+            if (!partnerPhone.match(phoneNumberRange(partnerPhone))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Phone  Number 8 to 12 Range With Country Code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            //--------------------Adress Validation------//
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (!partnerAddress.match(AddressRange(partnerAddress))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Phone  Number 8 to 12 Range With Country Code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+-----------------------------------------------------------------------
+ var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (!partnerAddress.match(AddressRange(partnerAddress))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Address  10 to 50 Characters");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            if (!partnerAddress.match(inputcharacter(partnerAddress))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Address");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+-------------------------------------
+ var catid = $("#sel1").val();
+            if (catid == "0") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Select Partner Category Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+            
+
+            if (partnerName == "") {
+                $("#errorDiv").html("Please enter partner name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            
+           
+
+            //-----------------Mobile Valiadtion----------------------//
+            var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            if (partnerMobile == "") {
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            if (partnerPhone.length >= 8 && partnerPhone.length <= 12) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-success');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>__Vailid Number </strong> ");
+                return true;
+            }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter the Range 8 to 12 number");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+
+                //--------------------Email  Validation---------------------//
+
+                var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+                if (partnerEmail == "") {
+                    $("#errorDiv").html("Please enter partner email");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+
+
+                var partnerPhone = $("#<%=txtParMobile.ClientID%>").val();
+                if (partnerPhone == "") {
+                    $("#errorDiv").html("Please enter partner mobile no with country code");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+
+                var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+                if (partnerContactPerson == "") {
+                    $("#errorDiv").html("Please enter partner Contact Person");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+
+                var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+                if (partnerWebsite == "") {
+                    $("#errorDiv").html("Please enter partner  Website");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+
+
+                var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+                if (partnerAddress == "") {
+                    $("#errorDiv").html("Please enter partner Address");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+----------------------------
+<%-- var catid = $("#sel1").val();
+            if (catid == "0") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Select Partner Category Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+            
+
+            if (partnerName == "") {
+                $("#errorDiv").html("Please enter partner name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }--%>
+
+            
+           
+
+            //-----------------Mobile Valiadtion----------------------//
+            <%--var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            if (partnerMobile == "") {
+              $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            if (partnerPhone.length >= 8 && partnerPhone.length <= 12) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-success');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>__Vailid Number </strong> ");
+                return true;
+            }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter the Range 8 to 12 number");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+
+                //--------------------Email  Validation---------------------//
+
+                var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+                if (partnerEmail == "") {
+                    $("#errorDiv").html("Please enter partner email");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+--%>
+
+<%--                var partnerPhone = $("#<%=txtParMobile.ClientID%>").val();
+                if (partnerPhone == "") {
+                    $("#errorDiv").html("Please enter partner mobile no with country code");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }--%>
+
+               <%-- var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+                if (partnerContactPerson == "") {
+                    $("#errorDiv").html("Please enter partner Contact Person");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+
+                var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+               if (partnerWebsite == "") {
+                 $("#errorDiv").html("Please enter partner  Website");
+                   $('#errorDiv').removeClass().addClass("alert alert-danger");
+                   return false;
+               }
+
+
+                <%--var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+                if (partnerAddress == "") {
+                    $("#errorDiv").html("Please enter partner Address");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }--%>
+
+-----------------------------------------------------------------------------------------
+-----------------
+_____________
+ 
+
+ function updateProduct()
+        {
+            
+            alert("hello")
+            var catid = $("#sel1").val();
+            if (catid == "0") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Select Partner Category Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+       
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+            if (partnerName == "") {
+                $("#errorDiv").html("Please enter partner name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            
+            //---------------------------Mobile Validation-----------------//
+
+            var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            if (partnerMobile == "") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            //if (!partnerMobile == "") {
+            //    return MobileNumberRange(partnerMobile)
+            //    }
+
+            if (partnerMobile.length ==10) { }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter the 10 degite number");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            //------------------------------Phone Validation-------------------------------------//
+            var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+            if (partnerPhone == "") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+            
+            }
+
+            //if (!partnerPhone=="")
+            //{
+            //    return PhoneNumberRange(partnerPhone);
+            //}
+             
+            if (partnerPhone.length >= 8 && partnerPhone.length <= 12) {
+               
+
+            }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter the Range 8 to 12 number");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+        
+
+         
+    //--------------------Email Validation------------//
+         var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+         if (partnerEmail == "") {
+
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter partner email");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+         var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+         var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+         if (!partnerEmail.match(filter)) {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter Email @gmail.com Format");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+   //----------------------Website Validation-------------//
+         var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+         if (partnerWebsite == "") {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter partner  Website");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+
+         var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+         var regexQuery = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+         if (!partnerWebsite.match(regexQuery)) {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter http:// Format");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+
+
+         var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+            if (partnerContactPerson == "") {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter partner Contact Person");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+        
+
+//---------------------------Adress Validation------------//
+         var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (partnerAddress == "") {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter partner Address");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+            }
+         
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+
+            if (partnerAddress.length >= 10 && partnerAddress.length < 50) {
+
+            }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter Maximummn 10 charecter");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+
+
+            }
+
+-------------------------------------
+ var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            if (partnerMobile == "") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+
+            var Mobile = MobileNumberRange(partnerMobile);
+            if (!partnerMobile.match(Mobile)) {
+                     return false; 
+                }
+
+         
+            //------------------------------Phone Validation-------------------------------------//
+           var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+            if (partnerPhone == "") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+           // var Phone = PhoneNumberRange(partnerPhone);
+            if (!partnerPhone.match(PhoneNumberRange(partnerPhone)))
+            {
+             return false;
+            }
+
+
+
+
+
+-----------------------------------------
+       function updateProduct()
+        {
+            alert("hello");
+           
+
+            var catid = $("#sel1").val();
+            //if (catid == "0") {
+            //    $('#errorDiv').show();
+            //    $("#errorDiv").html("Select Partner Category Name");
+            //    $('#errorDiv').removeClass().addClass("alert alert-danger");
+            //    return false;
+            //}
+
+            if (!catid.match(DropDownListValidate(catid))) {
+                return false;
+            }
+
+       
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+           
+            if (!partnerName.match(inputcharacter(partnerName))) {
+                return false;
+            }
+          
+
+            if (!partnerName.match(characterValidation(partnerName))) {
+                return false;
+            }
+
+           
+            
+            //---------------------------Mobile Validation-----------------//
+
+            var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+           
+            if (!partnerMobile.match(inputcharacter(partnerMobile))) {
+                return false;
+            }
+            var Mobile = MobileNumberRange(partnerMobile);
+            if (!partnerMobile.match(Mobile)) {
+                     return false; 
+                }
+
+         
+            //------------------------------Phone Validation-------------------------------------//
+           var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+        
+
+            if (!partnerPhone.match(inputcharacter(partnerPhone))) {
+                return false;
+            }
+
+           // var Phone = PhoneNumberRange(partnerPhone);
+            if (!partnerPhone.match(PhoneNumberRange(partnerPhone)))
+            {
+             return false;
+            }
+
+           
+         
+    //--------------------Email Validation------------//
+         var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+        
+
+         if (!partnerEmail.match(inputcharacter(partnerEmail))) {
+             return false;
+         }
+ 
+         if (!partnerEmail.match(EmailValidation(partnerEmail))) {
+             return false;
+         }
+
+        
+
+            //----------------------Website Validation-------------//
+
+         var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+         
+            if (!partnerWebsite.match(inputcharacter(partnerWebsite))) {
+             return false;
+         }
+
+            if (!partnerWebsite.match(WebsiteValidation(partnerWebsite))) {
+             return false;
+         }
+
+
+        //---------------------Contect Partner--------------------//
+             var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+            if (!partnerContactPerson.match(inputcharacter(partnerContactPerson))) {
+                    return false;
+                }
+
+        
+
+        //---------------------------Adress Validation-------------------------//
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (!partnerAddress.match(inputcharacter(partnerAddress))) {
+                return false;
+            }
+
+            if (!partnerAddress.match(AddressRange(partnerAddress))) {
+                return false;
+            }
+-----

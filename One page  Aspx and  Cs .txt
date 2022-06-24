@@ -1,0 +1,340 @@
+<%@ Page Language="C#" AutoEventWireup="true" %>
+
+
+<%@ Import Namespace="System.Data" %>
+
+<%@ Import Namespace="System.Data.SqlClient" %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+ 
+<head>
+   
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<meta charset="utf-8">
+    
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+<meta content="" name="description">
+    
+<meta content="" name="author">
+    
+<title>Login page : Generic Pvt. Ltd.</title>
+    
+<script runat="server">
+
+     
+    
+DataUtility objDUT = new DataUtility();
+    
+SqlConnection con = new SqlConnection(ConfigurationManager.AppSettings["ConnectionString"].ToString());
+    
+SqlDataReader sdr = null;
+    SqlCommand cmd = new SqlCommand();
+    
+string Query = string.Empty , loginid = string.Empty, cPass=string.Empty;
+    
+DataTable dt = null;
+    
+protected void Page_Load(object sender, EventArgs e)
+    
+{
+        
+txtpassword.Focus();
+        
+if (!Page.IsPostBack)
+        
+{
+            
+txtpassword.Attributes.Add("onKeyPress", "doClick('" + btn_submit.ClientID + "',event)");
+        
+}
+        
+msg.Visible = false;
+        
+try
+        
+{
+            
+if (Request.Cookies["Userregnocook"].Value == null || Request.Cookies["Userregnocook"].Value == "" || Request.Cookies["Userregnocook"].Value.Trim().Length <= 0 || Request.Cookies["Userregnocook"].Value == "")
+            
+{
+                
+Response.Redirect("~/BOM/Login.aspx");
+            
+}
+
+            
+dt = objDUT.GetDataTable("Select loginid , isnull(profileimage ,'mImage/profile-pic.jpg') as 'profileimage', Emailid , isnull(fname ,'') +' '+isnull(lname , '') as 'name' from Member_master where regno=" + Request.Cookies["Userregnocook"].Value);
+            
+if (dt.Rows.Count > 0)
+            
+{
+                
+lblfullname.Text = dt.Rows[0]["Name"].ToString();
+                lblemail.Text = dt.Rows[0]["Emailid"].ToString();
+                lblfullnameNot.Text = dt.Rows[0]["Name"].ToString();
+                loginid = dt.Rows[0]["loginid"].ToString();
+                ProfileImg.Src = "../" + dt.Rows[0]["profileimage"].ToString();
+           
+            }
+            else
+            {
+                Response.Redirect(Request.QueryString["redirectUrl"], false);
+            }
+            dt.Dispose();
+        }
+        catch (Exception excep)
+        {
+            Response.Cookies["Userregnocook"].Value = null;
+            Response.Redirect("~/BOM/Login.aspx", false);
+        }
+    }
+    protected void btn_ServerClick(object sender, EventArgs e)
+    {
+        Check_login(loginid, txtpassword.Text.Trim());
+    }
+    protected void btn_ServerClickNotNow(object sender, EventArgs e)
+    {
+        Response.Cookies["Userregnocook"].Value = null;
+        Response.Redirect("~/BOM/Login.aspx", false);
+    }
+    
+    protected void Check_login(string U, string P)
+    
+{
+        
+try
+        
+{
+            
+Query = "Select Regno , Password, loginid ,memcode ,epassword ,lastlogin ,Rlevel  From member_Login  where loginid=@loginid and Password=@password ";
+
+cmd = new SqlCommand();
+            
+cmd.Connection = con;
+            
+cmd.CommandText = Query;
+            
+cmd.Parameters.AddWithValue("@loginid", U);
+            
+cmd.Parameters.AddWithValue("@password", P);
+            
+con.Open();
+            
+sdr = cmd.ExecuteReader();
+            
+if (sdr.HasRows)
+            {
+                while (sdr.Read())
+                {
+                    MemberUser member = new MemberUser();
+                    Session["RLevel"] = sdr["Rlevel"].ToString();
+                    Session["MaxReg"] = sdr["Regno"].ToString();
+                    Session["Mloginid"] = sdr["loginid"].ToString();
+                    Session["lastlogin"] = sdr["lastlogin"].ToString();
+					cPass = sdr["Password"].ToString();
+                    member.Regno = Convert.ToInt64(Session["MaxReg"].ToString());
+                    member.UserName = Session["Mloginid"].ToString();
+                    Session["member"] = member;
+                    HttpContext.Current.Session["sa"] = Session["MaxReg"];
+
+                }
+				if(cPass==P)
+				{
+					string str = "update member_login set lastlogin = '" + IndianTime.GetIndianTime() + "' where loginid='" + U + "'";
+
+					//-------- Get Company details
+					int res = objDUT.ExecuteSql(str);
+					string redirectUrl = Request.QueryString["redirectUrl"];
+					if (string.IsNullOrEmpty(redirectUrl))
+					{
+						FormsAuthentication.SetAuthCookie(U, false);
+						Response.Redirect("~/BOM/Default.aspx", false);
+					}
+					else
+					{
+
+						Response.Redirect(redirectUrl, false);
+
+					}
+				}	
+				else
+				{
+					msg.Visible = true;
+					msg.InnerHtml = "<button data-dismiss='alert' class='close'>×</button><Strong> Sorry </strong> , Wrong User Name or Password  Please Try Again !!";
+				}
+            }
+            else
+            {
+                msg.Visible = true;
+                msg.InnerHtml = "<button data-dismiss='alert' class='close'>×</button><Strong> Sorry </strong> , Wrong User Name or Password  Please Try Again !!";
+            }
+
+        }
+        catch (Exception ex)
+        {
+            msg.Visible = true;
+            msg.InnerHtml = "<button data-dismiss='alert' class='close'>×</button><Strong> Network  </strong> ," + ex.Message;
+        }
+        finally
+        {
+            sdr.Close();
+            sdr.Dispose();
+            con.Close();
+            con.Dispose();
+        }
+
+    }
+    </script>
+    <script type="text/javascript">
+        function doClick(buttonName, e) {
+            //the purpose of this function is to allow the enter key to 
+            //point to the correct button to click.
+            var key;
+
+            if (window.event)
+                key = window.event.keyCode;     //IE
+            else
+                key = e.which;     //firefox
+
+            if (key == 13) {
+                //Get the button the user wants to have clicked
+                var btn = document.getElementById(buttonName);
+                if (btn != null) { //If we find the button click it
+                    btn.click();
+                    event.keyCode = 0
+                }
+            }
+        }
+    </script>
+    <style>
+	
+	 @media (max-width: 768px)
+    {
+      #boxpopup{left:7%; height:auto !important}
+	  #content a img{width:100% !important}
+		  .box{width:80% !important}
+		  a.boxclose{float:left !important }
+    }
+	</style>
+   
+        <title></title>
+        <%--Specific page Link Start --%>
+        <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../assets/font-awesome/css/font-awesome.css" rel="stylesheet">
+        <link href="../css/style.css" rel="stylesheet" type="text/css" />
+        <link href="../css/style_responsive.css" rel="stylesheet" type="text/css" />
+        <link href="../css/style_default.css" rel="stylesheet" type="text/css" />
+        <%--Specific page Link End --%>
+         <link href="style.css" rel="stylesheet" />
+      <script src="popup.js"></script>
+    </head>
+    <body id="lock-body" onLoad="openOffersDialog()">
+  
+        <form id="form1" runat="server">
+           <!--splash popup start-->
+    <div id="overlay" class="overlay">
+    </div>
+    <div id="boxpopup" class="box" style="height: 285px;">
+        <a onClick="closeOffersDialog('boxpopup');" class="boxclose"></a>
+        <div id="content">
+
+          <%-- <a href="http://mydivinenoni.com/chairman'sclub.html" target="_blank"> <img src="AN859.jpg" style="width: 549px; margin-top: -20px; border-radius: 5px;"> </a>--%>
+            
+             
+            
+        </div>
+    </div>
+    <!-- splash popup end -->
+        <asp:ScriptManager runat="server">
+        </asp:ScriptManager>
+        <div class="lock-header">
+            <!-- BEGIN LOGO -->
+            <a href="index.html" id="logo" class="center">
+                <img src="../img/logo.png" height="56" alt="logo" class="center" />
+            </a>
+            <!-- END LOGO -->
+        </div>
+        <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+            <contenttemplate>
+  
+  <!-- BEGIN LOCK -->
+  <div id="lock">
+    <!-- BEGIN LOCK FORM -->
+    <form id="lockform" class="form-vertical no-padding no-margin" >
+      <div class="lock-title">
+          <i class="icon-lock"></i>
+          <h3>Locked</h3>
+      </div>
+      <div class="lock-avatar-row">
+          <div class="lock-round">
+ 
+                  
+                    <img src="../mImage/profile-pic.jpg" runat="server" id="ProfileImg" alt="Profile Image Not Set" />
+          </asp:Image>
+          </div>
+      </div>
+      <div class="control-wrap lock-identity">
+          <h3>
+          <asp:Label runat="server" id="lblfullname"  ></asp:Label></h3>
+          <span><asp:Label runat="server" id="lblemail"  ></asp:Label></span>
+          <div class="lock-form-row">
+              
+                  <div class="input-append">
+                        
+              <asp:TextBox   ID="txtpassword" placeholder="Password" TextMode="Password"  runat="server" class="m-wrap" ></asp:TextBox>
+ 
+                      <button class="btn tarquoise" type="button" id="btn_submit"  runat="server" onserverclick="btn_ServerClick"     ><i class=" icon-arrow-right"></i></button>
+                      <div style="height:10px;">
+               <asp:UpdateProgress ID="UpdateProgress1" DisplayAfter="100" AssociatedUpdatePanelID="UpdatePanel1" runat="server">
+    <ProgressTemplate>
+  <img src="../img/loading.gif" />
+    </ProgressTemplate>
+    </asp:UpdateProgress>
+ </div>
+                  </div>
+                  <div class="relogin">
+                      <a href="BOM/Login.aspx" runat="server" onserverclick="btn_ServerClickNotNow">Not  <asp:Label runat="server" id="lblfullnameNot"  ></asp:Label> ?</a>
+                  </div>
+                    <div id="msg" runat="server" class="alert alert-error" visible="false" >
+                        
+                     
+                    </div>
+          </div>
+      </div></form>
+
+    
+    <!-- END LOCK FORM -->        
+    
+  </div>
+  <!-- END LOCK -->
+    </contenttemplate>
+        </asp:UpdatePanel>
+        <!-- BEGIN COPYRIGHT -->
+        <%--  <div id="login-copyright">
+          2014 &copy; <a href="http://www.alpssoftech.com" target="_blank" >ALPS Softech</a>
+  </div>--%>
+        <!-- END COPYRIGHT -->
+        <!-- BEGIN JAVASCRIPTS -->
+        <script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+         
+        <script src="../js/jquery.blockui.js"></script>
+      <!--  <script src="../js/scripts.js"></script>
+        <script src="../assets/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>-->
+        <!--<script>
+            jQuery(document).ready(function () {
+                App.initLOCK();
+            });
+        </script>-->
+        <!-- END JAVASCRIPTS -->
+        <!-- END BODY -->
+        <asp:UpdatePanel runat="server">
+        </asp:UpdatePanel>
+        </form>
+    </body>
+</html>

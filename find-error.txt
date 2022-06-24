@@ -1,0 +1,213 @@
+ 
+--------------find error in this -----------------------
+  //} [WebMethod]
+   //} public List<ManageShop> GetShopDetails(string shopID, string query)
+   //} {
+   //}     List<ManageShop> shopList = new List<ManageShop>();
+   //}      try
+   //}      {
+   //}         sdr = null;
+   //}         SqlParameter[] p = new SqlParameter[23];
+   //}         p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+   //}         p[0].Value = Convert.ToInt32(shopID);
+   //}        
+   //}         p[1] = new SqlParameter("@shopCode", SqlDbType.VarChar, 100);
+   //}         p[1].Value = "";
+   //}
+   //}         p[2] = new SqlParameter("@password", SqlDbType.VarChar, 100);
+   //}         p[2].Value = "";
+   //}
+   //}         p[3] = new SqlParameter("@ePassword", SqlDbType.VarChar, 100);
+   //}         p[3].Value = "";
+   //}         p[4] = new SqlParameter("@shopName", SqlDbType.VarChar, 100);
+   //}         p[4].Value = "";
+   //}
+   //}         p[5] = new SqlParameter("@shopAddress", SqlDbType.VarChar, 500);
+   //}         p[5].Value = "";
+   //}         p[6] = new SqlParameter("@shopMobile", SqlDbType.VarChar, 50);
+   //}         p[6].Value = "";
+   //} 
+   //}         p[7] = new SqlParameter("@shopEmail", SqlDbType.VarChar, 100);
+   //}         p[7].Value = "";
+   //}         p[8] = new SqlParameter("@shopWebsite", SqlDbType.VarChar, 100);
+   //}         p[8].Value = "";
+   //}         p[9] = new SqlParameter("@shopContactPerson", SqlDbType.VarChar, 100);
+   //}         p[9].Value = "";
+   //}         p[10] = new SqlParameter("@shopGST", SqlDbType.VarChar, 50);
+   //}         p[10].Value = "";
+   //}         p[11] = new SqlParameter("@entryBy", SqlDbType.Int);
+   //}         p[11].Value = 2;
+   //}         p[12] = new SqlParameter("@entryIP", SqlDbType.VarChar, 150);
+   //}         p[12].Value = "127.0.0.1";
+   //}         p[13] = new SqlParameter("@approved", SqlDbType.Int);
+   //}         p[13].Value = 1;
+   //}         p[14] = new SqlParameter("@isActive", SqlDbType.Int);
+   //}         p[14].Value = 1;
+   //}         p[15] = new SqlParameter("@shopSID", SqlDbType.Int);
+   //}         p[15].Value = 0;
+   //}         p[16] = new SqlParameter("@shopDID", SqlDbType.Int);
+   //}         p[16].Value = 0;
+   //}         p[17] = new SqlParameter("@shopCTID", SqlDbType.Int);
+   //}         p[17].Value = 0;
+   //}         p[18] = new SqlParameter("@shopPincode", SqlDbType.VarChar, 6);
+   //}         p[18].Value = "";
+   //}         p[19] = new SqlParameter("@queryType", SqlDbType.VarChar, 20);
+   //}         p[19].Value = query;
+   //}
+   //}         p[20] = new SqlParameter("@intResult", SqlDbType.Int);
+   //}         p[20].Direction = ParameterDirection.Output;
+   //} 
+   //}         p[21] = new SqlParameter("@shopPhone", SqlDbType.VarChar, 50);
+   //}         p[21].Value = "";
+   //}
+   //}         p[22] = new SqlParameter("@shopMargin", SqlDbType.Int);
+   //}         p[22].Value =0;
+   //}
+   //}         sdr = objDUT.GetDataReaderSP(p, "usp_manageshop");
+   //}         while (sdr.Read())
+   //}         {
+   //}             ManageShop shop = new ManageShop();
+   //}             shop.shopID = sdr["shopID"].ToString();
+   //}             shop.shopCode = sdr["shopCode"].ToString();
+   //}             shop.password = sdr["Password"].ToString();
+   //}             shop.ShopName = sdr["shopName"].ToString();
+   //}             shop.Address = sdr["shopAddress"].ToString();
+   //}             shop.mobileNo = sdr["shopMobile"].ToString();
+   //}             shop.email = sdr["shopEmail"].ToString();
+   //}             shop.website = sdr["shopWebsite"].ToString();
+   //}             shop.contectPerson = sdr["shopContactPerson"].ToString();
+   //}             shop.gstNo = sdr["shopGST"].ToString();
+   //}             shop.State = sdr["stateName"].ToString();
+   //}             shop.disti = sdr["DistName"].ToString();
+   //}             shop.city = sdr["CityName"].ToString();
+   //}             shop.pinCode = sdr["shopPinCode"].ToString();
+   //}             string Active = sdr["isActive"].ToString();
+   //}             string sta = "", staClass = "";
+   //}             if (Active == "True")
+   //}             {
+   //}                 sta = "Active";
+   //}                 staClass = "alert alert-success";
+   //}             }
+   //}             else
+   //}             {
+   //}                 sta = "Deactive";
+   //}                 staClass = "alert alert-danger";
+   //}             }
+   //}             shop.Status = sta;
+   //}             shop.StatusClass = staClass;
+   //} 
+   //}             shop.MarginPer = string.Format("{0:f}", sdr["shopMargin"]);
+   //} 
+   //}             shopList.Add(shop);
+   //}         }
+   //}         sdr.Dispose();
+   //}      }
+   //}     catch (Exception exep)
+   //}     {
+   //}     
+   //}     }
+   //}     return shopList;
+  //}
+------------------------------------------------------------------------------------------
+
+    [WebMethod]
+    public List<ManageShop> GetShopDetails(string shopID, string query)
+    {
+
+        List<ManageShop> shopList = new List<ManageShop>();
+        try
+        {
+        sdr = null;
+        SqlParameter[] p = new SqlParameter[23];
+        p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+        p[0].Value = Convert.ToInt32(shopID);
+        p[1] = new SqlParameter("@shopCode", SqlDbType.VarChar, 100);
+        p[1].Value = "";
+        p[2] = new SqlParameter("@password", SqlDbType.VarChar, 100);
+        p[2].Value = "";
+        p[3] = new SqlParameter("@ePassword", SqlDbType.VarChar, 100);
+        p[3].Value = "";
+        p[4] = new SqlParameter("@shopName", SqlDbType.VarChar, 100);
+        p[4].Value = "";
+        p[5] = new SqlParameter("@shopAddress", SqlDbType.VarChar, 500);
+        p[5].Value = "";
+        p[6] = new SqlParameter("@shopMobile", SqlDbType.VarChar, 50);
+        p[6].Value = "";
+        p[7] = new SqlParameter("@shopEmail", SqlDbType.VarChar, 100);
+        p[7].Value = "";
+        p[8] = new SqlParameter("@shopWebsite", SqlDbType.VarChar, 100);
+        p[8].Value = "";
+        p[9] = new SqlParameter("@shopContactPerson", SqlDbType.VarChar, 100);
+        p[9].Value = "";
+        p[10] = new SqlParameter("@shopGST", SqlDbType.VarChar, 50);
+        p[10].Value = "";
+        p[11] = new SqlParameter("@entryBy", SqlDbType.Int);
+        p[11].Value = 2;
+        p[12] = new SqlParameter("@entryIP", SqlDbType.VarChar, 150);
+        p[12].Value = "127.0.0.1";
+        p[13] = new SqlParameter("@approved", SqlDbType.Int);
+        p[13].Value = 1;
+        p[14] = new SqlParameter("@isActive", SqlDbType.Int);
+        p[14].Value = 1;
+        p[15] = new SqlParameter("@shopSID", SqlDbType.Int);
+        p[15].Value = 0;
+        p[16] = new SqlParameter("@shopDID", SqlDbType.Int);
+        p[16].Value = 0;
+        p[17] = new SqlParameter("@shopCTID", SqlDbType.Int);
+        p[17].Value = 0;
+        p[18] = new SqlParameter("@shopPincode", SqlDbType.VarChar, 6);
+        p[18].Value = "";
+        p[19] = new SqlParameter("@queryType", SqlDbType.VarChar, 20);
+        p[19].Value = query;
+        p[20] = new SqlParameter("@intResult", SqlDbType.Int);
+        p[20].Direction = ParameterDirection.Output;
+        p[21] = new SqlParameter("@shopPhone", SqlDbType.VarChar, 50);
+        p[21].Value = "";
+        p[22] = new SqlParameter("@shopMargin", SqlDbType.Money);
+        p[22].Value = 0;
+        sdr = objDUT.GetDataReaderSP(p, "usp_manageshop");
+        while (sdr.Read())
+        {
+            ManageShop shop = new ManageShop();
+            shop.shopID = sdr["shopID"].ToString();
+            shop.shopCode = sdr["shopCode"].ToString();
+            // shop.margin = sdr["shopMargin"].ToString(); 
+            shop.MarginPer = sdr["shopMargin"].ToString();
+            shop.password = sdr["Password"].ToString();
+            //shop.repassword = sdr["ePassword"].ToString();
+            shop.ShopName = sdr["shopName"].ToString();
+            shop.Address = sdr["shopAddress"].ToString();
+            shop.mobileNo = sdr["shopMobile"].ToString();
+            shop.email = sdr["shopEmail"].ToString();
+            shop.website = sdr["shopWebsite"].ToString();
+            shop.contectPerson = sdr["shopContactPerson"].ToString();
+            shop.gstNo = sdr["shopGST"].ToString();
+            shop.State = sdr["shopSID"].ToString();
+            shop.disti = sdr["shopDID"].ToString();
+            shop.city = sdr["shopCTID"].ToString();
+            shop.pinCode = sdr["shopPinCode"].ToString();
+            string Active = sdr["isActive"].ToString();
+            string sta = "", staClass = "";
+            if (Active == "True")
+            {
+                sta = "Active";
+                staClass = "alert alert-success";
+            }
+            else
+            {
+                sta = "Deactive";
+                staClass = "alert alert-danger";
+            }
+            shop.Status = sta;
+            shop.StatusClass = staClass;
+            shopList.Add(shop);
+        }
+        sdr.Dispose();
+        }
+        catch (Exception exce)
+        {
+        }
+        return shopList;
+
+    }
+

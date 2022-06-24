@@ -1,0 +1,312 @@
+  //-----------Bind Table counrty6 State------
+    [WebMethod] // State coutry wala work rhi h
+    public List<StateBind> CountryList(int CountryId)
+    {
+        sdr = null;
+        string Query = null;
+        List<StateBind> countrylist = new List<StateBind>();
+        try
+        {
+        if (CountryId <= 0)
+        {
+            Query = "select sid,statename =UPPER(statename ) from state order by statename";
+            //select sid,statename =UPPER(statename ) from state where cid= 96  order by Statename
+        }
+        else
+        {
+            Query = "select sid,statename =UPPER(statename ) from state Where sid='" + CountryId + "'";
+        }
+        sdr = objDUT.GetDataReader(Query);
+        while (sdr.Read())
+        {
+            StateBind categoryItem = new StateBind();
+            categoryItem.cid = Convert.ToInt32(sdr["sid"].ToString());
+            categoryItem.Countryname = sdr["statename"].ToString();
+
+            countrylist.Add(categoryItem);
+        }
+
+             }
+          catch (Exception ex)
+          {
+          }
+        return countrylist;
+    }
+
+
+    [WebMethod]  ///contry se state mga lo // state se disrtic mg lo
+    public List<DistrictBind> getDistric(int CountryId)
+    {
+
+        sdr = null;
+        string Query = null;
+        List<DistrictBind> sList = new List<DistrictBind>();
+        try
+        {
+
+            if (CountryId <= 0)
+            {
+                Query = "select distid,cid,sid, distname=UPPER(distname)  from district  order by distname";
+            }
+            else
+            {
+                Query = "select distid,distname,sid from district where distid='" + CountryId + "' ";
+                //select distid,cid,sid, distname=UPPER(distname)  from district
+
+            }
+
+            sdr = objDUT.GetDataReader(Query);
+            while (sdr.Read())
+            {
+                DistrictBind stItem = new DistrictBind();
+                stItem.cid = Convert.ToInt32(sdr["sid"].ToString());
+                stItem.sid = Convert.ToInt32(sdr["distid"].ToString());
+                stItem.Statename = sdr["distname"].ToString();
+                sList.Add(stItem);
+            }
+        }
+        catch (Exception ex)
+        {
+
+
+        }
+
+        return sList;
+    }
+
+
+    [WebMethod] // sate se distric mga lo /// dirtic  de city mga lo
+    public List<CityBind> BindCity(int CountryId)
+    {
+
+        sdr = null;
+        string Query = null;
+        List<CityBind> dList = new List<CityBind>();
+        try
+        {
+           
+            //string stcity = "select ctid , cityname=UPPER(cityname) from city where 3 > 2";
+            //    if (distid1 > 0)
+            //    {
+            //        stcity = stcity + " and distid ='" + distid1 + "' ";
+            //    }
+            //    stcity = stcity + " order by cityname ";
+            //--------------------
+            if (CountryId <= 0)
+            {
+                Query = @"select ctid ,distid, cityname=UPPER(cityname) from city  order  by cityname";
+            }
+            else
+            {
+                Query = @"select distid, ctid , cityname=UPPER(cityname) from city where ctid='" + CountryId + "'";
+
+            }
+            sdr = objDUT.GetDataReader(Query);
+            while (sdr.Read())
+            {
+                CityBind dtItem = new CityBind();
+                dtItem.sid = Convert.ToInt32(sdr["distid"].ToString());
+                dtItem.distID = Convert.ToInt32(sdr["ctid"].ToString());
+                dtItem.DistName = sdr["cityname"].ToString();
+                dList.Add(dtItem);
+            }
+        }
+        catch (Exception ex)
+        {
+        }
+        return dList;
+    }
+
+--------------------------------
+        function getcountry(CountryId) {
+            $('#ddlstate').html('<option value=0 >Select state</option>');
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/CountryList",
+                data: "{CountryId:'0'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuildCategoryDropDownList,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>Error , </strong>There are some technical error. Please Try Again.");
+                }
+
+            });
+        }
+
+        function BuildCategoryDropDownList(result) {
+            var JoinCtr = 0;
+            var RechargeCtr = 0;
+            var table = '<option  value="0" >  Select state  </option>';
+            var jsonData = result.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                table += '<option value=' + jsonData[iCount].cid + '>' + jsonData[iCount].Countryname + '</option>';
+            }
+            $('#ddlstate').html(table);
+            $('#ddlstate').val();
+        }
+
+
+
+    
+
+        //______________________ Category  Dropdownlist Selected Index Changed  Distric____________________
+
+        function Ddl_Category_SelectedIndexChanged(value) {
+            alert("State Ki value="+value)
+            $('#ddldisti').html('<option value=0>Loading...</option>');
+            var _Category = {};
+            _Category.CountryId = value;
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/getDistric",
+                data: "{CountryId:'" + value + "' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuildProductCodeDropDownList,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>Error , </strong>There are some technical error. Please Try Again2.");
+                }
+            });
+        }
+        function BuildProductCodeDropDownList(PcodeResult) {
+            $('#ddldisti').html('');
+            var JoinCtr = 0;
+            var RechargeCtr = 0;
+            var table = '<option  value="0" >  Select State  </option>';
+            var table1 = '<option  value="0" >  Select District  </option>';
+            var jsonData = PcodeResult.d;
+            if (jsonData.length > 0) {
+                $('#ddldisti').removeAttr("disabled");
+                $('#ddlsearchstate').removeAttr("disabled");
+
+                for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                    table += '<option value=' + jsonData[iCount].sid + '>' + jsonData[iCount].Statename + '</option>';
+                }
+            }
+            else {
+                $('#ddldisti').html('');
+                $('#ddldisti').attr("disabled", "disabled");
+                $('#ddlSerdistrict').attr("disabled", "disabled");
+                table = '<option  value="0" >  Not Found  </option>';
+                table1 = '<option  value="0" >  Not Found  </option>';
+            }
+            $('#ddlsearchstate').html(table);
+            $('#ddldisti').html(table);
+            $('#ddlSerdistrict').html(table1);
+
+        }
+        //------------------------Select Values-City--------------------------------/
+
+        function Ddl_ProductCode_SelectedIndexChanged(value) {
+
+            $('#ddlCity').html('<option value=0>Loading...</option>');
+            var _Category = {};
+            _Category.CountryId = value;
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/BindCity",
+                data: "{CountryId:'" + value + "' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuilddistricDropDownList,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>Error , </strong>There are some technical error. Please Try Again.");
+                }
+            });
+        }
+        function BuilddistricDropDownList(pResult) {
+            $('#ddlCity').html('');
+            var JoinCtr = 0;
+            var RechargeCtr = 0;
+            var table = '<option  value="0" > Select City </option>';
+            var jsonData = pResult.d;
+            if (jsonData.length > 0) {
+                $('#ddlCity').removeAttr("disabled");
+                $('#ddlSerdistrict').removeAttr("disabled");
+                for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                    table += '<option value=' + jsonData[iCount].distID + '>' + jsonData[iCount].DistName + '</option>';
+                }
+            }
+            else {
+                $('#ddlCity').html('');
+                $('#ddlCity').attr("disabled", "disabled");
+                $('#ddlSerdistrict').html('');
+                $('#ddlSerdistrict').attr("disabled", "disabled");
+                table = '<option  value="0" >  Not Found  </option>';
+                
+            }
+            $('#ddlCity').html(table);
+            //$('#ddlSerdistrict').html(table);
+        }
+*********************************
+ string Active = sdr["isActive"].ToString();
+            string sta = "", staClass = "";
+            if (Active == "True")
+            {
+                sta = "Active";
+                staClass = "alert alert-success";
+            }
+            else
+            {
+                sta = "Deactive";
+                staClass = "alert alert-danger";
+            }
+            shop.Status = sta;
+            shop.StatusClass = staClass;
+
+
+
+ int status = Convert.ToInt32(Convert.ToBoolean(sdr["sActive"].ToString()));
+                state.Active = status == 1 ? "Acitve" : "Deactive";
+                state.Activeclass = status == 1 ? "success" : "warning";
+                state.statusIcon = status == 1 ? "icon-remove" : "icon-ok";
+                state.statusText = status == 1 ? "Deactivate" : "Activate";
+
+   
+            if (jsonData[0].Active == "Active") {
+                alert("Status=" + jsonData[0].Active);
+
+                $('#uniform-StatusCheckbox').addClass("focus");
+                $("#StatusCheckbox").parent("span").removeClass().addClass("checked");
+                $("#StatusCheckbox").attr('checked', 'checked');
+                $('#uniform-StatusCheckbox1').removeClass("focus");
+                $("#StatusCheckbox1").parent("span").removeClass();
+                $("#StatusCheckbox1").removeAttr('checked')
+            }
+            else {
+                alert("Status=" + jsonData[0].Active);
+                $('#uniform-StatusCheckbox1').addClass("focus");
+                $("#StatusCheckbox1").parent("span").removeClass().addClass("checked");
+                $("#StatusCheckbox1").attr('checked', 'checked');
+                $('#uniform-StatusCheckbox').removeClass("focus");
+                $("#StatusCheckbox").parent("span").removeClass();
+                $("#StatusCheckbox").removeAttr('checked')
+            }
+
+************************************
+<link rel="stylesheet" type="text/css" href="../assets/gritter/css/jquery.gritter.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/uniform/css/uniform.default.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/chosen-bootstrap/chosen/chosen.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/bootstrap-daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/bootstrap-datepicker/css/datepicker.css" />
+    <script type="text/javascript" src="../assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap-daterangepicker/date.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+    <script src="http://api.alpskart.com/Validation/inputValidation.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../assets/data-tables/DT_bootstrap.css" />
+    <link href="../assets/fancybox/source/jquery.fancybox.css" rel="stylesheet">
+    <script src="../assets/chosen-bootstrap/chosen/chosen.jquery.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../assets/chosen-bootstrap/chosen/chosen.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/uniform/css/uniform.default.css" />
+************************************************************

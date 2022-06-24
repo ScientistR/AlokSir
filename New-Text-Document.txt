@@ -1,0 +1,36 @@
+   var catid = $("#sel1").val(); //dropdown
+            if (catid == "0") {
+                $("#errorDiv").html("Select Partner Category Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+            if (partnerName == "") {
+                $("#errorDiv").html("Please enter partner name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            if (partnerMobile == "") {
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+            if (partnerEmail == "") {
+                $("#errorDiv").html("Please enter partner email");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+
+            var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+
+
+            var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+
+            var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();

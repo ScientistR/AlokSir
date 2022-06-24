@@ -1,0 +1,160 @@
+function getdispatchedlist(loginid, datefrom, dateto, orderno, ostatus) {
+
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/getdispatchedlist",
+                data: "{loginid:'" + loginid + "',solddate_from:'" + datefrom + "',solddate_to:'" + dateto + "',orderno:'" + orderno + "',status:'" + ostatus + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BindActivetionRequest,
+                error: function (xhr, status, error) {
+
+                }
+            });
+        }
+        function BindActivetionRequest(msg) {
+            var table = '';
+            var jsonData = msg.d;
+            $('#example').dataTable().fnDestroy();
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                var row = '<tr>';
+                row += '<td>' + (iCount + 1) + '</td>';
+                row += '<td class="hidden-phone">' + jsonData[iCount].Username + '</td>';
+                row += '<td class="hidden-phone"><a target="_blank" href="PrintProductInvoice.aspx?id=' + jsonData[iCount].mpoid + '&n=I">' + jsonData[iCount].invono + '</a></td>';
+                row += '<td>' + jsonData[iCount].invdate + '</td>';
+                row += '<td>' + jsonData[iCount].orderNo + '</td>';
+                row += '<td>' + jsonData[iCount].orderdate + '</td>';
+                row += '<td class="hidden-phone">' + jsonData[iCount].dispatchdate + '</td>';
+                row += '<td class="hidden-phone">' + jsonData[iCount].dispatchmode + '</td>';
+                row += '<td class="hidden-phone"><span class="label label-' + jsonData[iCount].Activeclass + '">' + jsonData[iCount].dispatchstaus + '</span></td>';
+                row += '<td class="hidden-phone"><a href="DispatchedList.aspx?id=' + jsonData[iCount].mpoid + '"> <span class="label label-' + jsonData[iCount].Active + '">' + jsonData[iCount].oActive + '</span></a></td>';
+                row += '</tr>';
+                table += row;
+            }
+            $('#repMsg').html(table);
+            $('#example').dataTable().val(table);
+
+-------------------------------------------
+ function geVoucherSoping(loginid) {
+
+            $.ajax({
+                type: "POST",
+                url: "../BOM/Getdata_member.asmx/geVoucherSoping",
+                data: "{loginid:'" + ADID + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BindVouchertable,
+                error: function (xhr, status, error) {
+
+                }
+            });
+        }
+
+
+
+        function BindVouchertable(msg) {
+
+            var table = '';
+            var jsonData = msg.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                var row = '<tr>';
+                row += '<td><img style="border-radius:50px;height:35px;" src=' + jsonData[iCount].Icon + ' width="30px"></td>';
+                row += '<td>' + jsonData[iCount].GBP + '</td>';
+                row += '<td>  ' + jsonData[iCount].CashBack + ' </td>';
+                row += '<td>  ' + jsonData[iCount].LRP + ' </td>';
+                row += '</tr>';
+                table += row;
+            }
+
+            $('#voucherSopping').html(table);
+        }
+
+
+
+__________________________________________
+
+
+        //____________________binding table __________________//
+
+
+        function GetProduct() {
+
+            var bankid = 0;
+            $.ajax({
+                type: "POST",
+                url: "PayoutPayment.asmx/GetBankdetails",
+                data: "{bankid:'" + bankid + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BindProductList,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>Error , </strong>There are some technical error. Please Try Again.");
+                }
+
+            });
+        }
+        function BindProductList(result) {
+            var table = '';
+            var jsonData = result.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                var row = '<tr>';
+                row += '<td>' + (iCount + 1) + '</td>';
+                row += '<td>' + jsonData[iCount].catalogname + ' </td>';
+                row += '<td>' + jsonData[iCount].catStatus + ' </td>';
+
+                row += '<td> ' + jsonData[iCount].Activeclass + '</td>';
+                row += '<td><a type="buttom"  class="btn btn-success" href="Javascript:;" onclick="return Edit(' + jsonData[iCount].catalogid + ');" >Edit</a>  </td>';
+                row += '</tr>';
+                table += row;
+            }
+            $('#RepMsg').html(table);
+            $('#example').dataTable().val(table);
+        }
+
+----------------------------------
+//---------------- Dropdown Hmtl tag-------------------//
+        $(document).ready(function () {
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "getdata.asmx/GetCompanyMailSettings",
+                data: "{comsid:''}",
+                dataType: "json",
+                success: function (r) {
+
+
+                    var ddlcaption = $("[id*=ddlcaption]");
+                    ddlcaption.empty().append('<option selected="selected" value="0">Please select</option>');
+                    $.each(r.d, function () {
+                        ddlcaption.append($("<option></option>").val(this['comsid']).html(this['caption']));/// dropdown binding
+                    });
+
+                },
+                error: function (Result) {
+                    alert("Error");
+                }
+
+            });
+-----******************---------------
+---------------------------
+        function BindVouchertable(msg) {
+
+            var table = '';
+            var jsonData = msg.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                var row = '<tr>';
+                row += '<td><img style="border-radius:50px;height:35px;" src=' + jsonData[iCount].Icon + ' width="30px"></td>';
+                row += '<td>' + jsonData[iCount].GBP + '</td>';
+                row += '<td>  ' + jsonData[iCount].CashBack + ' </td>';
+                row += '<td>  ' + jsonData[iCount].LRP + ' </td>';
+                row += '</tr>';
+                table += row;
+            }
+
+            $('#voucherSopping').html(table);
+        }
+---------------------------

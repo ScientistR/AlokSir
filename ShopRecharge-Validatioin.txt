@@ -1,0 +1,237 @@
+            var ShopCode = $("#<%=ddlShopCode.ClientID%>").val();
+            
+            if (dropDownListValidate(ShopCode)) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-error');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong> Please Select Shop Code</strong>");
+                return false;
+            }
+           
+            var payModValue = $("#<%=ddlPaymentMode.ClientID%>").val();
+            // if (payModValue=="0
+            if (dropDownListValidate(payModValue))
+            {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-error');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong> Please Select Payment Mode</strong>");
+                return false;
+            }
+
+            
+
+            var amount = $("#<%=txtAmout.ClientID%>").val();
+            //if (amount == "") {
+            if (inputcharacter(amount)) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-error');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong> Please Enter Amount</strong>");
+                return false;
+            }
+            if (isNaN(amount)) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-error');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong> Please Enter Numerical Digit Amount</strong>");
+                return false;
+            }
+
+            
+
+           
+
+            var paymentMode = document.getElementById('<%=ddlPaymentMode.ClientID%>');
+            var payModText = paymentMode.options[paymentMode.selectedIndex].text;
+            if (payModText !="Cash")
+            {
+                var refNo = $("#<%=txtRefNo.ClientID%>").val(); 
+                if (inputcharacter(refNo)) {
+
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong> Please Enter Refrence Number</strong>");
+                    return false;
+                }
+
+
+                var bankName = $("#<%=txtBankName.ClientID%>").val(); 
+                if (inputcharacter(bankName)) {
+
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-error');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong> Please Enter Bank Name</strong>");
+                return false;
+                }
+            }
+
+            if (!isNotNubmer(bankName)) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-error');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong> Please Enter Charecter In Bank Name</strong>");
+                return false;
+            }
+
+           
+
+
+
+            var comment = $("#<%=txtComnt.ClientID%>").val(); 
+            if (inputcharacter(comment)) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-error');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong> Please Enter Comment</strong>");
+                return false;
+            }
+           
+           
+---------------------------------------
+ [WebMethod]
+    public List<RechargeShop> ListShop(string sepinid)
+    {
+        List<ListVoucher> EvoucherList = new List<ListVoucher>();
+        try
+        {
+            string query = string.Empty;
+            query = "select s.setransno,sd.epinnumber,transferfrom=(case when s.frommtype='Admin' then 'Admin' when s.frommtype='Member' then (select randomid from member_master where regno=s.fromrefregno) else (select name from merchant_master where mid=s.fromrefregno) end),transferto=(case when s.mtype='Member' then (select randomid from member_master where regno=s.refregno) else (select name from merchant_master where mid=s.refregno) end),linkedto=(select randomid from member_master where regno=s.linkedto),s.sedate from soldepin s,soldepin_details sd where s.sepinid=sd.sepinid";
+            if (sepinid != "0")
+            {
+                query = query + " and s.sepinid='" + sepinid + "' ";
+            }
+            query = query + " Order by sd.epinnumber asc ";
+            sdr = objDUT.GetDataReader(query);
+            while (sdr.Read())
+            {
+                ListVoucher listv = new ListVoucher();
+                listv.epincode = sdr["setransno"].ToString();
+                listv.epinNumber = sdr["epinnumber"].ToString();
+                listv.kitType = sdr["transferfrom"].ToString();
+                listv.SoldTo = sdr["transferto"].ToString();
+                listv.gDate = string.Format("{0:dd/MM/yyyy}", sdr["sedate"]);
+                listv.SName = sdr["linkedto"].ToString();
+                EvoucherList.Add(listv);
+            }
+            sdr.Close();
+            sdr.Dispose();
+        }
+        catch (Exception exce)
+        {
+        }
+        return EvoucherList;
+    }
+--------------------------------
+  [WebMethod]
+    public List<ManageShop> GetShopDetails(string shopID, string query)
+    {
+
+
+        List<ManageShop> shopList = new List<ManageShop>();
+        try
+        {
+        sdr = null;
+        SqlParameter[] p = new SqlParameter[22];
+        p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+        p[0].Value = Convert.ToInt32(shopID);
+        p[1] = new SqlParameter("@shopCode", SqlDbType.VarChar, 100);
+        p[1].Value = "";
+       
+        p[19] = new SqlParameter("@queryType", SqlDbType.VarChar, 20);
+        p[19].Value = query;
+        p[20] = new SqlParameter("@intResult", SqlDbType.Int);
+        p[20].Direction = ParameterDirection.Output;
+
+        p[21] = new SqlParameter("@shopPhone", SqlDbType.VarChar, 50);
+        p[21].Value = "";
+        sdr = objDUT.GetDataReaderSP(p, "usp_manageshop");
+        while (sdr.Read())
+        {
+            ManageShop shop = new ManageShop();
+            shop.shopID = sdr["shopID"].ToString();
+            shop.shopCode = sdr["shopCode"].ToString();
+            shop.password = sdr["Password"].ToString();
+            shop.shopName = sdr["shopName"].ToString();
+            shop.Address = sdr["shopAddress"].ToString();
+            shop.mobileNo = sdr["shopMobile"].ToString();
+            shop.email = sdr["shopEmail"].ToString();
+            shop.website = sdr["shopWebsite"].ToString();
+            shop.contectPerson = sdr["shopContactPerson"].ToString();
+            shop.gstNo = sdr["shopGST"].ToString();
+            shop.State = sdr["stateName"].ToString();
+            shop.disti = sdr["DistName"].ToString();
+            shop.city = sdr["CityName"].ToString();
+            shop.pinCode = sdr["shopPinCode"].ToString();
+            string Active = sdr["isActive"].ToString();
+            string sta = "", staClass = "";
+            if (Active == "True")
+            {
+                sta = "Active";
+                staClass = "alert alert-success";
+            }
+            else
+            {
+                sta = "Deactive";
+                staClass = "alert alert-danger";
+            }
+            shop.Status = sta;
+            shop.StatusClass = staClass;
+
+            shop.MarginPer = string.Format("{0:f}", sdr["shopMargin"]);
+
+            shopList.Add(shop);
+        }
+        sdr.Dispose();
+        }
+        catch (Exception exce)
+        {
+        }
+        return shopList;
+    }
+--------------
+usp_manageshop
+select *from Shop_Master
+
+select *from shopRecharge 
+select  shopCode, rechargeAmount,entryDate,paymentrefNo,paymentMode,paymentBank,rechargestatus from shopRecharge,Shop_Master
+shopRecharge
+usp_rechargeShop
+
+shopID
+shopCode
+------------------
+  // string query = "";
+
+          //  if (ShopId == "0")
+          //  {
+          //     // query = "select  p.shopID, m.shopCode, p.rechargeAmount,p.entryDate,p.paymentrefNo,p.paymentMode,p.paymentBank,p.rechargestatus from Shop_Master m inner join shopRecharge p on p.shopID=m.shopID  where p.shopID='" + ShopId + "'  order by rechargeDate desc";
+          //      query = "select m.shopCode, R.shopID, R.trCode, R.rechargeDate, R.rechargeAmount, R.paymentMode, R.paymentRefNo, R.paymentBank, R.paymentDepositBank, R.paymentDepositRefNo, R.paymentDepositAcc, R.Comment, R.entryDate, R.appDate, R.appBy, R.appIP, R.rechargeStatus from Shop_Master m inner join shopRecharge R on R.shopID=m.shopID  order by rechargeDate desc";
+          //
+          //  }
+          //  else {
+          //     // query = "select  p.shopID, m.shopCode,p.rechargeAmount,p.entryDate,p.paymentrefNo,p.paymentMode,p.paymentBank,p.rechargestatus from Shop_Master m inner join shopRecharge p on p.shopID=m.shopID  order by rechargeDate desc";
+          //
+           //    query = "select m.shopCode, R.shopID, R.trCode, R.rechargeDate, R.rechargeAmount, R.paymentMode, R.paymentRefNo, R.paymentBank, R.paymentDepositBank, R.paymentDepositRefNo, R.paymentDepositAcc, R.Comment, R.entryDate, R.appDate, R.appBy, R.appIP, R.rechargeStatus from Shop_Master m inner join shopRecharge R on R.shopID=m.shopID where R.shopID='" + ShopId + "' order by rechargeDate desc";
+          //  }
+          //
+
+--------------------------------
+--********** Recharge Shopkeeper account
+USE alps_Procon
+Alter procedure usp_rechargeShop_trHistory
+@shopID int,
+@intResult int out
+as
+	Declare @checkRegNo as int, @rechargeDate as datetime, @trCode varchar(50)
+
+        Begin
+        	if(@shopID=0)
+        	    
+				select m.shopCode, R.shopID, R.trCode, R.rechargeDate, R.rechargeAmount, R.paymentMode, R.paymentRefNo, R.paymentBank, R.paymentDepositBank, R.paymentDepositRefNo, R.paymentDepositAcc, R.Comment, R.entryDate, R.appDate, R.appBy, R.appIP, R.rechargeStatus from Shop_Master m inner join shopRecharge R on R.shopID=m.shopID  order by rechargeDate desc	
+        	Else
+     	
+				select m.shopCode, R.shopID, R.trCode, R.rechargeDate, R.rechargeAmount, R.paymentMode, R.paymentRefNo, R.paymentBank, R.paymentDepositBank, R.paymentDepositRefNo, R.paymentDepositAcc, R.Comment, R.entryDate, R.appDate, R.appBy, R.appIP, R.rechargeStatus from Shop_Master m inner join shopRecharge R on R.shopID=m.shopID where R.shopID=@shopID order by rechargeDate desc
+		End

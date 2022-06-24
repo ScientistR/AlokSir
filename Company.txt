@@ -1,0 +1,802 @@
+_____________________________________________ Save Button ___________________________
+
+        function SaveData() {
+            var errorText = '';
+            //  Personal Details Added
+            // Validation
+            var tilte = "";
+            var First_name = "";
+            var last_name = "";
+            var gender = "";
+            var genderID = "";
+            var gendername = "";
+            var dateofbirth = "";
+            var fatherhusband = "";
+            var country_Code_mobile = "";
+            var mobile_no = "";
+            var email_id = "";
+            var pancard = "";
+            var nomnames = "";
+            var relations = "";
+            var phone="";
+            var profession="";
+
+            tilte = $("#<%= ddltitle.ClientID%>").val();
+            First_name = $("#<%= txtfname.ClientID%>").val();
+            last_name = $("#<%= txtlname.ClientID%>").val();
+            fatherhusband = $("#<%= txtfh.ClientID%>").val();
+            var gndr = document.getElementById('<%= ddlgender.ClientID %>')
+            var genderID = gndr.options[gndr.selectedIndex].value;
+            var gendername = gndr.options[gndr.selectedIndex].text;
+            dateofbirth = $("#<%= txtdob.ClientID%>").val();
+            country_Code_mobile = $("#<%= txtmobilecode.ClientID%>").val();
+            mobile_no = $("#<%= txtmobile.ClientID%>").val();
+            email_id = $("#<%= txtemail.ClientID%>").val();
+            pancard = $("#<%= txtpan.ClientID%>").val();
+            nomnames = $("#<%= txtnomnee.ClientID%>").val();
+            relations = $("#<%= txtrelations.ClientID%>").val();
+            phone=$("#<%=txtlandline.ClientID%>").val();
+            profession=$("#<%=txtoccupation.ClientID%>").val();
+            // Address Details Added
+            var country = "";
+            var state = "";
+            var city = "";
+            var address = "";
+            var landmark = "";
+            var pincode = "";
+
+            var parm = document.getElementById('<%= ddlcountry.ClientID %>')
+            var Countryid = parm.options[parm.selectedIndex].value;
+            var CountryName = parm.options[parm.selectedIndex].text;
+
+            var parm2 = document.getElementById('<%= ddlstate.ClientID %>');
+            var stateid = parm2.options[parm2.selectedIndex].value;
+            var Statename = parm2.options[parm2.selectedIndex].text;
+
+            var parmD = document.getElementById('<%= ddlDsistrict.ClientID %>');
+            var distID = parmD.options[parmD.selectedIndex].value;
+            var distName = parmD.options[parmD.selectedIndex].text;
+
+            var parm3 = document.getElementById('<%= ddlcity.ClientID %>');
+            var CityID = '0'// parm3.options[parm3.selectedIndex].value;
+            var Cityname = $("#<%= ddlcity.ClientID%>").val();
+
+
+            address = $("#<%= txtaddress.ClientID%>").val();
+            landmark = $("#<%= txtlandmark.ClientID%>").val();
+            pincode = $("#<%= txtpincode.ClientID%>").val();
+            // Login Details Added
+            var username = "";
+            var password = "";
+            var transactioncode = "";
+            var QuestionID = "";
+            var QuestionName = "";
+            var Answer = "";
+            username = $("#<%= txtusername.ClientID%>").val();
+
+            var QuestionID = $('#ddlquestion').val();
+            // QuestionName = parm4.options[parm4.selectedIndex].text;
+
+            Answer = $("#<%= txtanswer.ClientID%>").val();
+            //   Bank Details Added
+            var Bankname = "";
+            var Branchcode = "";
+            var ifsccvode = "";
+            var accountnumber = "";
+            var bankaddress = "";
+            Bankname = $("#<%= txtbankname.ClientID%>").val();
+            Branchcode = "";
+            ifsccvode = $("#<%= txtifsccode.ClientID%>").val();
+            accountnumber = $("#<%= txtaccountno.ClientID%>").val();
+            bankaddress = $("#<%= txtbankaddress.ClientID%>").val();
+
+          
+
+            //___________________________ Validate_____________
+            if (tilte == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Title") %>' + " <br>";
+            }
+            if (First_name == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_FName") %>' + "<br>";
+            }
+            if (last_name == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_LName") %>' + "<br>";
+            }
+            if (genderID == "") {
+                errorText = "" + '<%=  MSG.Show("Select_Gender") %>' + " <br>";
+            }
+            if (dateofbirth == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_DOB") %>' + "<br>";
+            }
+            if (country_Code_mobile == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_MobCode") %>' + "<br>";
+            }
+
+            if (mobile_no == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_MobNo") %>' + "<br>";
+            }
+            if (email_id == "") {
+                errorText = "" + '<%=  MSG.Show("Invalid_Email") %>' + "<br>";
+            }
+            if (Countryid == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Country") %>' + "<br>";
+            }
+            if (stateid == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_State") %>' + "<br>";
+            }
+
+            if (CityID == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_City") %>' + "<br>";
+            }
+            if (address == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Address") %>' + "<br>";
+            }
+          
+            if (pincode == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Pincode") %>' + "<br>";
+            }
+           
+
+
+            if (errorText != '') {
+
+                $('html, body').animate({ scrollTop: 0 }, '-10.2');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + errorText);
+                $('#errorDiv').removeClass().addClass("alert alert-error");
+                $('#errorDiv').show();
+                return false;
+            }
+            else {
+                $('#errorDiv').hide();
+            }
+            if ($("span").hasClass("input-error")) {
+
+
+
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').html(" <button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Remove_Error") %>' + "");
+                $('#errorDiv').removeClass().addClass("alert alert-error");
+                $('#errorDiv').show();
+                return false;
+            }
+
+
+
+            Update_Profile_Save(tilte, First_name, last_name, dateofbirth, genderID, mobile_no, email_id, stateid, Statename, CityID, Cityname, pincode, address, landmark, ViewstateUsername, QuestionID, Answer, Bankname, bankaddress, ifsccvode, accountnumber, Countryid, fatherhusband, distID, distName, pancard, nomnames, relations,phone,profession);
+
+
+        }
+
+        function Update_Profile_Save(tilte, First_name, last_name, dateofbirth, genderID, mobile_no, email_id, stateid, Statename, CityID, Cityname, pincode, address, landmark, ViewstateUsername, QuestionID, Answer, Bankname, bankaddress, ifsccvode, accountnumber, Countryid, fatherhusband, distID, distName, pancard, nomnames, relations,phone,profession)
+        {
+
+            $.ajax({
+                type: "POST",
+                url: "../BOM/Getdata_member.asmx/UpdateMemberProfile1",
+                data: "{regno:'',QueryType:'update' ,intResult:'0',title:'" + tilte + "',fname:'" + First_name + "',lname:'" + last_name + "',fatherName:'" + fatherhusband + "',dob:'" + dateofbirth + "',Gender:'" + genderID + "',mobile:'" + mobile_no + "',emailID:'" + email_id + "',sid:'" + stateid + "',oState:'" + Statename + "',Ctid:'" + CityID + "',oCity:'" + Cityname + "',pincode:'" + pincode + "',address:'" + address + "',LandMark:'" + landmark + "',LoginID:'" + ViewstateUsername + "',firstS_Qid:'" + QuestionID + "',firstS_ANS:'" + Answer + "',coreBank:'" + Bankname + "',bankaddress:'" + bankaddress + "',IFSCCode:'" + ifsccvode + "',accountNo:'" + accountnumber + "',CountryID:'" + Countryid + "',distid:'" + distID + "',distName:'" + distName + "',pancard:'" + pancard + "',nomname:'" + nomnames + "',relation:'" + relations + "',phone:'" + phone + "',profession:'" + profession + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: SavDetailsSuccess,
+                error: function (xhr, status, error) {
+
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Technical_Error") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                }
+
+            });
+        }
+
+        function SavDetailsSuccess(Result) {
+
+            var jsonData = Result.d;
+            switch (Result.d) {
+                case "0":
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Invalid_UpdateProfile") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    $('#InfoDiv').hide();
+                    break;
+                case "1":
+                    $("#btSubmit").attr("disabled", "disabled");
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Valid_UpdateProfile") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-success");
+                    $('#errorDiv').show();
+
+                    $('#InfoDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Valid_UpdateProfile") %>' + "");
+                    $('#InfoDiv').removeClass().addClass("alert alert-success");
+                    $('#InfoDiv').show();
+
+                    return false;
+                    break;
+            }
+
+
+
+        }
+---------------------------------------------------
+ [WebMethod]
+    public string UpdateMemberProfile12(string regno, string QueryType, string intResult, string title, string fname, string lname, string fatherName, string dob, string Gender, string mobile, string emailID, string sid, string oState, string Ctid, string oCity, string pincode, string address, string LandMark, string LoginID, string firstS_Qid, string firstS_ANS, string coreBank, string bankaddress, string IFSCCode, string accountNo, string CountryID, string distid, string distName, string pancard, string nomname, string relation, string loginidusername)
+    {
+        string ResultStatus = "0";
+
+
+        //try
+        //{
+        regno = Convert.ToString(objDUT.GetScalar("Select regno from Member_master where loginid='" + LoginID + "'"));
+        int countryid1 = Convert.ToInt32(objDUT.GetScalar("Select cid from country where countryname='" + CountryID + "'"));
+        
+	SqlParameter[] param = new SqlParameter[31];
+
+       
+
+     	pram[26] = new SqlParameter("@distid", SqlDbType.Int, 4);
+        param[26].Value = distid;
+
+        param[27] = new SqlParameter("@odistrict", SqlDbType.VarChar, 100);
+        param[27].Value = distName;
+
+        param[28] = new SqlParameter("@pancard", SqlDbType.VarChar, 100);
+        param[28].Value = pancard;
+
+        param[29] = new SqlParameter("@nomname", SqlDbType.VarChar, 200);
+        param[29].Value = nomname;
+
+        param[30] = new SqlParameter("@relation", SqlDbType.VarChar, 200);
+        param[30].Value = loginidusername;
+
+        int result = objDUT.ExecuteSqlSP(param, "sp_manageMemberProfile1");
+        if (result == 1)
+        {
+            ResultStatus = "1";
+        }
+        else if (result == 2)
+        {
+            ResultStatus = "2";
+        }
+        else
+        {
+            ResultStatus = "0";
+        }
+        //}
+        //catch (Exception excep)
+        //{
+        //    ResultStatus = "0";
+        //}
+        return ResultStatus;
+    }
+---------------------
+   [WebMethod]
+    public List<View_MemberProfile> ViewProfile_Member(string username)
+    {
+        List<View_MemberProfile> viewprofile = new List<View_MemberProfile>();
+        View_MemberProfile memberpro = new View_MemberProfile();
+        sdr = null;
+        if (username.Length <= 0)
+        {
+            memberpro.ResultStatus = "2"; // Null Username
+        }
+        else
+        {
+            try
+            {
+                long ctr = Convert.ToInt64(objDUT.GetScalar("Select Count(loginid) from Member_master where loginid='" + username + "'"));
+                if (ctr > 0)
+                {
+                    long active = Convert.ToInt64(objDUT.GetScalar("Select  active from Member_master where loginid='" + username + "'"));
+                    if (active > 0)
+                    {
+                        try
+                        {
+                            SqlParameter[] param = new SqlParameter[1];
+                            param[0] = new SqlParameter("@loginid", SqlDbType.VarChar, 100);
+                            param[0].Value = username;
+
+                            sdr = objDUT.GetDataReaderSP(param, "sp_getMemberDetails");
+                            if (sdr.HasRows)
+                            {
+                                while (sdr.Read())
+                                {
+                                  
+                                    memberpro.accountNo = sdr["accountNo"].ToString();
+                                    memberpro.fat_husName = sdr["fat_husName"].ToString();
+                                    memberpro.pancard = sdr["mempan"].ToString();
+                                    memberpro.ResultStatus = "1";
+                                    memberpro.phone = sdr["phone"].ToString();
+                                    memberpro.profession = sdr["profession"].ToString();
+                                    //memberpro.pancheck = sdr["pancheck"].ToString();
+                                    //memberpro.bankcheck = sdr["bankcheck"].ToString();
+                                    //memberpro.paymentrelease = sdr["paymentrelease"].ToString();
+                                    viewprofile.Add(memberpro);
+                                }
+                            }
+                            else
+                            {
+                               
+                                memberpro.IFSCCode = "";
+                                memberpro.accountNo = "";
+                                memberpro.ResultStatus = "0";
+                                memberpro.pancheck = "0";
+                                memberpro.bankcheck = "0";
+                                memberpro.paymentrelease = "0";
+                            }
+
+                        }
+                        catch (Exception excep)
+                        {
+                        }
+                    }
+                    else
+                    {
+                        memberpro.ResultStatus = "5";  // Member Deactive
+                    }
+                }
+                else
+                {
+                    memberpro.ResultStatus = "4";  // Invalid Username
+                }
+            }
+            catch (Exception Excep)
+            {
+                memberpro.ResultStatus = "3";  // Invalid Username
+            }
+        }
+        return viewprofile;
+    
+}
+--**********---------------------
+--**********---------------------
+ function GetMember_Profile(username) {
+
+            $.ajax({
+                type: "POST",
+                url: "../BOM/Getdata_member.asmx/ViewProfile_Member",
+                data: "{ username:'" + username + "' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BindMemberProfileDetailsSuccess,
+                error: function (xhr, status, error) {
+                    document.getElementById("btSubmit").disabled = true;
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> " + '<%=  MSG.Show("Invalid_DistributorID") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                }
+
+            });
+        }
+        var fullnameofmember = '';
+        function BindMemberProfileDetailsSuccess(Result) {
+            var jsonData = Result.d;
+
+
+            switch (jsonData[0].ResultStatus) {
+                case "1":
+
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> Welcome <strong> " + jsonData[0].title + " " + jsonData[0].fname + " " + jsonData[0].lname + "  </strong>, your username is <strong>  " + jsonData[0].loginid + "  </strong> .");
+                    $('#errorDiv').removeClass().addClass("alert alert-info");
+                    $('#errorDiv').show();
+                    break;
+                case "4":
+
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Invalid_Norecord") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    break;
+                case "5":
+
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Member_Deactivation") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    break;
+                case "3":
+
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Required_username") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    break;
+            }
+
+            $("#<%=txtfname.ClientID%>").val(jsonData[0].fname);
+            $('#ddlquestion').val(jsonData[0].firstS_Qid);
+            // ***********   Personal Details 
+            $("#<%= ddltitle.ClientID%>").val(jsonData[0].title);
+            $("#<%= txtpan.ClientID%>").val(jsonData[0].pancard);
+            var pancard1 = $("#<%= txtpan.ClientID%>").val();
+            if (pancard1 == "") {
+
+            }
+            else {
+
+                $("#<%= txtpan.ClientID%>").attr('disabled', 'disabled');
+            }
+            $("#<%= txtfname.ClientID%>").val(jsonData[0].fname);
+            $("#<%= txtlname.ClientID%>").val(jsonData[0].lname);
+            $("#<%= txtfh.ClientID%>").val(jsonData[0].fat_husName);
+
+            if (jsonData[0].Gender == 0 || jsonData[0].Gender == "0") {
+                $("#<%= ddlgender.ClientID%>").val(0)
+            }
+            if (jsonData[0].Gender == 1 || jsonData[0].Gender == "1") {
+                $("#<%= ddlgender.ClientID%>").val(1)
+            }
+            if (jsonData[0].Gender == 2 || jsonData[0].Gender == "2") {
+                $("#<%= ddlgender.ClientID%>").val(2)
+            }
+
+
+            $("#<%= txtdob.ClientID%>").val(jsonData[0].dob);
+            $("#<%= txtmobilecode.ClientID%>").val("+91");
+            $("#<%= txtmobile.ClientID%>").val(jsonData[0].mobile);
+            $("#<%= txtemail.ClientID%>").val(jsonData[0].emailID);
+            $("#<%=Txt_landline.ClientID%>").val(jsonData[0].phone);
+            $("#<%=txt_occupation.ClientID%>").val(jsonData[0].profession);
+
+            //*********************** Login Details
+            $("#<%= txtusername.ClientID%>").val(jsonData[0].loginid);
+            $('#ddlquestion').val(jsonData[0].firstS_Qid);
+            $("#<%= txtanswer.ClientID%>").val(jsonData[0].firstS_ANS);
+
+            //************************ Address Details
+            $("#<%= txtaddress.ClientID%>").val(jsonData[0].address);
+            $("#<%= txtlandmark.ClientID%>").val(jsonData[0].LandMark);
+            $("#<%= txtpincode.ClientID%>").val(jsonData[0].pincode);
+            $("#<%= ddlcity.ClientID%>").val(jsonData[0].oCity);
+
+            //********************** Bank Details
+            $("#<%= txtbankname.ClientID%>").val(jsonData[0].coreBank);
+            $("#<%= txtifsccode.ClientID%>").val(jsonData[0].IFSCCode);
+            $("#<%= txtaccountno.ClientID%>").val(jsonData[0].accountNo);
+            $("#<%= txtbankaddress.ClientID%>").val(jsonData[0].branchCode);
+            $("#<%= txtnomnee.ClientID%>").val(jsonData[0].nomneename);
+            $("#<%= txtrelations.ClientID%>").val(jsonData[0].nomneerelation);
+
+            $("#<%= ddltitle.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txtfname.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txtdob.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txtmobile.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txtlname.ClientID%>").attr("disabled", "disabled");
+            $("#<%= ddlgender.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txtfh.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txtemail.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txtmobilecode.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txtnomnee.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txtrelations.ClientID%>").attr("disabled", "disabled");
+           $("#<%= Txt_landline.ClientID%>").attr("disabled", "disabled");
+            $("#<%= txt_occupation.ClientID%>").attr("disabled", "disabled");
+            if (jsonData[0].fat_husName == "") 
+		{ 
+        		$("#<%=txtfh.ClientID %>").removeAttr("disabled"); 
+} else { $("#<%=txtfh.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].bankcheck == "0") 
+		{ $("#<%=ddlcountry.ClientID %>").removeAttr("disabled"); 
+} else { $("#<%=ddlcountry.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].bankcheck == "0") 
+		{ $("#<%=ddlDsistrict.ClientID %>").removeAttr("disabled"); 
+} else { $("#<%=ddlDsistrict.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].bankcheck == "0")
+		 { $("#<%=ddlstate.ClientID %>").removeAttr("disabled"); 
+} else { $("#<%=ddlstate.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].bankcheck == "0")
+ 		{ $("#<%=txtpincode.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtpincode.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].bankcheck == "0") 
+		{ $("#<%=ddlcity.ClientID %>").removeAttr("disabled"); } else { $("#<%=ddlcity.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].bankcheck == "0") { $("#<%=txtaddress.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtaddress.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].LandMark == "") { $("#<%=txtlandmark.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtlandmark.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].emailID == "") { $("#<%=txtemail.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtemail.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].mobile == "") { $("#<%=txtmobile.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtmobile.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].fname == "") { $("#<%=txtfname.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtfname.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].lname == "") { $("#<%=txtlname.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtlname.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].coreBank == "") { $("#<%=txtbankname.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtbankname.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].branchCode == "") { $("#<%=txtbankaddress.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtbankaddress.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].IFSCCode == "") { $("#<%=txtifsccode.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtifsccode.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].accountNo == "") { $("#<%=txtaccountno.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtaccountno.ClientID %>").attr("disabled", "disabled") }
+          //  if (jsonData[0].coreBank == "") { $("#<%=txtbankname.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtbankname.ClientID %>").attr("disabled", "disabled"); }
+           // if (jsonData[0].branchCode == "") { $("#<%=txtbankaddress.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtbankaddress.ClientID %>").attr("disabled", "disabled"); }
+           // if (jsonData[0].IFSCCode == "") { $("#<%=txtifsccode.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtifsccode.ClientID %>").attr("disabled", "disabled"); }
+           // if (jsonData[0].accountNo == "") { $("#<%=txtaccountno.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtaccountno.ClientID %>").attr("disabled", "disabled") }
+            if (jsonData[0].pancard == "") { $("#<%=txtpan.ClientID %>").removeAttr("disabled", "disabled"); } else { $("#<%=txtpan.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].nomneename == "") { $("#<%=txtnomnee.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtnomnee.ClientID %>").attr("disabled", "disabled"); }
+            if (jsonData[0].nomneerelation == "") { $("#<%=txtrelations.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtrelations.ClientID %>").attr("disabled", "disabled"); }
+           if (jsonData[0].phone == "") { $("#<%=Txt_landline.ClientID%>").removeAttr("disabled"); } else { $("#<%=Txt_landline.ClientID%>").attr("disabled", "disabled"); }
+            if (jsonData[0].profession == "") { $("#<%=txt_occupation.ClientID%>").removeAttr("disabled"); } else { $("#<%=txt_occupation.ClientID%>").attr("disabled", "disabled"); }
+            UpdateRequired();
+        }
+
+
+
+
+function UpdateRequired() {
+            var tilte = "";
+            = "";
+            var nomnames = "";
+            var relations = "";
+            var phone = "";
+            var profession = "";
+
+            tilte = $("#<%= ddltitle.ClientID%>").val();
+            First_name = $("#<%= txtfname.ClientID%>").val();
+            last_name = $("#<%= txtlname.ClientID%>").val();
+            fatherhusband = $("#<%= txtfh.ClientID%>").val();
+            var gndr = document.getElementById('<%= ddlgender.ClientID %>')
+            var genderID = gndr.options[gndr.selectedIndex].value;
+            var gendername = gndr.options[gndr.selectedIndex].text;
+            dateofbirth = $("#<%= txtdob.ClientID%>").val();
+            country_Code_mobile = $("#<%= txtmobilecode.ClientID%>").val();
+            mobile_no = $("#<%= txtmobile.ClientID%>").val();
+            email_id = $("#<%= txtemail.ClientID%>").val();
+            pancard = $("#<%= txtpan.ClientID%>").val();
+            nomnames = $("#<%= txtnomnee.ClientID%>").val();
+            relations = $("#<%= txtrelations.ClientID%>").val();
+            phone = $("#<%=Txt_landline.ClientID%>").val();
+            profession = $("#<%=txt_occupation.ClientID%>").val();
+            // Address Details Added
+            var country = "";
+            var state = "";
+            var city = "";
+            var address = "";
+            var landmark = "";
+            var pincode = "";
+
+            var parm = document.getElementById('<%= ddlcountry.ClientID %>')
+            var Countryid = parm.options[parm.selectedIndex].value;
+            var CountryName = parm.options[parm.selectedIndex].text;
+            var parm2 = document.getElementById('<%= ddlstate.ClientID %>');
+            var stateid = parm2.options[parm2.selectedIndex].value;
+            var Statename = parm2.options[parm2.selectedIndex].text;
+            var parmD = document.getElementById('<%= ddlDsistrict.ClientID %>');
+            var distID = parmD.options[parmD.selectedIndex].value;
+            var distName = parmD.options[parmD.selectedIndex].text;
+            var parm3 = document.getElementById('<%= ddlcity.ClientID %>');
+            var CityID = '0'// parm3.options[parm3.selectedIndex].value;
+            var Cityname = $("#<%= ddlcity.ClientID%>").val();
+            address = $("#<%= txtaddress.ClientID%>").val();
+            landmark = $("#<%= txtlandmark.ClientID%>").val();
+            pincode = $("#<%= txtpincode.ClientID%>").val();
+            
+	// Login Details Added
+            var username = "";
+            var password = "";
+            var transactioncode = "";
+            var QuestionID = "";
+            var QuestionName = "";
+            var Answer = "";
+
+            username = $("#<%= txtusername.ClientID%>").val();
+
+            var QuestionID = $('#ddlquestion').val();
+            // QuestionName = parm4.options[parm4.selectedIndex].text;
+
+            Answer = "" // $("#<%= txtanswer.ClientID%>").val("AA");
+            //   Bank Details Added
+            var Bankname = "";
+            var Branchcode = "";
+            var ifsccvode = "";
+            var accountnumber = "";
+            var bankaddress = "";
+            Bankname = $("#<%= txtbankname.ClientID%>").val();
+            Branchcode = "";
+            ifsccvode = $("#<%= txtifsccode.ClientID%>").val();
+            accountnumber = $("#<%= txtaccountno.ClientID%>").val();
+            bankaddress = $("#<%= txtbankaddress.ClientID%>").val();
+            if (tilte == "" || First_name == "" || last_name == "" || dateofbirth == "" || genderID == "" || mobile_no == "" || email_id == "" || stateid == "" || Statename == "" || CityID == "" || Cityname == "" || pincode == "" || address == "" || landmark == ""  || Bankname == "" || bankaddress == "" || ifsccvode == "" || accountnumber == "" || Countryid == "" || fatherhusband == "" || distID == "" || distName == "" || pancard == "" || nomnames == "" || relations=="" || phone=="" || profession=="") {
+                $('#div_U').show();
+               
+            }
+
+        }
+  ____________________ Save Button ___________________________
+/______________________________ Save Button ___________________________
+
+        function SaveData() {
+           
+            var errorText = '';
+            //  Personal Details Added
+            // Validation
+            var tilte = "";
+            var First_name = "";
+            var last_name = "";
+            var gender = "";
+            var genderID = "";
+            var gendername = "";
+            var dateofbirth = "";
+            var fatherhusband = "";
+            var country_Code_mobile = "";
+            var mobile_no = "";
+            var email_id = "";
+            var pancard = "";
+            var nomnames = "";
+            var relations = "";
+            var phone = "";
+            var profession = "";
+
+            tilte = $("#<%= ddltitle.ClientID%>").val();
+            First_name = $("#<%= txtfname.ClientID%>").val();
+            last_name = $("#<%= txtlname.ClientID%>").val();
+            fatherhusband = $("#<%= txtfh.ClientID%>").val();
+
+            var gndr = document.getElementById('<%= ddlgender.ClientID %>')
+            var genderID = gndr.options[gndr.selectedIndex].value;
+            var gendername = gndr.options[gndr.selectedIndex].text;
+
+            dateofbirth = $("#<%= txtdob.ClientID%>").val();
+            country_Code_mobile = $("#<%= txtmobilecode.ClientID%>").val();
+            mobile_no = $("#<%= txtmobile.ClientID%>").val();
+            email_id = $("#<%= txtemail.ClientID%>").val();
+            pancard = $("#<%= txtpan.ClientID%>").val();
+            nomnames = $("#<%= txtnomnee.ClientID%>").val();
+            relations = $("#<%= txtrelations.ClientID%>").val();
+            phone = $("#<%=Txt_landline.ClientID%>").val();
+            profession = $("#<%=txt_occupation.ClientID%>").val();
+
+            // Address Details Added
+            var country = "";
+            var state = "";
+            var city = "";
+            var address = "";
+            var landmark = "";
+            var pincode = "";
+
+            var parm = document.getElementById('<%= ddlcountry.ClientID %>')
+            var Countryid = parm.options[parm.selectedIndex].value;
+            var CountryName = parm.options[parm.selectedIndex].text;
+
+            var parm2 = document.getElementById('<%= ddlstate.ClientID %>');
+            var stateid = parm2.options[parm2.selectedIndex].value;
+            var Statename = parm2.options[parm2.selectedIndex].text;
+
+            var parmD = document.getElementById('<%= ddlDsistrict.ClientID %>');
+            var distID = parmD.options[parmD.selectedIndex].value;
+            var distName = parmD.options[parmD.selectedIndex].text;
+
+            var parm3 = document.getElementById('<%= ddlcity.ClientID %>');
+            var CityID = '0'// parm3.options[parm3.selectedIndex].value;
+            var Cityname = $("#<%= ddlcity.ClientID%>").val();
+
+            address = $("#<%= txtaddress.ClientID%>").val();
+          //  landmark = $("#<%= txtlandmark.ClientID%>").val();
+            pincode = $("#<%= txtpincode.ClientID%>").val();
+            // Login Details Added
+            var username = "";
+            var password = "";
+            var transactioncode = "";
+            var QuestionID = "";
+            var QuestionName = "";
+            var Answer = "";
+            username = $("#<%= txtusername.ClientID%>").val();
+
+            var QuestionID = $('#ddlquestion').val();
+            // QuestionName = parm4.options[parm4.selectedIndex].text;
+
+            Answer ="" // $("#<%= txtanswer.ClientID%>").val("AA");
+            //   Bank Details Added
+            var Bankname = "";
+            var Branchcode = "";
+            var ifsccvode = "";
+            var accountnumber = "";
+            var bankaddress = "";
+            Bankname = $("#<%= txtbankname.ClientID%>").val();
+            Branchcode = "";
+            ifsccvode = $("#<%= txtifsccode.ClientID%>").val();
+            accountnumber = $("#<%= txtaccountno.ClientID%>").val();
+            bankaddress = $("#<%= txtbankaddress.ClientID%>").val();
+
+
+            //___________________________ Validate_____________
+            if (tilte == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Title") %>' + " <br>";
+            }
+            if (First_name == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_FName") %>' + "<br>";
+            }
+            if (last_name == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_LName") %>' + "<br>";
+            }
+            if (genderID == "") {
+                errorText = "" + '<%=  MSG.Show("Select_Gender") %>' + " <br>";
+            }
+            if (dateofbirth == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_DOB") %>' + "<br>";
+            }
+            if (country_Code_mobile == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_MobCode") %>' + "<br>";
+            }
+            if (mobile_no == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_MobNo") %>' + "<br>";
+            }
+            if (email_id == "") {
+                errorText = "" + '<%=  MSG.Show("Invalid_Email") %>' + "<br>";
+            }
+            if (Countryid == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Country") %>' + "<br>";
+            }
+            if (stateid == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_State") %>' + "<br>";
+            }
+            if (CityID == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_City") %>' + "<br>";
+            }
+            if (address == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Address") %>' + "<br>";
+            }
+           <%-- if (landmark == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_LadMark") %>' + "<br>";
+            }--%>
+         <%-- if (pincode == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Pincode") %>' + "<br>";
+            }
+           
+            --%>
+
+
+            if (errorText != '') {
+                $('html, body').animate({ scrollTop: 0 }, '-10.2');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + errorText);
+                $('#errorDiv').removeClass().addClass("alert alert-error");
+                $('#errorDiv').show();
+                return false;
+            }
+            else {
+                $('#errorDiv').hide();
+            }
+            if ($("span").hasClass("input-error")) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').html(" <button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Remove_Error") %>' + "");
+                $('#errorDiv').removeClass().addClass("alert alert-error");
+                $('#errorDiv').show();
+                return false;
+            }
+
+            Update_Profile_Save(tilte, First_name, last_name, dateofbirth, genderID, mobile_no, email_id, stateid, Statename, CityID, Cityname, pincode, address, landmark, ViewstateUsername, QuestionID, Answer, Bankname, bankaddress, ifsccvode, accountnumber, Countryid, fatherhusband, distID, distName, pancard, nomnames, relations,phone,profession)
+
+
+        }
+
+        function Update_Profile_Save(tilte, First_name, last_name, dateofbirth, genderID, mobile_no, email_id, stateid, Statename, CityID, Cityname, pincode, address, landmark, ViewstateUsername, QuestionID, Answer, Bankname, bankaddress, ifsccvode, accountnumber, Countryid, fatherhusband, distID, distName, pancard, nomnames, relations,phone,profession) {
+           // alert('ok');
+            $.ajax({
+                type: "POST",
+                url: "../BOM/Getdata_member.asmx/UpdateMemberProfile1",
+                data: "{regno:'',QueryType:'update' ,intResult:'0',title:'" + tilte + "',fname:'" + First_name + "',lname:'" + last_name + "',fatherName:'" + fatherhusband + "',dob:'" + dateofbirth + "',Gender:'" + genderID + "',mobile:'" + mobile_no + "',emailID:'" + email_id + "',sid:'" + stateid + "',oState:'" + Statename + "',Ctid:'" + CityID + "',oCity:'" + Cityname + "',pincode:'" + pincode + "',address:'" + address + "',LandMark:'" + landmark + "',LoginID:'" + ViewstateUsername + "',firstS_Qid:'" + QuestionID + "',firstS_ANS:'" + Answer + "',coreBank:'" + Bankname + "',bankaddress:'" + bankaddress + "',IFSCCode:'" + ifsccvode + "',accountNo:'" + accountnumber + "',CountryID:'" + Countryid + "',distid:'" + distID + "',distName:'" + distName + "',pancard:'" + pancard + "',nomname:'" + nomnames + "',relation:'" + relations + "',phone:'"+phone+"',profession:'"+profession+"'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: SavDetailsSuccess,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Technical_Error") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                }
+
+            });
+        }
+        function SavDetailsSuccess(Result) {
+
+            var jsonData = Result.d;
+            switch (Result.d) {
+                case "0":
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Invalid_UpdateProfile") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    $('#InfoDiv').hide();
+                    break;
+                case "1":
+                    $("#btSubmit").attr("disabled", "disabled");
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Valid_UpdateProfile") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-success");
+                    $('#errorDiv').show();
+
+                    $('#InfoDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Valid_UpdateProfile") %>' + "");
+                    $('#InfoDiv').removeClass().addClass("alert alert-success");
+                    $('#InfoDiv').show();
+
+                    return false;
+                    break;
+            }
+
+
+
+        }

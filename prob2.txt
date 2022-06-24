@@ -1,0 +1,184 @@
+ [WebMethod]
+    public List<ManageShop> GetShopDetails(string shopID, string query)
+    {
+
+        
+        List<ManageShop> shopList = new List<ManageShop>();
+        //try
+        //{
+        sdr = null;
+        SqlParameter[] p = new SqlParameter[22];
+        p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+        p[0].Value = Convert.ToInt32(shopID);
+        p[1] = new SqlParameter("@shopCode", SqlDbType.VarChar, 100);
+        p[1].Value = "";
+        p[2] = new SqlParameter("@password", SqlDbType.VarChar, 100);
+        p[2].Value = "";
+        p[3] = new SqlParameter("@ePassword", SqlDbType.VarChar, 100);
+        p[3].Value = "";
+        p[4] = new SqlParameter("@shopName", SqlDbType.VarChar, 100);
+        p[4].Value = "";
+        p[5] = new SqlParameter("@shopAddress", SqlDbType.VarChar, 500);
+        p[5].Value = "";
+        p[6] = new SqlParameter("@shopMobile", SqlDbType.VarChar, 50);
+        p[6].Value = "";
+
+        p[7] = new SqlParameter("@shopEmail", SqlDbType.VarChar, 100);
+        p[7].Value = "";
+        p[8] = new SqlParameter("@shopWebsite", SqlDbType.VarChar, 100);
+        p[8].Value = "";
+        p[9] = new SqlParameter("@shopContactPerson", SqlDbType.VarChar, 100);
+        p[9].Value = "";
+        p[10] = new SqlParameter("@shopGST", SqlDbType.VarChar, 50);
+        p[10].Value = "";
+        p[11] = new SqlParameter("@entryBy", SqlDbType.Int);
+        p[11].Value = 2;
+        p[12] = new SqlParameter("@entryIP", SqlDbType.VarChar, 150);
+        p[12].Value = "127.0.0.1";
+        p[13] = new SqlParameter("@approved", SqlDbType.Int);
+        p[13].Value = 1;
+        p[14] = new SqlParameter("@isActive", SqlDbType.Int);
+        //p[13].Value = 1;isActive
+        p[14].Value = 1;
+        p[15] = new SqlParameter("@shopSID", SqlDbType.Int);
+        p[15].Value = 0;
+        p[16] = new SqlParameter("@shopDID", SqlDbType.Int);
+        p[16].Value = 0;
+        p[17] = new SqlParameter("@shopCTID", SqlDbType.Int);
+        p[17].Value = 0;
+        p[18] = new SqlParameter("@shopPincode", SqlDbType.VarChar, 6);
+        p[18].Value = "";
+        p[19] = new SqlParameter("@queryType", SqlDbType.VarChar, 20);
+        p[19].Value = query;
+        p[20] = new SqlParameter("@intResult", SqlDbType.Int);
+        p[20].Direction = ParameterDirection.Output;
+
+        p[21] = new SqlParameter("@shopPhone", SqlDbType.VarChar, 50);
+        p[21].Value = "";
+        sdr = objDUT.GetDataReaderSP(p, "usp_manageshop");
+        while (sdr.Read())
+        {
+            ManageShop shop = new ManageShop();
+            shop.shopID = sdr["shopID"].ToString();
+            shop.shopCode = sdr["shopCode"].ToString();
+            shop.password = sdr["Password"].ToString();
+            shop.repassword = sdr["ePassword"].ToString();
+            shop.shopName = sdr["shopName"].ToString();
+
+            shop.Address = sdr["shopAddress"].ToString();
+            shop.mobileNo = sdr["shopMobile"].ToString();
+            shop.email = sdr["shopEmail"].ToString();
+            shop.website = sdr["shopWebsite"].ToString();
+            shop.contectPerson = sdr["shopContactPerson"].ToString();
+            shop.gstNo = sdr["shopGST"].ToString();
+            shop.State = sdr["shopSID"].ToString();
+            shop.disti = sdr["shopDID"].ToString();
+            shop.city = sdr["shopCTID"].ToString();
+            shop.pinCode = sdr["shopPinCode"].ToString();
+            string Active = sdr["isActive"].ToString();
+            string sta = "", staClass = "";
+            if (Active == "True")
+            {
+                sta = "Active";
+                staClass = "alert alert-success";
+            }
+            else
+            {
+                sta = "Deactive";
+                staClass = "alert alert-danger";
+            }
+            shop.Status = sta;
+            shop.StatusClass = staClass;
+            shopList.Add(shop);
+        }
+        sdr.Dispose();
+
+        //}
+        //catch (Exception exce)
+        //{
+        //}
+        return shopList;
+
+
+    }
+---------------------
+
+    //[WebMethod]
+    //public List<RechargeShop> GetShopID(string Shopid)
+    //{
+
+    //    List<RechargeShop> ShopList = new List<RechargeShop>();
+
+    //    DataTable ds = objDUT.GetDataTable("Select * from Shop_master where shopID='" + Shopid + "'");
+    //    if (ds.Rows.Count > 0)
+    //    {
+    //        RechargeShop Shop = new RechargeShop();
+    //        Shop.shopName = ds.Rows[0]["shopName"].ToString();
+    //        Shop.shopMobile = ds.Rows[0]["shopMobile"].ToString();
+    //        Shop.shopContactPerson = ds.Rows[0]["shopContactPerson"].ToString();
+    //        Shop.shopEmail = ds.Rows[0]["shopEmail"].ToString();
+    //        ShopList.Add(Shop);
+    //    }
+
+    //    return ShopList;
+    //}
+---------------List Show------------------
+// [WebMethod]
+   // public List<ManageShop> GetShopDetails(string shopID)
+   // {
+   //
+   //     List<ManageShop> ShopList = new List<ManageShop>();
+   //
+   //     DataTable ds = objDUT.GetDataTable("Select * from Shop_master where shopID='" + shopID + "'");
+   //     if (ds.Rows.Count > 0)
+   //     {
+   //         ManageShop Shop = new ManageShop();
+   //         Shop.shopName = ds.Rows[0]["shopName"].ToString();
+   //         Shop.mobileNo = ds.Rows[0]["shopMobile"].ToString();
+   //         Shop.contectPerson = ds.Rows[0]["shopContactPerson"].ToString();
+   //         Shop.email = ds.Rows[0]["shopEmail"].ToString();
+   //         ShopList.Add(Shop);
+   //     }
+   //
+   //     return ShopList;
+   // }
+----------------------------show list by strore procedure  where condiation ----------------------
+
+    //[WebMethod]
+    //public List<RechargeShop> ListShopRecharge(string ShopId)
+    //{
+    //    List<RechargeShop> RechargeList = new List<RechargeShop>();
+    //    try
+    //    {
+    //        sdr = null;
+    //        SqlParameter[] p = new SqlParameter[2];
+    //        p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+    //        p[0].Value = Convert.ToInt32(ShopId);
+    //        p[1] = new SqlParameter("@intResult", SqlDbType.Int);
+    //        p[1].Direction = ParameterDirection.Output;
+
+    //       sdr = objDUT.GetDataReaderSP(p, "usp_rechargeShop_trHistory");
+    //        while (sdr.Read())
+    //        {
+    //            RechargeShop listv = new RechargeShop();
+    //            listv.ShopCode = sdr["shopCode"].ToString();
+    //            listv.Amount = sdr["rechargeAmount"].ToString();
+    //            listv.RefNo = sdr["paymentrefNo"].ToString();
+    //            listv.PayMode = sdr["paymentMode"].ToString();
+    //            listv.EntryDate = string.Format("{0:dd/MM/yyyy}", sdr["entryDate"]);
+    //            listv.bankName = sdr["paymentBank"].ToString();
+    //            listv.status = sdr["rechargestatus"].ToString();
+
+    //            RechargeList.Add(listv);
+    //        }
+    //        sdr.Close();
+    //        sdr.Dispose();
+    //    }
+    //    catch (Exception exc)
+    //    {
+    //    }
+    //    return RechargeList;
+    //}
+
+
+<span class="text-error">*</span>

@@ -1,0 +1,4392 @@
+<title><%=ConfigurationManager.AppSettings["titleBar"] %></title>
+<add key="titleDisplay" value="Sonsy Associate Pvt. Ltd." />
+    <add key="MemberHeading" value="Distributor" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico"/>
+
+  if (pancardno.length > 0) {
+             if (pancardno == null) pancardno = window.event.srcElement;
+             if (pancardno.value != "") {
+
+                 var panPat = /^([a-zA-Z]{5})(\d{4})([a-zA-Z]{1})$/;
+                 var code = /([C,P,H,F,A,T,B,L,J,G])/;
+                 var code_chk = pancardno.substring(3, 4).toUpperCase();
+                 if (pancardno.search(panPat) == -1) {
+                     $('#errorDiv_Step2').html("<button data-dismiss='alert' class='close'>×</button> <Strong>Required ,</strong>  Invalid Pan No.");
+                     $('#errorDiv_Step2').addClass("alert alert-error");
+                     $('#errorDiv_Step2').show();
+                     $("#<%= txtPAN.ClientID%>").focus();
+                     $('html, body').animate({ scrollTop: 0 }, '0.2');
+                     return false;
+                 }
+                 if (code.test(code_chk) == false) {
+
+                     $('#errorDiv_Step2').html("<button data-dismiss='alert' class='close'>×</button> <Strong>Required ,</strong> Invaild PAN Card No.");
+                     $('#errorDiv_Step2').addClass("alert alert-error");
+                     $('#errorDiv_Step2').show();
+                     $("#<%= txtPAN.ClientID%>").focus();
+                     $('html, body').animate({ scrollTop: 0 }, '0.2');
+                     return false;
+                 }
+             }
+
+         }
+         else {
+                     $('#errorDiv_Step2').html("<button data-dismiss='alert' class='close'>×</button> <Strong>Required ,</strong> Enter PAN Card No.");
+                     $('#errorDiv_Step2').addClass("alert alert-error");
+                     $('#errorDiv_Step2').show();
+                     $("#<%= txtPAN.ClientID%>").focus();
+                     $('html, body').animate({ scrollTop: 0 }, '0.2');
+                     return false;
+         }
+         
+<appSettings>
+    <add key="ChartImageHandler" value="storage=file;timeout=20;dir=c:\TempImageFiles\;" />
+    
+    <add key="ConnectionString" value="Server=alpsserver; database=alps_sonsy;uid=alps305;pwd=alps@305;Connection Timeout=18000;" />
+
+   <!--<add key="ConnectionString" value="Server=alpsserver; database=alps_EnjoyLife;uid=alps305;pwd=alps@305;Connection Timeout=18000;" />-->
+    
+    <add key="webRoot" value="http://localhost:51973/" />
+    <add key="abc" value="ALPS" />
+    <add key="titleBar" value="|| Enjoy Life Pvt. Ltd. ||" />
+    <!--<add key="titleBar" value="|| Sonsy Associate Pvt. Ltd. ||" />-->
+	  <!--<add key="titleDisplay" value="Sonsy Associate Pvt. Ltd." />-->
+    <add key="titleDisplay" value="Enjoy Life Pvt. Ltd." />
+
+    <add key="MemberHeading" value="Distributor" />
+    <add key="ErrorMsg" value="Error !!" />
+    <add key="InsertMsg" value="Record Saved Successfully !!" />
+    <add key="ExistMsg" value="Record Already Exist !!" />
+    <add key="DeleteMsg" value="Record Deleted Successfully !!" />
+    <add key="UpdateMsg" value="Record Updated Successfully !!" />
+    <add key="UndefineMsg" value="This is Browser Error !!" />
+    <add key="LoginMsg" value="Enjoy Life, Wrong User Name or Password !!" />
+    <add key="SponsorMsg" value="Enjoy Life, Sponsor does not Exist !!" />
+    <add key="BoardMsg" value="Enjoy Life, SBD Not Exist in Board !!" />
+    <add key="ParentMsg" value="Sorry, Wrong LoginID or Password !!" />
+    <add key="ParetnTreeMsg" value="Enjoy Life, Parent You Entered is Not in the Downtree of the Sponsor !!" />
+    <add key="ParentFullMsg" value="Enjoy Life, Parent you Entered is Already Full, Please Choose Another !!" />
+    <add key="AssociateMsg" value="Enjoy Life, Wrong Distributor ID. OR User Name !!" />
+    <add key="LoginAlreadyMsg" value="Enjoy Life, User Name Already Exists !!" />
+    <add key="ACStatementMsg" value="Enjoy Life, There is no Transaction yet !!" />
+    <add key="SponsorList" value="Enjoy Life, Sponsor's List does not Exist !!" />
+    <add key="DownlineList" value="Enjoy Life, No Downline Information !!" />
+    <add key="ChildList" value="Enjoy Life, Child does not Exist !!" />
+    <add key="restrictedWords" value="admin, administrator, member, controlpanel" />
+    <add key="dbUser" value="alpssoft_Cemecan" />
+    <add key="CryptoKey" value="%>s{;+#" />
+    
+
+  </appSettings>
+
+
+
+
+<defaultDocument>
+            <files>
+                <clear />
+                <!--<add value="index1.aspx"/>--> 
+				<add value="index.aspx"/>
+				<add value="index.html"/>
+            
+            </files>
+        </defaultDocument>
+****************************
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <system.web.extensions>
+    <scripting>
+      <webServices>
+        <jsonSerialization maxJsonLength="50000000" />
+        
+      </webServices>
+      
+    </scripting>
+  </system.web.extensions>
+  <appSettings>
+    <add key="ChartImageHandler" value="storage=file;timeout=20;dir=c:\TempImageFiles\;" />
+    
+    <add key="ConnectionString" value="Server=alpsserver; database=alps_sonsy;uid=alps305;pwd=alps@305;Connection Timeout=18000;" />
+
+   <!--<add key="ConnectionString" value="Server=alpsserver; database=alps_EnjoyLife;uid=alps305;pwd=alps@305;Connection Timeout=18000;" />-->
+    
+    <add key="webRoot" value="http://localhost:51973/" />
+    <add key="abc" value="ALPS" />
+    <add key="titleBar" value="|| Enjoy Life Pvt. Ltd. ||" />
+    <!--<add key="titleBar" value="|| Sonsy Associate Pvt. Ltd. ||" />-->
+	  <!--<add key="titleDisplay" value="Sonsy Associate Pvt. Ltd." />-->
+    <add key="titleDisplay" value="Enjoy Life Pvt. Ltd." />
+
+    <add key="MemberHeading" value="Distributor" />
+    <add key="ErrorMsg" value="Error !!" />
+    <add key="InsertMsg" value="Record Saved Successfully !!" />
+    <add key="ExistMsg" value="Record Already Exist !!" />
+    <add key="DeleteMsg" value="Record Deleted Successfully !!" />
+    <add key="UpdateMsg" value="Record Updated Successfully !!" />
+    <add key="UndefineMsg" value="This is Browser Error !!" />
+    <add key="LoginMsg" value="Enjoy Life, Wrong User Name or Password !!" />
+    <add key="SponsorMsg" value="Enjoy Life, Sponsor does not Exist !!" />
+    <add key="BoardMsg" value="Enjoy Life, SBD Not Exist in Board !!" />
+    <add key="ParentMsg" value="Sorry, Wrong LoginID or Password !!" />
+    <add key="ParetnTreeMsg" value="Enjoy Life, Parent You Entered is Not in the Downtree of the Sponsor !!" />
+    <add key="ParentFullMsg" value="Enjoy Life, Parent you Entered is Already Full, Please Choose Another !!" />
+    <add key="AssociateMsg" value="Enjoy Life, Wrong Distributor ID. OR User Name !!" />
+    <add key="LoginAlreadyMsg" value="Enjoy Life, User Name Already Exists !!" />
+    <add key="ACStatementMsg" value="Enjoy Life, There is no Transaction yet !!" />
+    <add key="SponsorList" value="Enjoy Life, Sponsor's List does not Exist !!" />
+    <add key="DownlineList" value="Enjoy Life, No Downline Information !!" />
+    <add key="ChildList" value="Enjoy Life, Child does not Exist !!" />
+    <add key="restrictedWords" value="admin, administrator, member, controlpanel" />
+    <add key="dbUser" value="alpssoft_Cemecan" />
+    <add key="CryptoKey" value="%>s{;+#" />
+    
+
+  </appSettings>
+
+  <system.webServer>
+    <directoryBrowse enabled="true" />
+    <security>
+      <requestFiltering>
+        <requestLimits maxAllowedContentLength="52428800" />
+        <!--50MB-->
+      </requestFiltering>
+    </security>
+    <httpProtocol>
+      <customHeaders>
+        <clear />
+        <add name="X-Powered-By" value="ASP.NET" />
+      </customHeaders>
+    </httpProtocol>
+        <defaultDocument>
+            <files>
+                <clear />
+                <!--<add value="index1.aspx"/>--> 
+				<add value="index.aspx"/>
+				<add value="index.html"/>
+            
+            </files>
+        </defaultDocument>
+        <httpErrors errorMode="DetailedLocalOnly" existingResponse="Auto" />
+  </system.webServer>
+  <connectionStrings>
+    
+  </connectionStrings>
+  <system.web>
+    <httpRuntime executionTimeout="18000" maxRequestLength="20971510" />
+
+    <sessionState timeout="18000"></sessionState>
+    <customErrors mode="Off">
+     
+    </customErrors>
+    <compilation targetFramework="4.0" debug="true">
+      <assemblies>
+        <add assembly="System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+      </assemblies>
+    </compilation>
+    <!--for Sql Cache Dependencies-->
+    <caching>
+      <sqlCacheDependency enabled="true">
+        <databases>
+          <!-- PollTime= in MilliSecond -->
+          <!--Database name= ConnectionStringSqlCache Database name -->
+          <add name="alps_awesome" connectionStringName="ConnectionStringSqlCache" pollTime="500" />
+        </databases>
+      </sqlCacheDependency>
+    </caching>
+
+    <pages controlRenderingCompatibilityVersion="3.5" clientIDMode="AutoID" />
+	<webServices>
+     <protocols>
+       <add name="HttpPost" />
+       <add name="HttpGet" />
+	    <add name="Documentation" />    
+     </protocols>
+	</webServices>
+  </system.web>
+  <system.serviceModel>
+    <bindings>
+      <basicHttpBinding>
+        <binding name="getdataSoap" />
+      </basicHttpBinding>
+    </bindings>
+    <client>
+      <endpoint address="../BOA/getdata.asmx" binding="basicHttpBinding" bindingConfiguration="getdataSoap" contract="ServiceReference1.getdataSoap" name="getdataSoap" />
+    </client>
+  </system.serviceModel>
+</configuration>
+
+*****************
+ <title><%=ConfigurationManager.AppSettings["titlebar"] %></title>
+*********************************************************************
+//**************************************************************
+//  Creator Name    : Fida Husain   
+//  Creation Date   : 27/09/2014
+//  Reason          : for Getiing Message
+//  Updated By      :
+//  Update Date     : 27/09/2014
+//**************************************************************
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Configuration;
+
+/// <summary>
+/// Summary description for Message
+/// </summary>
+public class MSG
+{
+	public MSG()
+	{
+		//
+		// TODO: Add constructor logic here
+		//
+	}
+ /// <summary>
+ /// This Method used for getting message 
+ ///  Passing key from  Message/Web.Config file
+ /// </summary>
+ /// <param name="key">String</param>
+ /// <returns>String</returns>
+    public static string Show(string key)
+    {
+        /*
+         * Path Change according to you  message config file
+         *  OpenWebConfiguration("~")
+         */
+		  string msg_value = "" ;
+		 try
+		 {
+        Configuration msgConfigraution = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~/Message/");
+         msg_value = msgConfigraution.AppSettings.Settings[key].Value;
+       //string msg_value = "";
+	   }
+	   catch
+	   {
+	   }
+        return msg_value;
+		
+		
+    }
+    /// <summary>
+    /// This Method used for getting message 
+    ///  Passing msType Enum
+    /// </summary>
+    /// <param name="msg_type">Enum</param>
+    /// <returns>Strindg text</returns>
+    public static string Show(MsgType msg_type)
+    {
+        /*
+         * Path Change according to you  message config file
+         *  OpenWebConfiguration("~")
+         */
+        Configuration msgConfigraution = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~/Message/");
+        string enum_msg_value = msgConfigraution.AppSettings.Settings[msg_type.ToString()].Value;
+        //string enum_msg_value = "";
+        return enum_msg_value;
+    }
+}
+*********************
+    $('#errorDiv_Step2').html(" <button data-dismiss='alert' class='close'>×</button> <strong>Sorry ,</strong>  " + '<%=  MSG.Show("Valid_Password") %>' + " ");
+************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Reflection;
+using System.Collections;
+using AjaxControlToolkit;
+using System.Collections;
+using System.Collections.Specialized;
+using System.Web.Services;
+using System.Data;
+using System.Data.SqlClient;
+using System.Net;
+using System.Text;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
+using System.IO;
+
+
+public partial class joinMember : System.Web.UI.Page
+{
+    StringBuilder strBuild = new StringBuilder();
+    DataUtility objDUT = new DataUtility();
+    Utility ObjUT = new Utility();
+    JoinStep1 objJDS1 = null;
+    JoinStep2 objJDS2 = null;
+   
+    long longSregNo;
+    long reg;
+    #region All Variables
+    /*
+      * Sponsor Details Added
+      * Validation
+      */
+    string Sponsor_username = string.Empty;
+    string placemnet_side = string.Empty;
+    string Evoucher_no = string.Empty;
+    string Evoucher_code = string.Empty;
+    /*
+   * Personal Details Added
+   * Validation
+   */
+    string tilte = string.Empty;
+    string First_name = string.Empty;
+    string last_name = string.Empty;
+    string fatherHusband = string.Empty;
+    string gender = string.Empty;
+    string dateofbirth = string.Empty;
+    string country_Code_mobile = string.Empty;
+    string mobile_no = string.Empty;
+    string email_id = string.Empty;
+   
+
+    /*
+   * Address Details Added
+   * Validation
+   */
+
+    string country = string.Empty;
+    string state = string.Empty;
+    string district = string.Empty;
+    string city = string.Empty;
+    string countryname = string.Empty;
+    string statename = string.Empty;
+    string districtname = string.Empty;
+    string cityname = string.Empty;
+    string address = string.Empty;
+    string landmark = string.Empty;
+    string pincode = string.Empty;
+    /*
+  * Login Details Added
+  * Validation
+  */
+
+
+    string username = string.Empty;
+    string password = string.Empty;
+    string transactioncode = string.Empty;
+    string Question = string.Empty;
+    string Answer = string.Empty;
+
+
+    /*
+    * Bank Details Added
+    * Validation
+    */
+
+
+    string Bankname = string.Empty;
+    string Branchcode = string.Empty;
+    string ifsccvode = string.Empty;
+    string accountnumber = string.Empty;
+    string bankaddress = string.Empty;
+    string cardno = string.Empty;
+    string cardname = string.Empty;
+    string CardValidTo = string.Empty;
+    string cvvno = string.Empty;
+
+    
+    #endregion
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if(!IsPostBack)
+        {
+            div1_pin2.Visible = false;
+            bindmonth();
+            binday();
+            bindyear();
+            bindcountry();
+            bindstate();
+            nomineebindmonth();
+            nomineebinday();
+            nomineebindyear();
+        }
+      
+        if (Session["JoinStep2"] != null)
+        {
+            objJDS2 = (JoinStep2)Session["JoinStep2"];
+           
+        }
+        if (Session["JoinStep1"] != null)
+        {
+            objJDS1 = (JoinStep1)Session["JoinStep1"];
+            SopnRegno.Value = objJDS1.SopnRegno.ToString();
+            SponsorUsername.Value = objJDS1.SponsorUsername.ToString();
+            PlacementOn.Value = objJDS1.PlacementOn.ToString();
+            EpinNo.Value = objJDS1.EpinNo.ToString();
+            EpinCode.Value = objJDS1.EpinCode.ToString();
+            Message = "";
+        }
+        else
+        {
+            Cancel_Button.Disabled = true;
+            Message = "Registration Session Expired";
+            SetErrror(Message);
+          
+        
+        }
+
+        if (!Page.IsPostBack)
+        {          
+			if (Session["JoinStep2"] != null)
+        {
+            objJDS2 = (JoinStep2)Session["JoinStep2"];
+            Fill_Data();
+        }
+        }
+        else
+        {
+           
+        }
+        if(!IsPostBack)
+        {
+           // bindpackage();
+            ddlstate.Enabled = true;
+            ddlcity.Enabled = true;
+            ddlDsistrict.Enabled = true;
+        }
+    }
+
+    public void bindmonth()
+    { 
+        for (int j = 1; j <= 12; j++)
+        {
+            ddlmonth.Items.Add(j.ToString());
+        }
+        ddlmonth.SelectedIndex = DateTime.Now.Month - 1;
+      
+    }
+
+    public void binday()
+    {
+
+        for (int k = 1; k <= 31; k++)
+        {
+            ddlday.Items.Add(k.ToString());
+        }
+        ddlday.SelectedIndex = DateTime.Now.Day - 1;
+
+    }
+
+
+    public void bindyear()
+    {
+        ddlyear.Items.Clear();
+       // ddlyear.Items.Add("--Year--");
+         string y1 = DateTime.Now.Year.ToString();
+        for (int i = (Convert.ToInt32(y1)-17); i >= 1940; i--)
+        {
+         ddlyear.Items.Add( i + " ");
+        }
+    }
+
+    public void nomineebindmonth()
+    {
+        for (int j = 1; j <= 12; j++)
+        {
+            ddlnomineemonthe.Items.Add(j.ToString());
+        }
+        ddlnomineemonthe.SelectedIndex = DateTime.Now.Month - 1;
+
+    }
+
+    public void nomineebinday()
+    {
+
+        for (int k = 1; k <= 31; k++)
+        {
+            ddlnomineeday.Items.Add(k.ToString());
+        }
+        ddlnomineeday.SelectedIndex = DateTime.Now.Day - 1;
+
+    }
+
+    public void nomineebindyear()
+    {
+        ddlnomineeyear.Items.Clear();
+        // ddlyear.Items.Add("--Year--");
+        string y1 = DateTime.Now.Year.ToString();
+        for (int i = (Convert.ToInt32(y1) - 17); i >= 1940; i--)
+        {
+            ddlnomineeyear.Items.Add(i + " ");
+        }
+    }
+   
+
+    protected void sesson1()
+    {
+        objJDS1 = new JoinStep1();
+        objJDS1.SopnRegno = Convert.ToInt32( SopnRegno.Value);
+        objJDS1.SponsorUsername = SponsorUsername.Value;
+        objJDS1.PlacementOn = Convert.ToInt32(PlacementOn.Value);
+        objJDS1.EpinNo = EpinNo.Value;
+        Session["evoucherno"] = EpinNo.Value;
+        objJDS1.EpinCode = EpinCode.Value;
+        Session["JoinStep1"] = objJDS1;
+    }
+     
+    protected void Submit_Click(object sender, EventArgs e)
+    {
+        //Save();
+        string dd = ddlday.SelectedValue;
+        string mm = ddlmonth.SelectedValue;
+        string yy = ddlyear.SelectedValue;
+        string dob = dd + "/" + mm + "/" + yy;
+
+        string ndd = ddlnomineeday.SelectedValue;
+        string nmm = ddlnomineemonthe.SelectedValue;
+        string nyy = ddlnomineeyear.SelectedValue;
+        string ndob = ndd + "/" + nmm + "/" + nyy;
+        string pincode = "";
+
+       
+        if(txtpin2.Text !="")
+        {
+            pincode = txtpin2.Text.Trim();
+            Session["txtpin2"] = txtpin2.Text.Trim();
+        }
+        else
+        {
+            pincode = txtpincode.Text.Trim();
+        }
+
+       
+        
+        if (Validate() == true)
+        {
+           
+            //try
+            //{
+                sesson1();
+                objJDS2 = new JoinStep2();
+
+                /*
+                 * Personal Details Added
+                 * Validation
+                 */
+
+                objJDS2.joinas = ddlmembertype.SelectedItem.Text;
+                objJDS2.tilte = ddltitle.SelectedValue.ToString();
+                objJDS2.First_name = txtfname.Text.Trim();
+                objJDS2.last_name = txtlname.Text.Trim();
+                objJDS2.gender = Convert.ToInt32(ddlgender.SelectedValue.ToString());
+                objJDS2.fatherHusband = txtfh.Text.Trim();
+                //objJDS2.dateofbirth = dateformat1(txtdob.Text.Trim());
+                objJDS2.dateofbirth = dateformat1(dob);
+                objJDS2.country_Code_mobile = txtmobilecode.Text.Trim();
+                objJDS2.mobile_no = txtmobile.Text.Trim();
+                objJDS2.email_id = txtemail.Value.ToString();
+                objJDS2.Panno = txtPAN.Value.Trim();
+                objJDS2.occupation = txtoccupation.Text.Trim();
+              //  objJDS2.Occupation = txtoccupation.Text.Trim();
+            
+
+
+                /*
+               * Address Details Added
+               * Validation
+               */
+
+
+
+                objJDS2.countryid = Convert.ToInt32(ddlcountry.SelectedValue.ToString());
+                objJDS2.stateid = Convert.ToInt32(ddlstate.SelectedValue.ToString());
+                objJDS2.districtid = Convert.ToInt32(ddlDsistrict.SelectedValue.ToString());
+                objJDS2.cityid = Convert.ToInt32(ddlcity.SelectedValue.ToString());
+                objJDS2.countryname = ddlcountry.SelectedItem.Text.ToString();
+                objJDS2.statename = ddlstate.SelectedItem.Text.ToString();
+                objJDS2.districtname = ddlDsistrict.SelectedItem.Text.ToString();
+                objJDS2.cityname = ddlcity.SelectedItem.Text.ToString();
+                objJDS2.address = txtaddress.Text.Trim();
+                objJDS2.landmark = txtlandmark.Text.Trim();
+                if (Session["txtpin2"] == null)
+                {
+                    objJDS2.pincode = txtpincode.Text.Trim();
+                }
+                else
+                {
+                    objJDS2.pincode = Session["txtpin2"].ToString();
+                }
+               
+                objJDS2.NomnieeName = txtnomnieename.Value.Trim();
+                objJDS2.NomnieeRelations = txtnomnieeRelation.Value.Trim();
+                objJDS2.Nominee_Date_of_Birth = nomineedateformat1(ndob);
+           
+                objJDS2.kidtype = "1";
+                
+                
+
+
+                /*
+                * Login Details Added
+                * Validation
+                */
+
+                objJDS2.username = txtusername.Text.Trim().Replace(" ","");
+                objJDS2.password = txtpassword.Text.Trim();
+                objJDS2.transactioncode = txttransactioncode.Text.Trim();
+                objJDS2.Question = Convert.ToInt32(ddlquestion.SelectedValue);
+                objJDS2.QuestionName = "";
+                objJDS2.Answer = txtanswer.Text;
+
+
+                /*
+                * Bank Details Added
+                * Validation
+                */
+
+
+
+                 objJDS2.Bankname = txtbankname.Text.Trim();
+                // objJDS2.cardno = txtbankname.SelectedValue.ToString();
+              //  objJDS2.Branchcode = txtbranchcode.Text.Trim();
+                objJDS2.Branchcode = txtbranch.Text.Trim();
+                objJDS2.ifsccode = txtifsccode.Text.Trim();
+                objJDS2.accountnumber = txtaccountno.Text.Trim();
+                objJDS2.bankaddress = txtbankaddress.Text.Trim();
+                objJDS2.cardno = txtcardno.Text.Trim();
+                objJDS2.cardname = txtcardname.Text.Trim();
+                objJDS2.CardValidTo = txtvalidto.Text.Trim();
+                objJDS2.cvvno = txtcvv.Text.Trim();
+                objJDS2.NameonAccount = txtnoacc.Text.Trim();
+                Session["JoinStep2"] = objJDS2;
+                Response.Redirect("JoinMember_Preview.aspx");
+           // }
+            //catch(Exception excep)
+            //{
+                Message = "Sorry,Data Not Saved Successfully.";
+                SetErrror(Message); 
+          //  }
+
+        }
+        else
+        {
+          
+            SetErrror(Message); 
+        }
+
+      
+    }
+
+    private void Fill_Data()
+    {
+        try
+        {
+            objJDS2 = (JoinStep2)Session["JoinStep2"];
+
+            /*
+             * Personal Details Added
+             * Validation
+             */
+
+
+            ddltitle.SelectedValue = objJDS2.tilte;
+            txtfname.Text = objJDS2.First_name;
+            txtlname.Text = objJDS2.last_name;
+            ddlgender.SelectedValue =  objJDS2.gender.ToString();
+            txtfh.Text = objJDS2.fatherHusband;
+            txtdob.Text = Convert.ToDateTime(objJDS2.dateofbirth).ToString("dd/MM/yyyy"); // check
+
+            string[] str = txtdob.Text.Split('/');
+            if(str.Length >0)
+            {
+                //bindmonth();
+              //  binday();
+               // bindyear();
+                ddlday.SelectedItem.Text = str[0];
+                ddlmonth.SelectedItem.Text = str[1];
+                ddlyear.SelectedItem.Text = str[2];
+            }
+
+           
+            
+            if (Session["txtpin2"] == null)
+            {
+                div1_pin.Visible = true;
+                div1_pin2.Visible = false;
+            }
+            else
+            {
+                txtpin2.Text = Session["txtpin2"].ToString();
+                div1_pin.Visible = false;
+                div1_pin2.Visible = true;
+            }
+
+            txtmobilecode.Text = objJDS2.country_Code_mobile;
+            txtmobile.Text = objJDS2.mobile_no;
+            txtemail.Value = objJDS2.email_id;
+            txtPAN.Value = objJDS2.Panno;
+            txtoccupation.Text = objJDS2.occupation;
+
+            /*
+           * Address Details Added
+           * Validation
+           */
+
+
+            ddlcountry.SelectedValue = objJDS2.countryid.ToString();
+            ddlstate.SelectedValue = objJDS2.stateid.ToString();
+            binddistrict(0);
+            ddlDsistrict.SelectedValue = objJDS2.districtid.ToString();
+            bincity(objJDS2.districtid);
+            ddlcity.SelectedValue = objJDS2.cityid.ToString();
+            //objJDS2.countryname = ddlcountry.SelectedItem.Text.ToString();
+            //objJDS2.statename = ddlstate.SelectedItem.Text.ToString();
+            //objJDS2.districtname = ddlDsistrict.SelectedItem.Text.ToString();
+            //objJDS2.cityname = ddlcity.SelectedItem.Text.ToString();
+            txtaddress.Text = objJDS2.address;
+            txtlandmark.Text = objJDS2.landmark;
+            txtpincode.Text = objJDS2.pincode;
+            txtnomnieename.Value = objJDS2.NomnieeName;
+            txtnomnieeRelation.Value = objJDS2.NomnieeRelations;
+            if(Session["txtpin2"] != null)
+            {
+                txtpin2.Text = Session["txtpin2"].ToString();
+            }
+
+
+            txtndob.Text = Convert.ToDateTime(objJDS2.Nominee_Date_of_Birth).ToString("dd/MM/yyyy"); // check
+
+            string[] strn = txtndob.Text.Split('/');
+            if (strn.Length > 0)
+            {
+                //bindmonth();
+                //  binday();
+                // bindyear();
+                ddlnomineeday.SelectedItem.Text = strn[0];
+                ddlnomineemonthe.SelectedItem.Text = strn[1];
+                ddlnomineeyear.SelectedItem.Text = strn[2];
+            }
+            
+
+            /*
+            * Login Details Added
+            * Validation
+            */
+
+            txtusername.Text = objJDS2.username;
+            txtpassword.Text = objJDS2.password;
+            txttransactioncode.Text = objJDS2.transactioncode;
+            ddlquestion.SelectedValue = objJDS2.Question.ToString();
+            txtanswer.Text = objJDS2.Answer;
+
+
+            /*
+            * Bank Details Added
+            * Validation
+            */
+
+
+
+            txtbankname.Text = objJDS2.Bankname;
+            txtbranch.Text = objJDS2.Branchcode;
+            txtifsccode.Text =objJDS2.ifsccode;
+            txtaccountno.Text = objJDS2.accountnumber;
+            txtbankaddress.Text = objJDS2.bankaddress;
+            txtcardno.Text =objJDS2.cardno;
+            txtcardname.Text = objJDS2.cardname;
+            txtvalidto.Text = objJDS2.CardValidTo;
+            txtcvv.Text= objJDS2.cvvno ;
+            Session["JoinStep2"] = objJDS2;
+            
+        }
+        catch (Exception excep)
+        {
+            Message = "Sorry,Data Not Saved Successfully.";
+            SetErrror(Message);
+        }
+
+    }
+
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlcountryServices(string knownCategoryValues, string category)
+    {
+        DataUtility objDut = new DataUtility();
+        DataTable countrydt = new DataTable();
+        string strcountry = "select * from country Where cactive=1";
+        countrydt = objDut.GetDataTable(strcountry);
+        List<CascadingDropDownNameValue> country = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in countrydt.Rows)
+        {
+            string CountryID = dr["cid"].ToString();
+            string CountryName = dr["CountryName"].ToString();
+            country.Add(new CascadingDropDownNameValue(CountryName, CountryID));
+        }
+      
+        return country.ToArray();
+    }
+
+    
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlState2(string knownCategoryValues, string category)
+    {
+        int countryid;
+        DataUtility objDut = new DataUtility();
+        DataTable Statedt = new DataTable();
+
+        StringDictionary countrydetails = CascadingDropDown.ParseKnownCategoryValuesString(knownCategoryValues);
+        countryid = Convert.ToInt32(countrydetails["Country"]);
+        string strSqlState = "select * from State where cid='" + countryid + "' and sActive=1 order by statename";
+        Statedt = objDut.GetDataTable(strSqlState);
+        List<CascadingDropDownNameValue> state = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Statedt.Rows)
+        {
+            string StateID = dr["Sid"].ToString();
+            string StateName = dr["Statename"].ToString();
+            state.Add(new CascadingDropDownNameValue(StateName, StateID));
+        }
+        return state.ToArray();
+    }
+
+
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlDistrict(string knownCategoryValues, string category)
+    {
+        int stateid;
+        StringDictionary statedetails = CascadingDropDown.ParseKnownCategoryValuesString(knownCategoryValues);
+        stateid = Convert.ToInt32(statedetails["State"]);
+        DataUtility objDut = new DataUtility();
+        DataTable Citydt = new DataTable();
+        Citydt = objDut.GetDataTable(" select Distid,Distname from District where Distname<>'Others' and sid=" + stateid + " and Active=1 order by Distname");
+        List<CascadingDropDownNameValue> city = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Citydt.Rows)
+        {
+            string Cityid = dr["Distid"].ToString();
+            string Cityname = dr["Distname"].ToString();
+            city.Add(new CascadingDropDownNameValue(Cityname, Cityid));
+        }
+        return city.ToArray();
+
+    }
+
+
+
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlCity2(string knownCategoryValues, string category)
+    {
+        int stateid;
+        StringDictionary statedetails = CascadingDropDown.ParseKnownCategoryValuesString(knownCategoryValues);
+        stateid = Convert.ToInt32(statedetails["District"]);
+        DataUtility objDut = new DataUtility();
+        DataTable Citydt = new DataTable();
+        Citydt = objDut.GetDataTable("select ctid,cityname from city where cityname<>'Others' and Distid=" + stateid + " and Active=1 order by cityname");
+        List<CascadingDropDownNameValue> city = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Citydt.Rows)
+        {
+            string Cityid = dr["CTID"].ToString();
+            string Cityname = dr["Cityname"].ToString();
+            city.Add(new CascadingDropDownNameValue(Cityname, Cityid));
+        }
+        
+        return city.ToArray();
+
+    }
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlquestionServices(string knownCategoryValues, string category)
+    {
+        DataUtility objDut = new DataUtility();
+        DataTable Questiondt = new DataTable();
+        string strQuestion = "Select * from Security_Question Where Qactive=1";
+        Questiondt = objDut.GetDataTable(strQuestion);
+        List<CascadingDropDownNameValue> question = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Questiondt.Rows)
+        {
+            string QuestionID = dr["Qid"].ToString();
+            string QuestionValues = dr["Question"].ToString();
+            question.Add(new CascadingDropDownNameValue(QuestionValues, QuestionID));
+        }
+        return question.ToArray();
+    }
+   [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlbanks(string knownCategoryValues, string category)
+    {
+        DataUtility objDut = new DataUtility();
+        DataTable bankdt = new DataTable();
+        string strbank = "Select bank_ID,bankName from bank Where IsActive=1";
+        bankdt = objDut.GetDataTable(strbank);
+        List<CascadingDropDownNameValue> bank = new List<CascadingDropDownNameValue>();
+        foreach(DataRow dr in bankdt.Rows)
+        {
+            string bankID = dr["bank_ID"].ToString();
+            string bankname = dr["bankName"].ToString();
+            bank.Add(new CascadingDropDownNameValue(bankname, bankID));
+        }
+        return bank.ToArray();
+    }
+
+
+    protected DateTime dateformat1(string str)
+    {
+
+        string[] str1;
+
+        str1 = str.Split('/');
+
+        return Convert.ToDateTime(str1[0] + "/" + str1[1] + "/" + str1[2]);
+
+    }
+
+    protected DateTime nomineedateformat1(string strn)
+    {
+
+        string[] strn1;
+
+        strn1 = strn.Split('/');
+
+        return Convert.ToDateTime(strn1[0] + "/" + strn1[1] + "/" + strn1[2]);
+
+    }
+
+    public void Save()
+    {
+
+        long Regno  =  Convert.ToInt64(objDUT.GetScalar("Select regno from Member_master where loginID='" + Sponsor_username + "'"));
+        string kid = objDUT.GetScalar("select kid from Epin_master where epinNumber='" + Evoucher_no+ "'").ToString();
+
+
+ 
+        int     No_of_trigger = 1;
+        if (No_of_trigger == 1)
+        {
+            string date = DateTime.Now.ToString("MM/dd/yyyy");
+            string strSPInsert = "sp_InsertNetworkB";
+
+            SqlParameter[] objMemInsert = new SqlParameter[49];
+
+            objMemInsert[0] = new SqlParameter("@introRegNo", SqlDbType.Int, 4);
+            objMemInsert[0].Value = Regno;
+          
+
+            objMemInsert[1] = new SqlParameter("@introSide", SqlDbType.Char, 1);
+            objMemInsert[1].Value = placemnet_side;
+
+            objMemInsert[2] = new SqlParameter("@Title", SqlDbType.VarChar, 10);
+            objMemInsert[2].Value = tilte;
+
+            objMemInsert[3] = new SqlParameter("@fName", SqlDbType.VarChar, 100);
+            objMemInsert[3].Value = First_name;
+
+            objMemInsert[4] = new SqlParameter("@lname", SqlDbType.VarChar, 100);
+            objMemInsert[4].Value = last_name;
+
+            // 0 - Male
+            // 1 - Female
+             int genval  ;
+           genval =  Int32.TryParse(gender, out genval) == false ? 2 : Convert.ToInt32( gender); 
+            
+            objMemInsert[5] = new SqlParameter("@gender", SqlDbType.Int, 1);
+            objMemInsert[5].Value = genval;
+
+            objMemInsert[6] = new SqlParameter("@dob", SqlDbType.Date);
+            objMemInsert[6].Value = dateformat1(dateofbirth);
+
+            objMemInsert[7] = new SqlParameter("@payMode", SqlDbType.VarChar, 50);
+            objMemInsert[7].Value = "E-Pin";
+
+            objMemInsert[8] = new SqlParameter("@address", SqlDbType.VarChar, 100);
+            objMemInsert[8].Value = address;
+
+            objMemInsert[9] = new SqlParameter("@state", SqlDbType.Int, 4);
+
+
+            objMemInsert[9].Value = state;
+           
+            objMemInsert[10] = new SqlParameter("@city", SqlDbType.Int, 4);
+
+
+            objMemInsert[10].Value = city;
+           
+
+            objMemInsert[11] = new SqlParameter("@pinCode", SqlDbType.VarChar, 6);
+            objMemInsert[11].Value = pincode;
+
+
+            objMemInsert[12] = new SqlParameter("@mobile", SqlDbType.VarChar, 50);
+            objMemInsert[12].Value = mobile_no;
+
+            objMemInsert[13] = new SqlParameter("@email", SqlDbType.VarChar, 50);
+            objMemInsert[13].Value = email_id;
+
+            objMemInsert[14] = new SqlParameter("@PanNo", SqlDbType.VarChar, 10);
+            objMemInsert[14].Value = "";
+
+            objMemInsert[15] = new SqlParameter("@Refno", SqlDbType.VarChar, 50);
+            objMemInsert[15].Value = Evoucher_no;
+
+            objMemInsert[16] = new SqlParameter("@kcode", SqlDbType.Int, 8);
+            objMemInsert[16].Value = kid;
+
+            objMemInsert[17] = new SqlParameter("@NomineeName", SqlDbType.VarChar, 100);
+            objMemInsert[17].Value = "";
+
+            objMemInsert[18] = new SqlParameter("@NomineeRelation", SqlDbType.VarChar, 100);
+            objMemInsert[18].Value = "";
+
+            objMemInsert[19] = new SqlParameter("@LoginId", SqlDbType.VarChar, 50);
+            objMemInsert[19].Value = "Empty";
+
+            objMemInsert[20] = new SqlParameter("@pass", SqlDbType.VarChar, 100);
+            objMemInsert[20].Value = password ;
+
+            objMemInsert[21] = new SqlParameter("@Firsts_Qid", SqlDbType.Int, 4);
+            objMemInsert[21].Value = "0";
+
+            objMemInsert[22] = new SqlParameter("@FirstS_ANS", SqlDbType.VarChar, 250);
+            objMemInsert[22].Value = Answer;
+
+            objMemInsert[23] = new SqlParameter("@NameOnAccount", SqlDbType.VarChar, 50);
+            objMemInsert[23].Value = "";
+
+            objMemInsert[24] = new SqlParameter("@Corebank", SqlDbType.VarChar, 200);
+            objMemInsert[24].Value = "";
+
+
+            objMemInsert[25] = new SqlParameter("@AccountNo", SqlDbType.VarChar, 20);
+            objMemInsert[25].Value = accountnumber;
+
+            objMemInsert[26] = new SqlParameter("@Branch", SqlDbType.VarChar, 50);
+
+            objMemInsert[26].Value = Branchcode;
+
+            objMemInsert[27] = new SqlParameter("@IFSCCode", SqlDbType.VarChar, 50);
+            objMemInsert[27].Value = ifsccvode;
+
+
+            objMemInsert[28] = new SqlParameter("@ostate", SqlDbType.VarChar, 250);
+            objMemInsert[28].Value = statename;
+
+            objMemInsert[29] = new SqlParameter("@ocity", SqlDbType.VarChar, 250);
+            objMemInsert[29].Value = cityname;
+
+            objMemInsert[30] = new SqlParameter("@intResult", SqlDbType.Int, 4);
+            objMemInsert[30].Direction = ParameterDirection.Output;
+
+            objMemInsert[31] = new SqlParameter("@Pcode", SqlDbType.Int, 4);
+            objMemInsert[31].Value = Convert.ToInt32(0);
+
+            objMemInsert[32] = new SqlParameter("@PSide", SqlDbType.Char, 1);
+            objMemInsert[32].Value = "";
+
+            objMemInsert[33] = new SqlParameter("@SecurityCode", SqlDbType.VarChar, 50);
+            objMemInsert[33].Value = "";
+
+            objMemInsert[34] = new SqlParameter("@fat_HusName", SqlDbType.VarChar, 50);
+            objMemInsert[34].Value = fatherHusband;
+
+
+            objMemInsert[35] = new SqlParameter("@Address2", SqlDbType.VarChar, 250);
+            objMemInsert[35].Value = "";
+
+
+            objMemInsert[36] = new SqlParameter("@District", SqlDbType.VarChar, 100);
+            objMemInsert[36].Value = district;
+
+            objMemInsert[37] = new SqlParameter("@landmark", SqlDbType.VarChar, 100);
+            objMemInsert[37].Value = landmark;
+
+
+            objMemInsert[38] = new SqlParameter("@statesim", SqlDbType.VarChar, 50);
+          //  objMemInsert[38].Value = "Referal";  
+            /*
+           
+            NOTE : -
+                        if Send Statesim ="Referal then Sp_insertNetwork not update Regno in Epin_Master So i send Null 
+             */
+            objMemInsert[38].Value = " ";
+
+            objMemInsert[39] = new SqlParameter("@nameonpan", SqlDbType.VarChar, 100);
+            objMemInsert[39].Value = "";
+
+            objMemInsert[40] = new SqlParameter("@joinas", SqlDbType.VarChar, 50);
+            objMemInsert[40].Value = "";
+
+            objMemInsert[41] = new SqlParameter("@FranchiseeID", SqlDbType.Int, 4);
+            objMemInsert[41].Value = "0";
+
+            objMemInsert[42] = new SqlParameter("@Pcollectby", SqlDbType.VarChar, 50);
+            objMemInsert[42].Value = "";
+         
+
+            objMemInsert[43] = new SqlParameter("@SPID", SqlDbType.Int, 4);
+            objMemInsert[43].Value = Convert.ToInt32(0);
+
+
+
+            objMemInsert[44] = new SqlParameter("@CardNo", SqlDbType.VarChar, 50);
+            objMemInsert[44].Value = cardno == null ? "" : cardno;  
+
+
+            objMemInsert[45] = new SqlParameter("@CardName", SqlDbType.VarChar, 50);
+            objMemInsert[45].Value = cardname == null ? "" : cardname;  
+
+
+
+            objMemInsert[46] = new SqlParameter("@CardValidTo", SqlDbType.NVarChar);
+            objMemInsert[46].Value = CardValidTo == null ? "" : CardValidTo;  
+
+
+            objMemInsert[47] = new SqlParameter("@CvvNo ", SqlDbType.VarChar,3);
+            objMemInsert[47].Value = cvvno == null ? "" : cvvno;
+            objMemInsert[48] = new SqlParameter("@CountryID ", SqlDbType.Int, 4);
+            objMemInsert[48].Value = country == null ? "96" : country;
+
+
+
+         
+
+            int intResult = objDUT.ExecuteSqlSP(objMemInsert, strSPInsert);
+          
+
+            if (intResult > 0)
+            {
+                long maxregno= Convert.ToInt64 (objDUT.GetScalar("select max(regno) from member_master"));
+                Session["MaxRegA"]=maxregno.ToString();
+                SendMail send = new SendMail();
+              //  send.WelcomeMailSend(maxregno);
+                div_msg.InnerHtml = "<button data-dismiss='alert' class='close'>×</button> Welcome  <strong>" + tilte + " " + First_name + " " + last_name + " </strong> you have successfully join. ";
+                div_msg.Attributes.Add("class", "alert alert-success");
+                div_msg.Visible = true;
+                div_error.Visible = false;
+                Response.Redirect("~/welcome.aspx?welcom=letter");
+              
+            }
+        }
+        else
+        {
+          
+            div_msg.Visible = false;
+            div_error.InnerHtml = "<button data-dismiss='alert' class='close'>×</button>  <strong>Error : </strong>" + Message;
+            div_error.Attributes.Add("class", "alert alert-error");
+            div_error.Visible = true;
+         
+        }
+    }
+    private void SetErrror( string errortext)
+    {
+        
+        div_msg.Visible = false;
+        div_error.InnerHtml = "<button data-dismiss='alert' class='close'>×</button>  <strong>Error : </strong>" + Message;
+        div_error.Attributes.Add("class", "alert alert-error");
+        div_error.Visible = true;
+    }
+   string Message = "";
+   protected bool IsNumeric(string sText)
+   {
+       string ValidChars ="0123456789";
+       bool IsNumber =true;
+       string Char = "";
+
+
+       for (int i = 0; i < sText.Length && IsNumber == true; i++)
+       {
+           Char = sText.Substring(i, 1);
+           if (ValidChars.IndexOf(Char) == -1)
+           {
+               IsNumber = false;
+           }
+       }
+
+       return IsNumber;
+
+   }
+   public bool Validate()
+   {
+       int sponsor_limits = 0;
+       sponsor_limits = Convert.ToInt32(objDUT.GetScalar("select limits from settings where caption='Companyid'"));
+       bool result = false;
+
+
+       if (ddltitle.SelectedValue == "")
+       {
+           ddltitle.Focus();
+           Message = "Sorry,Please Select Title.";
+           ddltitle.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (String.IsNullOrWhiteSpace(txtfname.Text))
+       {
+           txtfname.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Valid_FName);
+           txtfname.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (ddlgender.SelectedValue == "NULL")
+       {
+           ddlgender.Focus();
+           Message = "Sorry,Please Select Gender.";
+           ddltitle.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       // ***********validation for DOB***************//
+       if (Convert.ToInt32(ddlmonth.SelectedValue) > 0 && Convert.ToInt32(ddlday.SelectedValue) > 0 && Convert.ToInt32(ddlyear.SelectedValue) > 0)
+       {
+
+           Int32 m = Convert.ToInt32(ddlmonth.SelectedValue);
+           Int32 y = Convert.ToInt32(ddlyear.SelectedValue);
+           if (m == 01 || m == 03 || m == 05 || m == 07 || m == 08 || m == 10 || m == 12)
+           {
+               result = true;
+           }
+           else if (m == 04 || m == 06 || m == 09 || m == 11)
+           {
+               if (Convert.ToInt32(ddlday.SelectedValue) > 30)
+               {
+                   ddlday.Focus();
+                   Message = "Sorry, " + "Day should be less than 31.";
+                   SetErrror(Message);
+                   result = false;
+                   return result;
+
+               }
+           }
+           else
+           {
+               if ((y % 4 == 0) || (y % 400 == 0 && y % 100 != 0))
+               {
+                   if (Convert.ToInt32(ddlday.SelectedValue) > 29)
+                   {
+                       ddlday.Focus();
+                       Message = "Sorry, " + "Day should be less than 30.";
+                       SetErrror(Message);
+                       result = false;
+                       return result;
+                   }
+               }
+               else
+               {
+                   if (Convert.ToInt32(ddlday.SelectedValue) > 28)
+                   {
+                       ddlday.Focus();
+                       Message = "Sorry, " + "Day should be less than 29.";
+                       SetErrror(Message);
+                       result = false;
+                       return result;
+                   }
+               }
+           }
+
+       }
+       else
+       {
+           ddlday.Focus();
+           ddlmonth.Focus();
+           ddlyear.Focus();
+           result = false;
+           return result;
+       }
+
+       if (String.IsNullOrWhiteSpace((txtmobilecode.Text)) || txtmobilecode.Text.Trim().Length != 3)
+       {
+           txtmobilecode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Fill_CountryCode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (String.IsNullOrWhiteSpace((txtmobile.Text)) || txtmobile.Text.Trim().Length < 10)
+       {
+           txtmobile.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Fill_MobNo);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (!isEmail(txtemail.Value.Trim()) && txtemail.Value.Trim().Length > 0)
+       {
+           txtemail.Focus();
+           Message = "Sorry, Please Enter Valid EmailID. !!";
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+        if (txtPAN.Value.Trim() == "")
+        {
+          
+                txtPAN.Focus();
+                Message = "Sorry, Please Enter Pan Card";
+                SetErrror(Message);
+                result = false;
+                return result;
+           
+        }
+        if (txtPAN.Value.Trim().Length > 0 && !isPan(txtPAN.Value.Trim()))
+       {
+           txtPAN.Focus();
+           Message = "Sorry, Please Enter Valid Pan Card No. !!";
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (txtPAN.Value.Trim() != "")
+       {
+           int checkpanunique = Convert.ToInt32(objDUT.GetScalar(" select count(mempan) from member_master where mempan='" + txtPAN.Value.Trim() + "'"));
+           if (checkpanunique >= 3)
+           {
+               txtPAN.Focus();
+               Message = "Sorry, This Pan Card No. is Already use three times !!";
+               SetErrror(Message);
+               result = false;
+               return result;
+           }
+       }
+
+
+
+
+       int Countryid = Int32.TryParse(ddlcountry.SelectedValue, out Countryid) == false ? 0 : Convert.ToInt32(ddlcountry.SelectedValue);
+       if (Countryid <= 0)
+       {
+           ddlcountry.Focus();
+           Message = "Sorry," + MSG.Show(MsgType.Valid_Country);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       int stateid = Int32.TryParse(ddlstate.SelectedValue, out stateid) == false ? 0 : Convert.ToInt32(ddlstate.SelectedValue);
+       if (stateid <= 0)
+       {
+           ddlstate.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Valid_State);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       int Districtid = Int32.TryParse(ddlDsistrict.SelectedValue, out Districtid) == false ? 0 : Convert.ToInt32(ddlDsistrict.SelectedValue);
+       if (Districtid <= 0)
+       {
+           ddlDsistrict.Focus();
+           Message = "Sorry, Please Select District";
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       int cityid = Int32.TryParse(ddlcity.SelectedValue, out cityid) == false ? 0 : Convert.ToInt32(ddlcity.SelectedValue);
+       if (cityid <= 0)
+       {
+           ddlcity.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Valid_City);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (String.IsNullOrWhiteSpace((txtaddress.Text.Trim())))
+       {
+           txtaddress.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Fill_Address);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (txtaddress.Text.Trim().Trim().Length < 25)
+       {
+           txtaddress.Focus();
+           Message = "Sorry, Address shold be morethan 50 character ";
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (txtpincode.Text == "")
+       {
+           txtpincode.Text = txtpin2.Text;
+       }
+
+       if (String.IsNullOrWhiteSpace((txtpincode.Text.Trim())))
+       {
+           txtpincode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Fill_Pincode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (txtpincode.Text.Trim().Length > 7 || txtpincode.Text.Trim().Length != 6)
+       {
+           txtpincode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Valid_Pincode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+      // if (String.IsNullOrWhiteSpace(txtnomnieename.Value.Trim()))
+      // {
+      //     txtnomnieename.Focus();
+      //     Message = "Sorry,Please Enter Nominee Name";
+      //     SetErrror(Message);
+      //     result = false;
+      //     return result;
+      // }
+     //  if (String.IsNullOrWhiteSpace(txtnomnieeRelation.Value.Trim()))
+     //  {
+     //      txtnomnieeRelation.Focus();
+     //      Message = "Sorry,Please Enter Nominee Relation";
+     //      SetErrror(Message);
+     //      result = false;
+     //      return result;
+     //  }
+       if (String.IsNullOrWhiteSpace(txtusername.Text.Trim()))
+       {
+
+           txtusername.Focus();
+           Message = "Sorry, " + "Please Enter User Name" ;
+           txtusername.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       string query = "Select count(loginid) from Member_master where loginid='" + txtusername.Text.Trim() + "'  and regno>=" + sponsor_limits + "";
+       string loginid = Convert.ToString(objDUT.GetScalar(query));
+       if (Convert.ToInt32(loginid) > 0)
+       {
+           txtusername.Focus();
+           Message = "Sorry, User Name already exist!!";
+           txtusername.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       //if (txtusername.Text.IndexOf("sonsy") > -1)
+       //{
+       //    txtusername.Focus();
+       //    Message = "Sorry, User Name Not Available!!";
+       //    SetErrror(Message);
+       //    result = false;
+       //    return result;
+       //}
+       
+
+
+
+       if (String.IsNullOrWhiteSpace(txtpassword.Text.Trim()))
+       {
+           txtpassword.Focus();
+           Message = "Sorry," + MSG.Show(MsgType.Fill_Password);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (txtpassword.Text.Trim().Length < 4)
+       {
+           txtpassword.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Min_Password);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (txtpassword.Text.Trim().IndexOf(' ') > -1)
+       {
+           txtpassword.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.spacenotallowpwd);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+
+       if (String.IsNullOrWhiteSpace(txttransactioncode.Text))
+       {
+           txttransactioncode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Fill_Transactioncode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (txttransactioncode.Text.Trim().Length < 4)
+       {
+           txttransactioncode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Min_TransCode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       int questionid = Int32.TryParse(ddlquestion.SelectedValue, out cityid) == false ? 0 : Convert.ToInt32(ddlquestion.SelectedValue);
+
+       if (txtifsccode.Text != "")
+       {
+           try
+           {
+               getifsccodee(txtifsccode.Text.Trim());
+           }
+
+           catch
+           {
+               txtifsccode.Focus();
+               Message = "Sorry,Invalid IFSC Code!!.";
+               txtifsccode.Focus();
+               SetErrror(Message);
+               txtbankname.Text = "";
+               txtbranch.Text = "";
+               result = false;
+               return result;
+           }
+       }
+       else
+       {
+           txtbankname.Text = "";
+           txtbranch.Text = "";
+       }
+
+
+       if (txtbankname.Text.Trim().Length > 0 | txtbankname.Text.Trim().Length > 0 | txtbankname.Text.Trim().Length > 0 | txtbankname.Text.Trim().Length > 0)
+       {
+           //if (txtbankname.SelectedIndex==0)
+           //{
+           //    Message = "Sorry, " + MSG.Show(MsgType.Valid_BankName);
+           //    SetErrror(Message);
+           //    result = false;
+           //    return result;
+           //}
+           //if (String.IsNullOrWhiteSpace(txtifsccode.Text))
+           //{
+           //    Message = "Sorry, " + MSG.Show(MsgType.Fill_IFSCCODE);
+           //    SetErrror(Message);
+           //    result = false;
+           //    return result;
+           //}
+           if (String.IsNullOrWhiteSpace(txtaccountno.Text))
+           {
+               Message = "Sorry," + MSG.Show(MsgType.Fill_AccountNo);
+               SetErrror(Message);
+               result = false;
+               return result;
+           }
+          
+           //if (String.IsNullOrWhiteSpace(txtbankaddress.Text))
+           //{
+           //    Message = "Sorry, " + MSG.Show(MsgType.Fill_BankAddress);
+           //    SetErrror(Message);
+           //    result = false;
+           //    return result;
+           //}
+       }
+       
+       if (questionid > 0)
+       {
+           if (txtanswer.Text == "")
+           {
+               txtanswer.Focus();
+               Message = "Please, " + "Write down the answer .";
+               SetErrror(Message);
+               result = false;
+               return result;
+           }
+       }
+       else
+       {
+           ddlquestion.Focus();
+           Message = "Please, " + "choose the question .";
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (txtaccountno.Text != "")
+       {
+           if (TextBox1.Text == "")
+           {
+               TextBox1.Focus();
+               Message = "Please, " + "Enter Confirm Bank A/C No. ";
+               result = false;
+               return result;
+           }
+               if (TextBox1.Text != txtaccountno.Text)
+               {
+                   TextBox1.Focus();
+                   Message = "Please, " + "Bank A/C No. should be same.  ";
+                   result = false;
+                   return result;
+               }
+           }
+           result = true;
+           return result;
+
+       }
+   
+    
+    
+    public static bool isEmail(string inputEmail)
+    { 
+        string strRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
+              @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
+              @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+        Regex re = new Regex(strRegex);
+        if (re.IsMatch(inputEmail))
+            return (true);
+        else
+            return (false);
+    }
+
+    public static bool isPan(string inputPan)
+    {
+        string strRegex = @"^([a-zA-Z]{5})(\d{4})([a-zA-Z]{1})$";
+        Regex re = new Regex(strRegex);
+        if (re.IsMatch(inputPan))
+            return (true);
+        else
+            return (false);
+    } 
+  
+
+
+    
+    protected void Cancel_Click(object sender, EventArgs e)
+    {
+        Session.Remove("JoinStep1");
+        Session.Remove("JoinStep2");
+        Response.Redirect("index.html");
+    }
+    protected void Reset_ButtonClick(object sender, EventArgs e)
+    {
+         
+        Session.Remove("JoinStep2");
+        Response.Redirect("JoinMember_Details.aspx");
+    }
+	
+    protected void Update_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("JoinMember.aspx");
+    }
+
+    protected void ddlmembertype_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (ddlmembertype.SelectedValue == "2")
+        {
+            ddlgender.Enabled = false;
+            ddlgender.SelectedValue = "2";
+            txtfh.Enabled = true;
+            ddltitle.Visible = false;
+            txtlname.Enabled=false;
+            lblfname.Text = "Company Name";
+            lname.InnerHtml = "<br/>";
+            fhnameCaption1.InnerHtml = " Contact Person";
+            txtlname.Visible = false;
+            }
+        else
+        {
+            txtlname.BorderColor = System.Drawing.Color.Gray;
+            lname.InnerHtml = " Last Name";
+            fhnameCaption1.InnerHtml = "Father's/Husband's Name";
+            fhnameCaption1.Visible = true;
+            txtfh.Enabled = true;
+            ddltitle.Visible = true;
+            txtlname.Enabled = true;
+            txtlname.Visible = true;
+            lblfname.Text = "First Name";
+            ddlgender.Enabled = true;
+        }
+    }
+    protected void btnwithpin_Click(object sender, EventArgs e)
+    {
+      
+        div1_pin.Visible = false;
+        div1_pin2.Visible = true;
+        ddlstate.Items.Clear();
+        ddlDsistrict.Items.Clear();
+        ddlcity.Items.Clear();
+       // ddlcity.Enabled = false;
+        ddlDsistrict.Enabled = false;
+        ddlcountry.Enabled = false;
+        ddlstate.Enabled = false;
+    }
+    protected void btnwithoutpin_Click(object sender, EventArgs e)
+    {
+        ddlstate.Items.Clear();
+        ddlDsistrict.Items.Clear();
+        ddlcity.Items.Clear();
+        div1_pin2.Visible = false;
+        div1_pin.Visible = true;
+        bindstate();
+        //binddistrict();
+      //  bincity();
+        txtpin2.Text = "";
+        ddlDsistrict.Enabled = true;
+        ddlcountry.Enabled = true;
+        ddlstate.Enabled = true;
+
+    }
+
+    public void bindcountry()
+    {
+        DataTable dtcountry = objDUT.GetDataTable("select cid,countryname from country   ");
+        if (dtcountry.Rows.Count > 0)
+        {
+            ddlstate.DataSource = dtcountry;
+            ddlstate.DataTextField = "countryname";
+            ddlstate.DataValueField = "cid";
+            ddlstate.DataBind();
+        }
+        ddlcountry.SelectedValue = "96";
+    }
+    public void bindstate()
+    {
+        DataTable dtstate = objDUT.GetDataTable("select sid,statename from state where cid= 96  ");
+        if (dtstate.Rows.Count > 0)
+        {
+            ddlstate.DataSource = dtstate;
+            ddlstate.DataTextField = "statename";
+            ddlstate.DataValueField = "sid";
+            ddlstate.DataBind();
+        }
+    }
+    public void binddistrict(int sid)
+    {
+        string st = "select distid,cid,sid,distname  from district  where cid=96 ";
+        if(sid >0)
+        {
+            st = st + " and sid='" + sid + "' ";
+        }
+        DataTable dtdist = objDUT.GetDataTable(st);
+        if (dtdist.Rows.Count > 0)
+        {
+            ddlDsistrict.DataSource = dtdist;
+            ddlDsistrict.DataTextField = "distname";
+            ddlDsistrict.DataValueField = "distid";
+            ddlDsistrict.DataBind();
+        }        
+
+    }
+    public void bincity(int distid1)
+    {
+        string stcity = "select ctid , cityname from city where 3 > 2";
+        if( distid1 > 0)
+        {
+            stcity = stcity + " and distid ='" + distid1 + "' ";
+        }
+        DataTable dtcity = objDUT.GetDataTable(stcity);
+        if (dtcity.Rows.Count > 0)
+        {
+            ddlcity.DataSource = dtcity;
+            ddlcity.DataTextField = "cityname";
+            ddlcity.DataValueField = "ctid";
+            ddlcity.DataBind();
+        }
+           
+    }
+
+    protected void btnsearch_Click(object sender, EventArgs e)
+    {
+       
+        DataTable dt = objDUT.GetDataTable("select sid,  CTID,cityName,distid from city where Pincode='" + txtpin2.Text + "'");
+        if (dt.Rows.Count > 0)
+        {
+            ddlstate.Items.Clear();
+            ddlDsistrict.Items.Clear();
+            ddlcity.Items.Clear();
+
+            DataTable dtstate = objDUT.GetDataTable("select sid,statename from state  ");
+            if (dtstate.Rows.Count > 0)
+            {
+                ddlstate.DataSource = dtstate;
+                ddlstate.DataTextField = "statename";
+                ddlstate.DataValueField = "sid";
+                ddlstate.DataBind();
+            }
+            DataTable dtstate1 = objDUT.GetDataTable("select sid,statename from state where cid= 96 and sid='" + dt.Rows[0]["sid"].ToString() + "' ");
+            ddlstate.SelectedValue = dtstate1.Rows[0]["sid"].ToString();
+
+           
+            DataTable dtdist = objDUT.GetDataTable("select distid,cid,sid,distname  from district  ");
+            if (dtdist.Rows.Count > 0)
+            {
+                ddlDsistrict.DataSource = dtdist;
+                ddlDsistrict.DataTextField = "distname";
+                ddlDsistrict.DataValueField = "distid";
+                ddlDsistrict.DataBind();
+            }           
+            ddlDsistrict.SelectedValue = dt.Rows[0]["distid"].ToString();
+
+            DataTable dtcity = objDUT.GetDataTable("select ctid , cityname from city where distid= '" + dt.Rows[0]["distid"].ToString() + "' ");
+            if (dtcity.Rows.Count > 0)
+            {
+                ddlcity.DataSource = dtcity;
+                ddlcity.DataTextField = "cityname";
+                ddlcity.DataValueField = "ctid";
+                ddlcity.DataBind();
+            }
+           
+           
+        }
+        else
+        {
+            ddlstate.Items.Clear();
+            ddlDsistrict.Items.Clear();
+            ddlcity.Items.Clear();
+            txtpin2.Focus();
+        }
+
+    }
+    protected void ddlstate_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int stateid = Convert.ToInt32(ddlstate.SelectedValue);
+        binddistrict(stateid);
+    }
+    protected void ddlDsistrict_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int distid = Convert.ToInt32(ddlDsistrict.SelectedValue);
+        bincity(distid);
+    }
+    protected void ddlcity_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int ctid = Convert.ToInt32(ddlcity.SelectedValue);
+        txtpincode.Text = objDUT.GetScalar("select pincode from city where ctid='" + ctid + "'").ToString();
+    }
+    protected void getifsccodee(string ifsc)
+    {
+        string[] P;
+        string[] P2;
+        string[] P3;
+      
+           
+                string APIAuthentication = "https://ifsc.razorpay.com/" + ifsc.Trim() + "";
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(APIAuthentication);
+                request.Credentials = CredentialCache.DefaultCredentials;
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string data = reader.ReadToEnd();
+                dynamic stuff = Newtonsoft.Json.JsonConvert.DeserializeObject(data);
+                data = stuff.ToString();
+               
+
+                    data = data.Replace("{", "");
+                    data = data.Replace("}", "");
+                    data = data.Replace("\"", "");
+                    data = data.Replace("\r\n", "");
+                    //data = data.Replace(" ", "");
+                    string[] s = data.Split(',');
+
+                    P2 = s[3].Split(':');
+                    P3 = s[8].Split(':');
+                    for (int i = 0; i < s.Length; i++)
+                    {
+                        P = s[i].Split(':');
+                        if (P[0].Trim() == "Bank" || P[0].Trim() == "BANK")
+                        {
+                            txtbankname.Text = P[1].ToString();
+                        }
+                        if (P[0].Trim() == "Branch" || P[0].Trim() == "BRANCH")
+                        {
+                            txtbranch.Text = P[1].ToString();
+                        }
+                        if (P[0].Trim() == "ADDRESS" || P[0].Trim() == "Address")
+                        {
+                            txtbankaddress.Text = P[1].ToString();
+                        }
+                  
+                }
+            
+    }
+
+
+    [WebMethod]
+    public static List<BankIFSCDetails> getifsccode(string IFSCcode)
+    {
+        SqlDataReader sdr = null;
+        string st = null;
+        List<BankIFSCDetails> Get_IFSC_ValueList = new List<BankIFSCDetails>();
+        BankIFSCDetails Get_IFSC_Value = new BankIFSCDetails();
+        Get_IFSC_Value.CITY = "";
+        Get_IFSC_Value.BRANCH = "";
+        Get_IFSC_Value.BANK = "";
+        string[] P;
+        string[] P2;
+        string[] P3;
+
+       
+        try
+        {
+            string APIAuthentication = "https://ifsc.razorpay.com/" + IFSCcode.Trim() + "";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(APIAuthentication);
+            request.Credentials = CredentialCache.DefaultCredentials;
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            WebResponse response = request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(dataStream);
+            string data = reader.ReadToEnd();
+            dynamic stuff = Newtonsoft.Json.JsonConvert.DeserializeObject(data);
+            data = stuff.ToString();
+            if (data != "")
+            {
+
+
+                //data = data.Replace("]", "");
+                //data = data.Replace("[", "");
+                data = data.Replace("{", "");
+                data = data.Replace("}", "");
+                data = data.Replace("\"", "");
+                data = data.Replace("\r\n", "");
+                //data = data.Replace(" ", "");
+                string[] s = data.Split(',');
+
+                P2 = s[3].Split(':');
+                P3 = s[8].Split(':');
+                for (int i = 0; i < s.Length; i++)
+                {
+                    P = s[i].Split(':');
+                    if (P[0].Trim() == "Bank" || P[0].Trim() == "BANK")
+                    {
+                        Get_IFSC_Value.BANK = P[1].ToString();
+                    }
+                    if (P[0].Trim() == "Branch" || P[0].Trim() == "BRANCH")
+                    {
+                        Get_IFSC_Value.BRANCH = P[1].ToString();
+                    }
+                }
+
+            }
+          
+            Get_IFSC_ValueList.Add(Get_IFSC_Value);
+
+        }
+        catch (Exception ex)
+        {
+            Get_IFSC_ValueList.Add(Get_IFSC_Value);
+            //LogException.WriteToLog(ex);
+           
+        }
+
+        return Get_IFSC_ValueList;
+
+    }
+
+
+
+    //[WebMethod]
+    //public static string chkpancard(string pancardno)
+    //{
+    //    DataUtility objDUT = new DataUtility();
+    //    string res ="";
+
+    //    if (pancardno.Trim() != "")
+    //    {
+    //        int checkpanunique = Convert.ToInt32(objDUT.GetScalar(" select count(mempan) from member_master where mempan='" + pancardno.Trim() + "'"));
+    //        if (checkpanunique >= 3)
+    //        {
+    //            res = "false";
+    //        }
+    //        else
+    //        {
+    //            res = "true";
+    //        }
+    //    }
+
+
+    //    return res;
+    //}
+
+
+}************
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Reflection;
+using System.Collections;
+using AjaxControlToolkit;
+using System.Collections;
+using System.Collections.Specialized;
+using System.Web.Services;
+using System.Data;
+using System.Data.SqlClient;
+using System.Net;
+using System.Text;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
+using System.IO;
+
+
+public partial class joinMember : System.Web.UI.Page
+{
+    StringBuilder strBuild = new StringBuilder();
+    DataUtility objDUT = new DataUtility();
+    Utility ObjUT = new Utility();
+    JoinStep1 objJDS1 = null;
+    JoinStep2 objJDS2 = null;
+   
+    long longSregNo;
+    long reg;
+    #region All Variables
+    /*
+      * Sponsor Details Added
+      * Validation
+      */
+    string Sponsor_username = string.Empty;
+    string placemnet_side = string.Empty;
+    string Evoucher_no = string.Empty;
+    string Evoucher_code = string.Empty;
+    /*
+   * Personal Details Added
+   * Validation
+   */
+    string tilte = string.Empty;
+    string First_name = string.Empty;
+    string last_name = string.Empty;
+    string fatherHusband = string.Empty;
+    string gender = string.Empty;
+    string dateofbirth = string.Empty;
+    string country_Code_mobile = string.Empty;
+    string mobile_no = string.Empty;
+    string email_id = string.Empty;
+   
+
+    /*
+   * Address Details Added
+   * Validation
+   */
+
+    string country = string.Empty;
+    string state = string.Empty;
+    string district = string.Empty;
+    string city = string.Empty;
+    string countryname = string.Empty;
+    string statename = string.Empty;
+    string districtname = string.Empty;
+    string cityname = string.Empty;
+    string address = string.Empty;
+    string landmark = string.Empty;
+    string pincode = string.Empty;
+    /*
+  * Login Details Added
+  * Validation
+  */
+
+
+    string username = string.Empty;
+    string password = string.Empty;
+    string transactioncode = string.Empty;
+    string Question = string.Empty;
+    string Answer = string.Empty;
+
+
+    /*
+    * Bank Details Added
+    * Validation
+    */
+
+
+    string Bankname = string.Empty;
+    string Branchcode = string.Empty;
+    string ifsccvode = string.Empty;
+    string accountnumber = string.Empty;
+    string bankaddress = string.Empty;
+    string cardno = string.Empty;
+    string cardname = string.Empty;
+    string CardValidTo = string.Empty;
+    string cvvno = string.Empty;
+
+    
+    #endregion
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if(!IsPostBack)
+        {
+            div1_pin2.Visible = false;
+            bindmonth();
+            binday();
+            bindyear();
+            bindcountry();
+            bindstate();
+            nomineebindmonth();
+            nomineebinday();
+            nomineebindyear();
+        }
+      
+        if (Session["JoinStep2"] != null)
+        {
+            objJDS2 = (JoinStep2)Session["JoinStep2"];
+           
+        }
+        if (Session["JoinStep1"] != null)
+        {
+            objJDS1 = (JoinStep1)Session["JoinStep1"];
+            SopnRegno.Value = objJDS1.SopnRegno.ToString();
+            SponsorUsername.Value = objJDS1.SponsorUsername.ToString();
+            PlacementOn.Value = objJDS1.PlacementOn.ToString();
+            EpinNo.Value = objJDS1.EpinNo.ToString();
+            EpinCode.Value = objJDS1.EpinCode.ToString();
+            Message = "";
+        }
+        else
+        {
+           //Cancel_Button.Disabled = true;
+            Cancel_Button.Disabled = false;
+
+            Message = "Registration Session Expired";
+            SetErrror(Message);
+          
+        
+        }
+
+        if (!Page.IsPostBack)
+        {          
+			if (Session["JoinStep2"] != null)
+        {
+            objJDS2 = (JoinStep2)Session["JoinStep2"];
+            Fill_Data();
+        }
+        }
+        else
+        {
+           
+        }
+        if(!IsPostBack)
+        {
+           // bindpackage();
+            ddlstate.Enabled = true;
+            ddlcity.Enabled = true;
+            ddlDsistrict.Enabled = true;
+        }
+    }
+
+    public void bindmonth()
+    { 
+        for (int j = 1; j <= 12; j++)
+        {
+            ddlmonth.Items.Add(j.ToString());
+        }
+        ddlmonth.SelectedIndex = DateTime.Now.Month - 1;
+      
+    }
+
+    public void binday()
+    {
+
+        for (int k = 1; k <= 31; k++)
+        {
+            ddlday.Items.Add(k.ToString());
+        }
+        ddlday.SelectedIndex = DateTime.Now.Day - 1;
+
+
+    }
+
+
+    public void bindyear()
+    {
+        ddlyear.Items.Clear();
+       // ddlyear.Items.Add("--Year--");
+         string y1 = DateTime.Now.Year.ToString();
+        for (int i = (Convert.ToInt32(y1)-17); i >= 1940; i--)
+        {
+         ddlyear.Items.Add( i + " ");
+        }
+    }
+
+    public void nomineebindmonth()
+    {
+        for (int j = 1; j <= 12; j++)
+        {
+            ddlnomineemonthe.Items.Add(j.ToString());
+        }
+        ddlnomineemonthe.SelectedIndex = DateTime.Now.Month - 1;
+
+    }
+
+    public void nomineebinday()
+    {
+
+        for (int k = 1; k <= 31; k++)
+        {
+            ddlnomineeday.Items.Add(k.ToString());
+        }
+        ddlnomineeday.SelectedIndex = DateTime.Now.Day - 1;
+
+    }
+
+    public void nomineebindyear()
+    {
+        ddlnomineeyear.Items.Clear();
+        // ddlyear.Items.Add("--Year--");
+        string y1 = DateTime.Now.Year.ToString();
+        for (int i = (Convert.ToInt32(y1) - 17); i >= 1940; i--)
+        {
+            ddlnomineeyear.Items.Add(i + " ");
+        }
+    }
+   
+
+    protected void sesson1()
+    {
+        objJDS1 = new JoinStep1();
+        objJDS1.SopnRegno = Convert.ToInt32( SopnRegno.Value);
+        objJDS1.SponsorUsername = SponsorUsername.Value;
+        objJDS1.PlacementOn = Convert.ToInt32(PlacementOn.Value);
+        objJDS1.EpinNo = EpinNo.Value;
+        Session["evoucherno"] = EpinNo.Value;
+        objJDS1.EpinCode = EpinCode.Value;
+        Session["JoinStep1"] = objJDS1;
+    }
+    string dob = "";
+    protected void Submit_Click(object sender, EventArgs e)
+    {
+       
+        
+        string dd = ddlday.SelectedValue;
+        string mm = ddlmonth.SelectedValue;
+        string yy = ddlyear.SelectedValue;
+        string dob = dd + "/" + mm + "/" + yy;
+
+        string ndd = ddlnomineeday.SelectedValue;
+        string nmm = ddlnomineemonthe.SelectedValue;
+        string nyy = ddlnomineeyear.SelectedValue;
+        string ndob = ndd + "/" + nmm + "/" + nyy;
+        string pincode = "";
+
+       
+        if(txtpin2.Text !="")
+        {
+            pincode = txtpin2.Text.Trim();
+            Session["txtpin2"] = txtpin2.Text.Trim();
+        }
+        else
+        {
+            pincode = txtpincode.Text.Trim();
+        }
+
+       
+        
+       if (Validate() == true)
+       {
+        
+            //try
+            //{
+                sesson1();
+                objJDS2 = new JoinStep2();
+
+                /*
+                 * Personal Details Added
+                 * Validation
+                 */
+
+                objJDS2.joinas = ddlmembertype.SelectedItem.Text;
+                objJDS2.tilte = ddltitle.SelectedValue.ToString();
+                objJDS2.First_name = txtfname.Text.Trim();
+                objJDS2.last_name = txtlname.Text.Trim();
+                objJDS2.gender = Convert.ToInt32(ddlgender.SelectedValue.ToString());
+                objJDS2.fatherHusband = txtfh.Text.Trim();
+               // objJDS2.dateofbirth = dateformat1(txtdob.Text.Trim());
+
+//objJDS2.dateofbirth = dateformat1(dob);
+
+                objJDS2.country_Code_mobile = txtmobilecode.Text.Trim();
+                objJDS2.mobile_no = txtmobile.Text.Trim();
+                objJDS2.email_id = txtemail.Value.ToString();
+                objJDS2.Panno = txtPAN.Value.Trim();
+                objJDS2.occupation = txtoccupation.Text.Trim();
+                ////  objJDS2.Occupation = txtoccupation.Text.Trim();
+
+                /*
+               * Address Details Added
+               * Validation
+               */
+
+                objJDS2.countryid = Convert.ToInt32(ddlcountry.SelectedValue.ToString());
+                objJDS2.stateid = Convert.ToInt32(ddlstate.SelectedValue.ToString());
+                objJDS2.districtid = Convert.ToInt32(ddlDsistrict.SelectedValue.ToString());
+                objJDS2.cityid = Convert.ToInt32(ddlcity.SelectedValue.ToString());
+                objJDS2.statename = ddlstate.SelectedItem.Text.ToString();
+                objJDS2.countryname = ddlcountry.SelectedItem.Text.ToString();
+                objJDS2.districtname = ddlDsistrict.SelectedItem.Text.ToString();
+                objJDS2.cityname = ddlcity.SelectedItem.Text.ToString();
+                objJDS2.address = txtaddress.Text.Trim();
+                objJDS2.landmark = txtlandmark.Text.Trim();
+                if (Session["txtpin2"] == null)
+                {
+                    objJDS2.pincode = txtpincode.Text.Trim();
+                }
+                else
+                {
+                    objJDS2.pincode = Session["txtpin2"].ToString();
+                }
+               
+                objJDS2.NomnieeName = txtnomnieename.Value.Trim();
+                objJDS2.NomnieeRelations = txtnomnieeRelation.Value.Trim();
+ objJDS2.Nominee_Date_of_Birth = nomineedateformat1(ndob);
+ //objJDS2.Nominee_Date_of_Birth = nomineedateformat1(txtndob.Text.Trim());
+
+        
+               objJDS2.kidtype = "1";
+
+             /*
+             * Login Details Added
+             * Validation
+             */
+
+             objJDS2.username = txtusername.Text.Trim().Replace(" ","");
+             objJDS2.password = txtpassword.Text.Trim();
+             objJDS2.transactioncode = txttransactioncode.Text.Trim();
+              objJDS2.Question = Convert.ToInt32(ddlquestion.SelectedValue);
+                objJDS2.QuestionName = "";
+                objJDS2.Answer = txtanswer.Text;
+
+
+                /*
+                * Bank Details Added
+                * Validation
+                */
+
+
+
+                 objJDS2.Bankname = txtbankname.Text.Trim();
+                //// objJDS2.cardno = txtbankname.SelectedValue.ToString();
+                ////  objJDS2.Branchcode = txtbranchcode.Text.Trim();
+                objJDS2.Branchcode = txtbranch.Text.Trim();
+                objJDS2.ifsccode = txtifsccode.Text.Trim();
+                objJDS2.accountnumber = txtaccountno.Text.Trim();
+                objJDS2.bankaddress = txtbankaddress.Text.Trim();
+                objJDS2.cardno = txtcardno.Text.Trim();
+                objJDS2.cardname = txtcardname.Text.Trim();
+                objJDS2.CardValidTo = txtvalidto.Text.Trim();
+                objJDS2.cvvno = txtcvv.Text.Trim();
+                objJDS2.NameonAccount = txtnoacc.Text.Trim();
+                Session["JoinStep2"] = objJDS2;
+               
+                Response.Redirect("JoinMember_Preview.aspx");
+           // }
+            //catch(Exception excep)
+            //{
+                Message = "Sorry,Data Not Saved Successfully.";
+                SetErrror(Message); 
+          //  }
+
+       }
+       else
+       {
+         
+           SetErrror(Message); 
+       }
+      
+    }
+
+    private void Fill_Data()
+    {
+        try
+        {
+            objJDS2 = (JoinStep2)Session["JoinStep2"];
+
+            /*
+             * Personal Details Added
+             * Validation
+             */
+
+
+            ddltitle.SelectedValue = objJDS2.tilte;
+            txtfname.Text = objJDS2.First_name;
+            txtlname.Text = objJDS2.last_name;
+            ddlgender.SelectedValue =  objJDS2.gender.ToString();
+            txtfh.Text = objJDS2.fatherHusband;
+            txtdob.Text = Convert.ToDateTime(objJDS2.dateofbirth).ToString("dd/MM/yyyy"); // check
+
+            string[] str = txtdob.Text.Split('/');
+            if(str.Length >0)
+            {
+                //bindmonth();
+              //  binday();
+               // bindyear();
+                ddlday.SelectedItem.Text = str[0];
+                ddlmonth.SelectedItem.Text = str[1];
+                ddlyear.SelectedItem.Text = str[2];
+            }
+
+           
+            
+            if (Session["txtpin2"] == null)
+            {
+                div1_pin.Visible = true;
+                div1_pin2.Visible = false;
+            }
+            else
+            {
+                txtpin2.Text = Session["txtpin2"].ToString();
+                div1_pin.Visible = false;
+                div1_pin2.Visible = true;
+            }
+
+            txtmobilecode.Text = objJDS2.country_Code_mobile;
+            txtmobile.Text = objJDS2.mobile_no;
+            txtemail.Value = objJDS2.email_id;
+            txtPAN.Value = objJDS2.Panno;
+            txtoccupation.Text = objJDS2.occupation;
+
+            /*
+           * Address Details Added
+           * Validation
+           */
+
+
+            ddlcountry.SelectedValue = objJDS2.countryid.ToString();
+            ddlstate.SelectedValue = objJDS2.stateid.ToString();
+            binddistrict(0);
+            ddlDsistrict.SelectedValue = objJDS2.districtid.ToString();
+            bincity(objJDS2.districtid);
+            ddlcity.SelectedValue = objJDS2.cityid.ToString();
+            //objJDS2.countryname = ddlcountry.SelectedItem.Text.ToString();
+            //objJDS2.statename = ddlstate.SelectedItem.Text.ToString();
+            //objJDS2.districtname = ddlDsistrict.SelectedItem.Text.ToString();
+            //objJDS2.cityname = ddlcity.SelectedItem.Text.ToString();
+            txtaddress.Text = objJDS2.address;
+            txtlandmark.Text = objJDS2.landmark;
+            txtpincode.Text = objJDS2.pincode;
+            txtnomnieename.Value = objJDS2.NomnieeName;
+            txtnomnieeRelation.Value = objJDS2.NomnieeRelations;
+            if(Session["txtpin2"] != null)
+            {
+                txtpin2.Text = Session["txtpin2"].ToString();
+            }
+
+
+            txtndob.Text = Convert.ToDateTime(objJDS2.Nominee_Date_of_Birth).ToString("dd/MM/yyyy"); // check
+
+            string[] strn = txtndob.Text.Split('/');
+            if (strn.Length > 0)
+            {
+                //bindmonth();
+                //  binday();
+                // bindyear();
+                ddlnomineeday.SelectedItem.Text = strn[0];
+                ddlnomineemonthe.SelectedItem.Text = strn[1];
+                ddlnomineeyear.SelectedItem.Text = strn[2];
+            }
+            
+
+            /*
+            * Login Details Added
+            * Validation
+            */
+
+            txtusername.Text = objJDS2.username;
+            txtpassword.Text = objJDS2.password;
+            txttransactioncode.Text = objJDS2.transactioncode;
+            ddlquestion.SelectedValue = objJDS2.Question.ToString();
+            txtanswer.Text = objJDS2.Answer;
+
+
+            /*
+            * Bank Details Added
+            * Validation
+            */
+
+
+
+            txtbankname.Text = objJDS2.Bankname;
+            txtbranch.Text = objJDS2.Branchcode;
+            txtifsccode.Text =objJDS2.ifsccode;
+            txtaccountno.Text = objJDS2.accountnumber;
+            txtbankaddress.Text = objJDS2.bankaddress;
+            txtcardno.Text =objJDS2.cardno;
+            txtcardname.Text = objJDS2.cardname;
+            txtvalidto.Text = objJDS2.CardValidTo;
+            txtcvv.Text= objJDS2.cvvno ;
+            Session["JoinStep2"] = objJDS2;
+            
+        }
+        catch (Exception excep)
+        {
+            Message = "Sorry,Data Not Saved Successfully.";
+            SetErrror(Message);
+        }
+
+    }
+
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlcountryServices(string knownCategoryValues, string category)
+    {
+        DataUtility objDut = new DataUtility();
+        DataTable countrydt = new DataTable();
+        string strcountry = "select * from country Where cactive=1";
+        countrydt = objDut.GetDataTable(strcountry);
+        List<CascadingDropDownNameValue> country = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in countrydt.Rows)
+        {
+            string CountryID = dr["cid"].ToString();
+            string CountryName = dr["CountryName"].ToString();
+            country.Add(new CascadingDropDownNameValue(CountryName, CountryID));
+        }
+      
+        return country.ToArray();
+    }
+
+    
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlState2(string knownCategoryValues, string category)
+    {
+        int countryid;
+        DataUtility objDut = new DataUtility();
+        DataTable Statedt = new DataTable();
+
+        StringDictionary countrydetails = CascadingDropDown.ParseKnownCategoryValuesString(knownCategoryValues);
+        countryid = Convert.ToInt32(countrydetails["Country"]);
+        string strSqlState = "select * from State where cid='" + countryid + "' and sActive=1 order by statename";
+        Statedt = objDut.GetDataTable(strSqlState);
+        List<CascadingDropDownNameValue> state = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Statedt.Rows)
+        {
+            string StateID = dr["Sid"].ToString();
+            string StateName = dr["Statename"].ToString();
+            state.Add(new CascadingDropDownNameValue(StateName, StateID));
+        }
+        return state.ToArray();
+    }
+
+
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlDistrict(string knownCategoryValues, string category)
+    {
+        int stateid;
+        StringDictionary statedetails = CascadingDropDown.ParseKnownCategoryValuesString(knownCategoryValues);
+        stateid = Convert.ToInt32(statedetails["State"]);
+        DataUtility objDut = new DataUtility();
+        DataTable Citydt = new DataTable();
+        Citydt = objDut.GetDataTable(" select Distid,Distname from District where Distname<>'Others' and sid=" + stateid + " and Active=1 order by Distname");
+        List<CascadingDropDownNameValue> city = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Citydt.Rows)
+        {
+            string Cityid = dr["Distid"].ToString();
+            string Cityname = dr["Distname"].ToString();
+            city.Add(new CascadingDropDownNameValue(Cityname, Cityid));
+        }
+        return city.ToArray();
+
+    }
+
+
+
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlCity2(string knownCategoryValues, string category)
+    {
+        int stateid;
+        StringDictionary statedetails = CascadingDropDown.ParseKnownCategoryValuesString(knownCategoryValues);
+        stateid = Convert.ToInt32(statedetails["District"]);
+        DataUtility objDut = new DataUtility();
+        DataTable Citydt = new DataTable();
+        Citydt = objDut.GetDataTable("select ctid,cityname from city where cityname<>'Others' and Distid=" + stateid + " and Active=1 order by cityname");
+        List<CascadingDropDownNameValue> city = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Citydt.Rows)
+        {
+            string Cityid = dr["CTID"].ToString();
+            string Cityname = dr["Cityname"].ToString();
+            city.Add(new CascadingDropDownNameValue(Cityname, Cityid));
+        }
+        
+        return city.ToArray();
+
+    }
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlquestionServices(string knownCategoryValues, string category)
+    {
+        DataUtility objDut = new DataUtility();
+        DataTable Questiondt = new DataTable();
+        string strQuestion = "Select * from Security_Question Where Qactive=1";
+        Questiondt = objDut.GetDataTable(strQuestion);
+        List<CascadingDropDownNameValue> question = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Questiondt.Rows)
+        {
+            string QuestionID = dr["Qid"].ToString();
+            string QuestionValues = dr["Question"].ToString();
+            question.Add(new CascadingDropDownNameValue(QuestionValues, QuestionID));
+        }
+        return question.ToArray();
+    }
+   [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlbanks(string knownCategoryValues, string category)
+    {
+        DataUtility objDut = new DataUtility();
+        DataTable bankdt = new DataTable();
+        string strbank = "Select bank_ID,bankName from bank Where IsActive=1";
+        bankdt = objDut.GetDataTable(strbank);
+        List<CascadingDropDownNameValue> bank = new List<CascadingDropDownNameValue>();
+        foreach(DataRow dr in bankdt.Rows)
+        {
+            string bankID = dr["bank_ID"].ToString();
+            string bankname = dr["bankName"].ToString();
+            bank.Add(new CascadingDropDownNameValue(bankname, bankID));
+        }
+        return bank.ToArray();
+    }
+
+
+    protected DateTime dateformat1(string str)
+    {
+
+        string[] str1;
+
+        str1 = str.Split('/');
+
+        return Convert.ToDateTime(str1[0] + "/" + str1[1] + "/" + str1[2]);
+
+    }
+
+    protected DateTime nomineedateformat1(string strn)
+    {
+
+        string[] strn1;
+
+        strn1 = strn.Split('/');
+
+        return Convert.ToDateTime(strn1[0] + "/" + strn1[1] + "/" + strn1[2]);
+
+    }
+
+    public void Save()
+    {
+
+        long Regno  =  Convert.ToInt64(objDUT.GetScalar("Select regno from Member_master where loginID='" + Sponsor_username + "'"));
+        string kid = objDUT.GetScalar("select kid from Epin_master where epinNumber='" + Evoucher_no+ "'").ToString();
+
+
+ 
+        int     No_of_trigger = 1;
+        if (No_of_trigger == 1)
+        {
+            string date = DateTime.Now.ToString("MM/dd/yyyy");
+            string strSPInsert = "sp_InsertNetworkB";
+
+            SqlParameter[] objMemInsert = new SqlParameter[49];
+
+            objMemInsert[0] = new SqlParameter("@introRegNo", SqlDbType.Int, 4);
+            objMemInsert[0].Value = Regno;
+          
+
+            objMemInsert[1] = new SqlParameter("@introSide", SqlDbType.Char, 1);
+            objMemInsert[1].Value = placemnet_side;
+
+            objMemInsert[2] = new SqlParameter("@Title", SqlDbType.VarChar, 10);
+            objMemInsert[2].Value = tilte;
+
+            objMemInsert[3] = new SqlParameter("@fName", SqlDbType.VarChar, 100);
+            objMemInsert[3].Value = First_name;
+
+            objMemInsert[4] = new SqlParameter("@lname", SqlDbType.VarChar, 100);
+            objMemInsert[4].Value = last_name;
+
+            // 0 - Male
+            // 1 - Female
+             int genval  ;
+             genval =  Int32.TryParse(gender, out genval) == false ? 2 : Convert.ToInt32( gender); 
+            
+            objMemInsert[5] = new SqlParameter("@gender", SqlDbType.Int, 1);
+            objMemInsert[5].Value = genval;
+
+            objMemInsert[6] = new SqlParameter("@dob", SqlDbType.Date);
+            objMemInsert[6].Value = dateformat1(dateofbirth);
+
+            objMemInsert[7] = new SqlParameter("@payMode", SqlDbType.VarChar, 50);
+            objMemInsert[7].Value = "E-Pin";
+
+            objMemInsert[8] = new SqlParameter("@address", SqlDbType.VarChar, 100);
+            objMemInsert[8].Value = address;
+
+            objMemInsert[9] = new SqlParameter("@state", SqlDbType.Int, 4);
+
+
+            objMemInsert[9].Value = state;
+           
+            objMemInsert[10] = new SqlParameter("@city", SqlDbType.Int, 4);
+
+
+            objMemInsert[10].Value = city;
+           
+
+            objMemInsert[11] = new SqlParameter("@pinCode", SqlDbType.VarChar, 6);
+            objMemInsert[11].Value = pincode;
+
+
+            objMemInsert[12] = new SqlParameter("@mobile", SqlDbType.VarChar, 50);
+            objMemInsert[12].Value = mobile_no;
+
+            objMemInsert[13] = new SqlParameter("@email", SqlDbType.VarChar, 50);
+            objMemInsert[13].Value = email_id;
+
+            objMemInsert[14] = new SqlParameter("@PanNo", SqlDbType.VarChar, 10);
+            objMemInsert[14].Value = "";
+
+            objMemInsert[15] = new SqlParameter("@Refno", SqlDbType.VarChar, 50);
+            objMemInsert[15].Value = Evoucher_no;
+
+            objMemInsert[16] = new SqlParameter("@kcode", SqlDbType.Int, 8);
+            objMemInsert[16].Value = kid;
+
+            objMemInsert[17] = new SqlParameter("@NomineeName", SqlDbType.VarChar, 100);
+            objMemInsert[17].Value = "";
+
+            objMemInsert[18] = new SqlParameter("@NomineeRelation", SqlDbType.VarChar, 100);
+            objMemInsert[18].Value = "";
+
+            objMemInsert[19] = new SqlParameter("@LoginId", SqlDbType.VarChar, 50);
+            objMemInsert[19].Value = "Empty";
+
+            objMemInsert[20] = new SqlParameter("@pass", SqlDbType.VarChar, 100);
+            objMemInsert[20].Value = password ;
+
+            objMemInsert[21] = new SqlParameter("@Firsts_Qid", SqlDbType.Int, 4);
+            objMemInsert[21].Value = "0";
+
+            objMemInsert[22] = new SqlParameter("@FirstS_ANS", SqlDbType.VarChar, 250);
+            objMemInsert[22].Value = Answer;
+
+            objMemInsert[23] = new SqlParameter("@NameOnAccount", SqlDbType.VarChar, 50);
+            objMemInsert[23].Value = "";
+
+            objMemInsert[24] = new SqlParameter("@Corebank", SqlDbType.VarChar, 200);
+            objMemInsert[24].Value = "";
+
+
+            objMemInsert[25] = new SqlParameter("@AccountNo", SqlDbType.VarChar, 20);
+            objMemInsert[25].Value = accountnumber;
+
+            objMemInsert[26] = new SqlParameter("@Branch", SqlDbType.VarChar, 50);
+
+            objMemInsert[26].Value = Branchcode;
+
+            objMemInsert[27] = new SqlParameter("@IFSCCode", SqlDbType.VarChar, 50);
+            objMemInsert[27].Value = ifsccvode;
+
+
+            objMemInsert[28] = new SqlParameter("@ostate", SqlDbType.VarChar, 250);
+            objMemInsert[28].Value = statename;
+
+            objMemInsert[29] = new SqlParameter("@ocity", SqlDbType.VarChar, 250);
+            objMemInsert[29].Value = cityname;
+
+            objMemInsert[30] = new SqlParameter("@intResult", SqlDbType.Int, 4);
+            objMemInsert[30].Direction = ParameterDirection.Output;
+
+            objMemInsert[31] = new SqlParameter("@Pcode", SqlDbType.Int, 4);
+            objMemInsert[31].Value = Convert.ToInt32(0);
+
+            objMemInsert[32] = new SqlParameter("@PSide", SqlDbType.Char, 1);
+            objMemInsert[32].Value = "";
+
+            objMemInsert[33] = new SqlParameter("@SecurityCode", SqlDbType.VarChar, 50);
+            objMemInsert[33].Value = "";
+
+            objMemInsert[34] = new SqlParameter("@fat_HusName", SqlDbType.VarChar, 50);
+            objMemInsert[34].Value = fatherHusband;
+
+
+            objMemInsert[35] = new SqlParameter("@Address2", SqlDbType.VarChar, 250);
+            objMemInsert[35].Value = "";
+
+
+            objMemInsert[36] = new SqlParameter("@District", SqlDbType.VarChar, 100);
+            objMemInsert[36].Value = district;
+
+            objMemInsert[37] = new SqlParameter("@landmark", SqlDbType.VarChar, 100);
+            objMemInsert[37].Value = landmark;
+
+
+            objMemInsert[38] = new SqlParameter("@statesim", SqlDbType.VarChar, 50);
+          //  objMemInsert[38].Value = "Referal";  
+            /*
+           
+            NOTE : -
+                        if Send Statesim ="Referal then Sp_insertNetwork not update Regno in Epin_Master So i send Null 
+             */
+            objMemInsert[38].Value = " ";
+
+            objMemInsert[39] = new SqlParameter("@nameonpan", SqlDbType.VarChar, 100);
+            objMemInsert[39].Value = "";
+
+            objMemInsert[40] = new SqlParameter("@joinas", SqlDbType.VarChar, 50);
+            objMemInsert[40].Value = "";
+
+            objMemInsert[41] = new SqlParameter("@FranchiseeID", SqlDbType.Int, 4);
+            objMemInsert[41].Value = "0";
+
+            objMemInsert[42] = new SqlParameter("@Pcollectby", SqlDbType.VarChar, 50);
+            objMemInsert[42].Value = "";
+         
+
+            objMemInsert[43] = new SqlParameter("@SPID", SqlDbType.Int, 4);
+            objMemInsert[43].Value = Convert.ToInt32(0);
+
+
+
+            objMemInsert[44] = new SqlParameter("@CardNo", SqlDbType.VarChar, 50);
+            objMemInsert[44].Value = cardno == null ? "" : cardno;  
+
+
+            objMemInsert[45] = new SqlParameter("@CardName", SqlDbType.VarChar, 50);
+            objMemInsert[45].Value = cardname == null ? "" : cardname;  
+
+
+
+            objMemInsert[46] = new SqlParameter("@CardValidTo", SqlDbType.NVarChar);
+            objMemInsert[46].Value = CardValidTo == null ? "" : CardValidTo;  
+
+
+            objMemInsert[47] = new SqlParameter("@CvvNo ", SqlDbType.VarChar,3);
+            objMemInsert[47].Value = cvvno == null ? "" : cvvno;
+            objMemInsert[48] = new SqlParameter("@CountryID ", SqlDbType.Int, 4);
+            objMemInsert[48].Value = country == null ? "96" : country;
+
+
+            txtfname.Text="Raaj";
+         
+
+            int intResult = objDUT.ExecuteSqlSP(objMemInsert, strSPInsert);
+          
+
+            if (intResult > 0)
+            {
+                long maxregno= Convert.ToInt64 (objDUT.GetScalar("select max(regno) from member_master"));
+                Session["MaxRegA"]=maxregno.ToString();
+                SendMail send = new SendMail();
+              //  send.WelcomeMailSend(maxregno);
+                div_msg.InnerHtml = "<button data-dismiss='alert' class='close'>×</button> Welcome  <strong>" + tilte + " " + First_name + " " + last_name + " </strong> you have successfully join. ";
+                div_msg.Attributes.Add("class", "alert alert-success");
+                div_msg.Visible = true;
+                div_error.Visible = false;
+                Response.Redirect("~/welcome.aspx?welcom=letter");
+              
+            }
+        }
+        else
+        {
+          
+            div_msg.Visible = false;
+            div_error.InnerHtml = "<button data-dismiss='alert' class='close'>×</button>  <strong>Error : </strong>" + Message;
+            div_error.Attributes.Add("class", "alert alert-error");
+            div_error.Visible = true;
+         
+        }
+    }
+    private void SetErrror( string errortext)
+    {
+        
+        div_msg.Visible = false;
+        div_error.InnerHtml = "<button data-dismiss='alert' class='close'>×</button>  <strong>Error : </strong>" + Message;
+        div_error.Attributes.Add("class", "alert alert-error");
+        div_error.Visible = true;
+    }
+   string Message = "";
+   protected bool IsNumeric(string sText)
+   {
+       string ValidChars ="0123456789";
+       bool IsNumber =true;
+       string Char = "";
+
+
+       for (int i = 0; i < sText.Length && IsNumber == true; i++)
+       {
+           Char = sText.Substring(i, 1);
+           if (ValidChars.IndexOf(Char) == -1)
+           {
+               IsNumber = false;
+           }
+       }
+
+       return IsNumber;
+
+   }
+   public bool Validate()
+   {
+       int sponsor_limits = 0;
+       sponsor_limits = Convert.ToInt32(objDUT.GetScalar("select limits from settings where caption='Companyid'"));
+       bool result = false;
+
+
+       if (ddltitle.SelectedValue == "")
+       {
+           ddltitle.Focus();
+           Message = "Sorry,Please Select Title.";
+           ddltitle.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (String.IsNullOrWhiteSpace(txtfname.Text))
+       {
+           txtfname.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Valid_FName);
+           txtfname.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (ddlgender.SelectedValue == "NULL")
+       {
+           ddlgender.Focus();
+           Message = "Sorry,Please Select Gender.";
+           ddltitle.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       // ***********validation for DOB***************//
+       if (Convert.ToInt32(ddlmonth.SelectedValue) > 0 && Convert.ToInt32(ddlday.SelectedValue) > 0 && Convert.ToInt32(ddlyear.SelectedValue) > 0)
+       {
+
+           Int32 m = Convert.ToInt32(ddlmonth.SelectedValue);
+           Int32 y = Convert.ToInt32(ddlyear.SelectedValue);
+           if (m == 01 || m == 03 || m == 05 || m == 07 || m == 08 || m == 10 || m == 12)
+           {
+               result = true;
+           }
+           else if (m == 04 || m == 06 || m == 09 || m == 11)
+           {
+               if (Convert.ToInt32(ddlday.SelectedValue) > 30)
+               {
+                   ddlday.Focus();
+                   Message = "Sorry, " + "Day should be less than 31.";
+                   SetErrror(Message);
+                   result = false;
+                   return result;
+
+               }
+           }
+           else
+           {
+               if ((y % 4 == 0) || (y % 400 == 0 && y % 100 != 0))
+               {
+                   if (Convert.ToInt32(ddlday.SelectedValue) > 29)
+                   {
+                       ddlday.Focus();
+                       Message = "Sorry, " + "Day should be less than 30.";
+                       SetErrror(Message);
+                       result = false;
+                       return result;
+                   }
+               }
+               else
+               {
+                   if (Convert.ToInt32(ddlday.SelectedValue) > 28)
+                   {
+                       ddlday.Focus();
+                       Message = "Sorry, " + "Day should be less than 29.";
+                       SetErrror(Message);
+                       result = false;
+                       return result;
+                   }
+               }
+           }
+
+       }
+       else
+       {
+           ddlday.Focus();
+           ddlmonth.Focus();
+           ddlyear.Focus();
+           result = false;
+           return result;
+       }
+
+       if (String.IsNullOrWhiteSpace((txtmobilecode.Text)) || txtmobilecode.Text.Trim().Length != 3)
+       {
+           txtmobilecode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Fill_CountryCode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+      // if (String.IsNullOrWhiteSpace((txtmobile.Text)) || txtmobile.Text.Trim().Length < 10)
+      // {
+      //     txtmobile.Focus();
+      //     Message = "Sorry, " + MSG.Show(MsgType.Fill_MobNo);
+      //     SetErrror(Message);
+      //     result = false;
+      //     return result;
+      // }
+
+      // if (!isEmail(txtemail.Value.Trim()) && txtemail.Value.Trim().Length > 0)
+      // {
+      //     txtemail.Focus();
+      //     Message = "Sorry, Please Enter Valid EmailID. !!";
+      //     SetErrror(Message);
+      //     result = false;
+      //     return result;
+      // }
+        if (txtPAN.Value.Trim() == "")
+        {
+          
+                txtPAN.Focus();
+                Message = "Sorry, Please Enter Pan Card";
+                SetErrror(Message);
+                result = false;
+                return result;
+           
+        }
+        if (txtPAN.Value.Trim().Length > 0 && !isPan(txtPAN.Value.Trim()))
+       {
+           txtPAN.Focus();
+           Message = "Sorry, Please Enter Valid Pan Card No. !!";
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (txtPAN.Value.Trim() != "")
+       {
+           int checkpanunique = Convert.ToInt32(objDUT.GetScalar(" select count(mempan) from member_master where mempan='" + txtPAN.Value.Trim() + "'"));
+           if (checkpanunique >= 3)
+           {
+               txtPAN.Focus();
+               Message = "Sorry, This Pan Card No. is Already use three times !!";
+               SetErrror(Message);
+               result = false;
+               return result;
+           }
+       }
+
+
+
+
+       int Countryid = Int32.TryParse(ddlcountry.SelectedValue, out Countryid) == false ? 0 : Convert.ToInt32(ddlcountry.SelectedValue);
+       if (Countryid <= 0)
+       {
+           ddlcountry.Focus();
+           Message = "Sorry," + MSG.Show(MsgType.Valid_Country);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       int stateid = Int32.TryParse(ddlstate.SelectedValue, out stateid) == false ? 0 : Convert.ToInt32(ddlstate.SelectedValue);
+       if (stateid <= 0)
+       {
+           ddlstate.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Valid_State);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       int Districtid = Int32.TryParse(ddlDsistrict.SelectedValue, out Districtid) == false ? 0 : Convert.ToInt32(ddlDsistrict.SelectedValue);
+       if (Districtid <= 0)
+       {
+           ddlDsistrict.Focus();
+           Message = "Sorry, Please Select District";
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       int cityid = Int32.TryParse(ddlcity.SelectedValue, out cityid) == false ? 0 : Convert.ToInt32(ddlcity.SelectedValue);
+       if (cityid <= 0)
+       {
+           ddlcity.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Valid_City);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (String.IsNullOrWhiteSpace((txtaddress.Text.Trim())))
+       {
+           txtaddress.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Fill_Address);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (txtaddress.Text.Trim().Trim().Length < 25)
+       {
+           txtaddress.Focus();
+           Message = "Sorry, Address shold be morethan 50 character ";
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+       if (txtpincode.Text == "")
+       {
+           txtpincode.Text = txtpin2.Text;
+       }
+
+       if (String.IsNullOrWhiteSpace((txtpincode.Text.Trim())))
+       {
+           txtpincode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Fill_Pincode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (txtpincode.Text.Trim().Length > 7 || txtpincode.Text.Trim().Length != 6)
+       {
+           txtpincode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Valid_Pincode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+      // if (String.IsNullOrWhiteSpace(txtnomnieename.Value.Trim()))
+      // {
+      //     txtnomnieename.Focus();
+      //     Message = "Sorry,Please Enter Nominee Name";
+      //     SetErrror(Message);
+      //     result = false;
+      //     return result;
+      // }
+     //  if (String.IsNullOrWhiteSpace(txtnomnieeRelation.Value.Trim()))
+     //  {
+     //      txtnomnieeRelation.Focus();
+     //      Message = "Sorry,Please Enter Nominee Relation";
+     //      SetErrror(Message);
+     //      result = false;
+     //      return result;
+     //  }
+       if (String.IsNullOrWhiteSpace(txtusername.Text.Trim()))
+       {
+
+           txtusername.Focus();
+           Message = "Sorry, " + "Please Enter User Name" ;
+           txtusername.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       string query = "Select count(loginid) from Member_master where loginid='" + txtusername.Text.Trim() + "'  and regno>=" + sponsor_limits + "";
+       string loginid = Convert.ToString(objDUT.GetScalar(query));
+       if (Convert.ToInt32(loginid) > 0)
+       {
+           txtusername.Focus();
+           Message = "Sorry, User Name already exist!!";
+           txtusername.Focus();
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       //if (txtusername.Text.IndexOf("sonsy") > -1)
+       //{
+       //    txtusername.Focus();
+       //    Message = "Sorry, User Name Not Available!!";
+       //    SetErrror(Message);
+       //    result = false;
+       //    return result;
+       //}
+       
+
+
+
+       if (String.IsNullOrWhiteSpace(txtpassword.Text.Trim()))
+       {
+           txtpassword.Focus();
+           Message = "Sorry," + MSG.Show(MsgType.Fill_Password);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (txtpassword.Text.Trim().Length < 4)
+       {
+           txtpassword.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Min_Password);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (txtpassword.Text.Trim().IndexOf(' ') > -1)
+       {
+           txtpassword.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.spacenotallowpwd);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+
+
+       if (String.IsNullOrWhiteSpace(txttransactioncode.Text))
+       {
+           txttransactioncode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Fill_Transactioncode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       if (txttransactioncode.Text.Trim().Length < 4)
+       {
+           txttransactioncode.Focus();
+           Message = "Sorry, " + MSG.Show(MsgType.Min_TransCode);
+           SetErrror(Message);
+           result = false;
+           return result;
+       }
+       int questionid = Int32.TryParse(ddlquestion.SelectedValue, out cityid) == false ? 0 : Convert.ToInt32(ddlquestion.SelectedValue);
+
+       if (txtifsccode.Text != "")
+       {
+           try
+           {
+               getifsccodee(txtifsccode.Text.Trim());
+           }
+
+           catch
+           {
+               txtifsccode.Focus();
+               Message = "Sorry,Invalid IFSC Code!!.";
+               txtifsccode.Focus();
+               SetErrror(Message);
+               txtbankname.Text = "";
+               txtbranch.Text = "";
+               result = false;
+               return result;
+           }
+       }
+       else
+       {
+           txtbankname.Text = "";
+           txtbranch.Text = "";
+       }
+
+
+       if (txtbankname.Text.Trim().Length > 0 | txtbankname.Text.Trim().Length > 0 | txtbankname.Text.Trim().Length > 0 | txtbankname.Text.Trim().Length > 0)
+       {
+           //if (txtbankname.SelectedIndex==0)
+           //{
+           //    Message = "Sorry, " + MSG.Show(MsgType.Valid_BankName);
+           //    SetErrror(Message);
+           //    result = false;
+           //    return result;
+           //}
+           //if (String.IsNullOrWhiteSpace(txtifsccode.Text))
+           //{
+           //    Message = "Sorry, " + MSG.Show(MsgType.Fill_IFSCCODE);
+           //    SetErrror(Message);
+           //    result = false;
+           //    return result;
+           //}
+           if (String.IsNullOrWhiteSpace(txtaccountno.Text))
+           {
+               Message = "Sorry," + MSG.Show(MsgType.Fill_AccountNo);
+               SetErrror(Message);
+               result = false;
+               return result;
+           }
+          
+           //if (String.IsNullOrWhiteSpace(txtbankaddress.Text))
+           //{
+           //    Message = "Sorry, " + MSG.Show(MsgType.Fill_BankAddress);
+           //    SetErrror(Message);
+           //    result = false;
+           //    return result;
+           //}
+       }
+       
+      // if (questionid > 0)
+      // {
+      //     if (txtanswer.Text == "")
+      //     {
+      //         txtanswer.Focus();
+      //         Message = "Please, " + "Write down the answer .";
+      //         SetErrror(Message);
+      //         result = false;
+      //         return result;
+      //     }
+      // }
+      // else
+      // {
+      //     ddlquestion.Focus();
+      //     Message = "Please, " + "choose the question .";
+      //     SetErrror(Message);
+      //     result = false;
+      //     return result;
+      // }
+       if (txtaccountno.Text != "")
+       {
+           if (TextBox1.Text == "")
+           {
+               TextBox1.Focus();
+               Message = "Please, " + "Enter Confirm Bank A/C No. ";
+               result = false;
+               return result;
+           }
+               if (TextBox1.Text != txtaccountno.Text)
+               {
+                   TextBox1.Focus();
+                   Message = "Please, " + "Bank A/C No. should be same.  ";
+                   result = false;
+                   return result;
+               }
+           }
+           result = true;
+           return result;
+
+       }
+
+
+
+   public static bool isEmail(string inputEmail)
+   { 
+       string strRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
+             @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
+             @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+       Regex re = new Regex(strRegex);
+       if (re.IsMatch(inputEmail))
+           return (true);
+       else
+           return (false);
+   }
+
+    public static bool isPan(string inputPan)
+    {
+        string strRegex = @"^([a-zA-Z]{5})(\d{4})([a-zA-Z]{1})$";
+        Regex re = new Regex(strRegex);
+        if (re.IsMatch(inputPan))
+            return (true);
+        else
+            return (false);
+    } 
+  
+
+
+    
+    protected void Cancel_Click(object sender, EventArgs e)
+    {
+        Session.Remove("JoinStep1");
+        Session.Remove("JoinStep2");
+        Response.Redirect("index.html");
+    }
+    protected void Reset_ButtonClick(object sender, EventArgs e)
+    {
+         
+        Session.Remove("JoinStep2");
+        Response.Redirect("JoinMember_Details.aspx");
+    }
+	
+    protected void Update_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("JoinMember.aspx");
+    }
+
+    protected void ddlmembertype_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (ddlmembertype.SelectedValue == "2")
+        {
+            ddlgender.Enabled = false;
+            ddlgender.SelectedValue = "2";
+            txtfh.Enabled = true;
+            ddltitle.Visible = false;
+            txtlname.Enabled=false;
+            lblfname.Text = "Company Name";
+            lname.InnerHtml = "<br/>";
+            fhnameCaption1.InnerHtml = " Contact Person";
+            txtlname.Visible = false;
+            }
+        else
+        {
+            txtlname.BorderColor = System.Drawing.Color.Gray;
+            lname.InnerHtml = " Last Name";
+            fhnameCaption1.InnerHtml = "Father's/Husband's Name";
+            fhnameCaption1.Visible = true;
+            txtfh.Enabled = true;
+            ddltitle.Visible = true;
+            txtlname.Enabled = true;
+            txtlname.Visible = true;
+            lblfname.Text = "First Name";
+            ddlgender.Enabled = true;
+        }
+    }
+    protected void btnwithpin_Click(object sender, EventArgs e)
+    {
+      
+        div1_pin.Visible = false;
+        div1_pin2.Visible = true;
+        ddlstate.Items.Clear();
+        ddlDsistrict.Items.Clear();
+        ddlcity.Items.Clear();
+       // ddlcity.Enabled = false;
+        ddlDsistrict.Enabled = false;
+        ddlcountry.Enabled = false;
+        ddlstate.Enabled = false;
+    }
+    protected void btnwithoutpin_Click(object sender, EventArgs e)
+    {
+        ddlstate.Items.Clear();
+        ddlDsistrict.Items.Clear();
+        ddlcity.Items.Clear();
+        div1_pin2.Visible = false;
+        div1_pin.Visible = true;
+        bindstate();
+        //binddistrict();
+      //  bincity();
+        txtpin2.Text = "";
+        ddlDsistrict.Enabled = true;
+        ddlcountry.Enabled = true;
+        ddlstate.Enabled = true;
+
+    }
+
+    public void bindcountry()
+    {
+        DataTable dtcountry = objDUT.GetDataTable("select cid,countryname from country   ");
+        if (dtcountry.Rows.Count > 0)
+        {
+            ddlstate.DataSource = dtcountry;
+            ddlstate.DataTextField = "countryname";
+            ddlstate.DataValueField = "cid";
+            ddlstate.DataBind();
+        }
+        ddlcountry.SelectedValue = "96";
+    }
+    public void bindstate()
+    {
+        DataTable dtstate = objDUT.GetDataTable("select sid,statename from state where cid= 96  ");
+        if (dtstate.Rows.Count > 0)
+        {
+            ddlstate.DataSource = dtstate;
+            ddlstate.DataTextField = "statename";
+            ddlstate.DataValueField = "sid";
+            ddlstate.DataBind();
+        }
+    }
+    public void binddistrict(int sid)
+    {
+        string st = "select distid,cid,sid,distname  from district  where cid=96 ";
+        if(sid >0)
+        {
+            st = st + " and sid='" + sid + "' ";
+        }
+        DataTable dtdist = objDUT.GetDataTable(st);
+        if (dtdist.Rows.Count > 0)
+        {
+            ddlDsistrict.DataSource = dtdist;
+            ddlDsistrict.DataTextField = "distname";
+            ddlDsistrict.DataValueField = "distid";
+            ddlDsistrict.DataBind();
+        }        
+
+    }
+    public void bincity(int distid1)
+    {
+        string stcity = "select ctid , cityname from city where 3 > 2";
+        if( distid1 > 0)
+        {
+            stcity = stcity + " and distid ='" + distid1 + "' ";
+        }
+        DataTable dtcity = objDUT.GetDataTable(stcity);
+        if (dtcity.Rows.Count > 0)
+        {
+            ddlcity.DataSource = dtcity;
+            ddlcity.DataTextField = "cityname";
+            ddlcity.DataValueField = "ctid";
+            ddlcity.DataBind();
+        }
+           
+    }
+
+    protected void btnsearch_Click(object sender, EventArgs e)
+    {
+       
+        DataTable dt = objDUT.GetDataTable("select sid,  CTID,cityName,distid from city where Pincode='" + txtpin2.Text + "'");
+        if (dt.Rows.Count > 0)
+        {
+            ddlstate.Items.Clear();
+            ddlDsistrict.Items.Clear();
+            ddlcity.Items.Clear();
+
+            DataTable dtstate = objDUT.GetDataTable("select sid,statename from state  ");
+            if (dtstate.Rows.Count > 0)
+            {
+                ddlstate.DataSource = dtstate;
+                ddlstate.DataTextField = "statename";
+                ddlstate.DataValueField = "sid";
+                ddlstate.DataBind();
+            }
+            DataTable dtstate1 = objDUT.GetDataTable("select sid,statename from state where cid= 96 and sid='" + dt.Rows[0]["sid"].ToString() + "' ");
+            ddlstate.SelectedValue = dtstate1.Rows[0]["sid"].ToString();
+
+           
+            DataTable dtdist = objDUT.GetDataTable("select distid,cid,sid,distname  from district  ");
+            if (dtdist.Rows.Count > 0)
+            {
+                ddlDsistrict.DataSource = dtdist;
+                ddlDsistrict.DataTextField = "distname";
+                ddlDsistrict.DataValueField = "distid";
+                ddlDsistrict.DataBind();
+            }           
+            ddlDsistrict.SelectedValue = dt.Rows[0]["distid"].ToString();
+
+            DataTable dtcity = objDUT.GetDataTable("select ctid , cityname from city where distid= '" + dt.Rows[0]["distid"].ToString() + "' ");
+            if (dtcity.Rows.Count > 0)
+            {
+                ddlcity.DataSource = dtcity;
+                ddlcity.DataTextField = "cityname";
+                ddlcity.DataValueField = "ctid";
+                ddlcity.DataBind();
+            }
+           
+           
+        }
+        else
+        {
+            ddlstate.Items.Clear();
+            ddlDsistrict.Items.Clear();
+            ddlcity.Items.Clear();
+            txtpin2.Focus();
+        }
+
+    }
+    protected void ddlstate_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int stateid = Convert.ToInt32(ddlstate.SelectedValue);
+        binddistrict(stateid);
+    }
+    protected void ddlDsistrict_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int distid = Convert.ToInt32(ddlDsistrict.SelectedValue);
+        bincity(distid);
+    }
+    protected void ddlcity_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int ctid = Convert.ToInt32(ddlcity.SelectedValue);
+        txtpincode.Text = objDUT.GetScalar("select pincode from city where ctid='" + ctid + "'").ToString();
+    }
+    protected void getifsccodee(string ifsc)
+    {
+        string[] P;
+        string[] P2;
+        string[] P3;
+      
+           
+                string APIAuthentication = "https://ifsc.razorpay.com/" + ifsc.Trim() + "";
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(APIAuthentication);
+                request.Credentials = CredentialCache.DefaultCredentials;
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string data = reader.ReadToEnd();
+                dynamic stuff = Newtonsoft.Json.JsonConvert.DeserializeObject(data);
+                data = stuff.ToString();
+               
+
+                    data = data.Replace("{", "");
+                    data = data.Replace("}", "");
+                    data = data.Replace("\"", "");
+                    data = data.Replace("\r\n", "");
+                    //data = data.Replace(" ", "");
+                    string[] s = data.Split(',');
+
+                    P2 = s[3].Split(':');
+                    P3 = s[8].Split(':');
+                    for (int i = 0; i < s.Length; i++)
+                    {
+                        P = s[i].Split(':');
+                        if (P[0].Trim() == "Bank" || P[0].Trim() == "BANK")
+                        {
+                            txtbankname.Text = P[1].ToString();
+                        }
+                        if (P[0].Trim() == "Branch" || P[0].Trim() == "BRANCH")
+                        {
+                            txtbranch.Text = P[1].ToString();
+                        }
+                        if (P[0].Trim() == "ADDRESS" || P[0].Trim() == "Address")
+                        {
+                            txtbankaddress.Text = P[1].ToString();
+                        }
+                  
+                }
+            
+    }
+
+
+    [WebMethod]
+    public static List<BankIFSCDetails> getifsccode(string IFSCcode)
+    {
+        SqlDataReader sdr = null;
+        string st = null;
+        List<BankIFSCDetails> Get_IFSC_ValueList = new List<BankIFSCDetails>();
+        BankIFSCDetails Get_IFSC_Value = new BankIFSCDetails();
+        Get_IFSC_Value.CITY = "";
+        Get_IFSC_Value.BRANCH = "";
+        Get_IFSC_Value.BANK = "";
+        string[] P;
+        string[] P2;
+        string[] P3;
+
+       
+        try
+        {
+            string APIAuthentication = "https://ifsc.razorpay.com/" + IFSCcode.Trim() + "";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(APIAuthentication);
+            request.Credentials = CredentialCache.DefaultCredentials;
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            WebResponse response = request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(dataStream);
+            string data = reader.ReadToEnd();
+            dynamic stuff = Newtonsoft.Json.JsonConvert.DeserializeObject(data);
+            data = stuff.ToString();
+            if (data != "")
+            {
+
+
+                //data = data.Replace("]", "");
+                //data = data.Replace("[", "");
+                data = data.Replace("{", "");
+                data = data.Replace("}", "");
+                data = data.Replace("\"", "");
+                data = data.Replace("\r\n", "");
+                //data = data.Replace(" ", "");
+                string[] s = data.Split(',');
+
+                P2 = s[3].Split(':');
+                P3 = s[8].Split(':');
+                for (int i = 0; i < s.Length; i++)
+                {
+                    P = s[i].Split(':');
+                    if (P[0].Trim() == "Bank" || P[0].Trim() == "BANK")
+                    {
+                        Get_IFSC_Value.BANK = P[1].ToString();
+                    }
+                    if (P[0].Trim() == "Branch" || P[0].Trim() == "BRANCH")
+                    {
+                        Get_IFSC_Value.BRANCH = P[1].ToString();
+                    }
+                }
+
+            }
+          
+            Get_IFSC_ValueList.Add(Get_IFSC_Value);
+
+        }
+        catch (Exception ex)
+        {
+            Get_IFSC_ValueList.Add(Get_IFSC_Value);
+            //LogException.WriteToLog(ex);
+           
+        }
+
+        return Get_IFSC_ValueList;
+
+    }
+
+
+
+    //[WebMethod]
+    //public static string chkpancard(string pancardno)
+    //{
+    //    DataUtility objDUT = new DataUtility();
+    //    string res ="";
+
+    //    if (pancardno.Trim() != "")
+    //    {
+    //        int checkpanunique = Convert.ToInt32(objDUT.GetScalar(" select count(mempan) from member_master where mempan='" + pancardno.Trim() + "'"));
+    //        if (checkpanunique >= 3)
+    //        {
+    //            res = "false";
+    //        }
+    //        else
+    //        {
+    //            res = "true";
+    //        }
+    //    }
+    //    return res;
+    //}
+
+
+     
+    protected void  BtncHECK_Click(object sender, EventArgs e)
+    {
+
+        string dd = ddlday.SelectedValue;
+        string mm = ddlmonth.SelectedValue;
+        string yy = ddlyear.SelectedValue;
+        string dob = dd + "/" + mm + "/" + yy;
+      Session["Date"]= objJDS2.dateofbirth = dateformat1(dob);
+      Session["Tri"] = "Hello Dosto";
+      
+
+        txtfname.Text = (dob);
+       
+
+
+    }
+}
+***********************
+sql
+*********
+
+
+alter procedure SP_RequestEvoucher1                                    
+
+@RefRegNo bigint=2,                                    
+
+@kid int=2  ,                            
+
+@SEQty int=2,                               
+
+@reqid1 int=1,      
+
+@comment varchar(500)='default', 
+
+----------------//sold 
+
+@SEName varchar(100)='rrot', 
+
+@SEAddress varchar(500)='',
+
+@SEMobile varchar(15)='',
+
+@SECity varchar(50)='', 
+
+@SEState varchar(50)='', 
+
+@SEPaymode varchar(50)='',
+
+@SEPayDate datetime, 
+
+@SERefNo varchar(50)='',
+
+@SEBankName varchar(100),
+
+@SEAmount decimal=0.0,
+
+@SETAmount  decimal=0.0,   
+
+@sellby as bigint=0.0,                  
+
+@intResult int output ,
+
+@vactive int = 1,
+
+@Fromdate datetime ,
+
+@Todate datetime,
+
+@Pid int =0
+
+-------------Types-----
+
+--@Types as varchar(100) =''                                  
+
+as                                    
+
+BEGIN TRAN                                    
+
+--*********** Start Transaction                                    
+
+	Declare @Error as int , @tno as bigint , @trno as varchar(20) ,@SetransNo  bigint ,@SEVID int  ,@IST varchar(100)           
+
+	Declare @cBalance as money, @maxPayid as int ,@costnt int  ,@voucherdetails varchar(100),@code as varchar(50),@balance as money
+
+    Declare @Reqid bigint	
+
+	 Declare @RequestType bigint	
+
+	Declare @maxPayDate as datetime, @transID as numeric, @trCode as varchar(50)                               
+
+	set @intResult = 0              
+
+	Select @tno=isnull(max(reqid),0)+1 from Epin_Request                              
+
+	Set @trno = 'BP' + cast(@tno as varchar)
+
+	select @maxPayid =max(payid)  from payout                          
+
+	set @maxPayid=isnull(@maxPayid,0)                          
+
+	set @maxPayID=@maxPayid+1 
+
+	--************ Get Current Date                            
+
+	set @maxPayDate = dateaDD(hh,5.30,getutcdate())  
+
+	Select @transID=max(ACID) From Member_Account                
+
+	set @transID=isnull(@transID,0)              
+
+	set @transID = @transID+1                          
+
+	--*************** Ceate Transaction Code                             
+
+	set @trCode = 'REQ'+cast(@transID as varchar)
+
+	-- -------------  Get Amount         
+	if(@SEPaymode='ewallet')
+	set @RequestType = 0 
+	else
+	set @RequestType = 1
+
+	--Set @SEAmount  = 0; 
+
+	set @costnt = 1 ; 
+
+	set @IST=dateadd(mi,330,getutcdate())   
+
+	
+
+	----- check wallet amount ------------------------------------------
+
+		if(@SEPaymode='ewallet')            
+
+	 begin            
+
+		--set @balance=0            
+
+		exec SP_GetCurrentBallance @RefRegNo,@Balance out            
+
+		if((@SEAmount*@SEQty)>@Balance)            
+
+		 begin            
+
+			set @intResult=-6            
+
+			Rollback Transaction                                                                                                                      
+
+			return @intResult            
+
+		 end            
+
+	 end 
+
+	 ----------------------------------------------------------------------
+
+	
+
+	
+
+	Insert Into Voucher_Request                                    
+
+	( 
+
+		regNo,                                       
+
+		tno,                      
+
+		reqdate,                              
+
+		noOfVoucher,                              
+
+		amount,                              
+
+		paymode,                              
+
+		refNo,                              
+
+		bankName,              
+
+		refDate,                              
+
+		Comment,                              
+
+		reqStatus,
+
+		reqCode  ,
+
+		reqConpDate,
+
+		seen,
+
+		RequestType,
+
+		TotalAmount
+
+	)                                    
+
+	Values                                    
+
+	(    @RefRegNo,@trno,                            
+
+@maxPayDate,                              
+
+@SEQty,                              
+
+@SEAmount,                              
+
+@SEPaymode,                              
+
+@SERefNo,                              
+
+@SEBankName,              
+
+@maxPayDate,                              
+
+@comment,                              
+
+1,
+
+@trCode ,
+
+'',
+
+0,
+
+@RequestType,
+
+@SEQty*@SEAmount
+
+	) 
+
+	
+
+select @ReqId=IDENT_CURRENT('Voucher_Request')  
+
+-------------------____________________-soldevoucher-_____________________________--------------------------
+
+
+
+select @SetransNo = convert(varchar(100),getdate(),112) 
+
+
+
+insert into SoldVoucher
+
+(
+
+transNo ,
+
+RefRegNo ,
+
+ReqId ,
+
+SEName ,
+
+SEAddress ,
+
+SEMobile ,
+
+SECity ,
+
+SEState ,
+
+SEQty ,
+
+SEDate ,
+
+SEPayMode ,
+
+SEPayDate ,
+
+SERefNo ,
+
+SEBankName ,
+
+Amount , 
+
+SEAmount ,  
+
+sellby,
+
+seen 
+
+) values(@SetransNo,@RefRegNo,@ReqId,@SEName , 
+
+@SEAddress ,
+
+@SEMobile ,
+
+@SECity , 
+
+@SEState,@SEQty,@IST, @SEPaymode,getdate(),
+
+--  @SEPayDate, 
+
+  @SERefNo, 
+
+ @SEBankName,@SEAmount, 
+
+  @SEAmount*@SEQty,  @sellby ,1 )
+
+
+
+select @SEVID=IDENT_CURRENT('SoldVoucher')  
+
+
+
+WHILE @costnt <= @SEQty
+
+      BEGIN
+
+	   exec Sp_generateVoucherNo 1,@voucherdetails out 
+
+	    exec getVoucherCode   @code out  
+
+	    insert into	Voucher_Master(
+
+						VoucherNumber,
+
+						VoucherCode ,
+
+						VoucherValue ,
+
+						SEVID  ,
+
+						RegNo ,
+
+						BelongToId ,
+
+						BelongToDate ,
+
+						GDate ,
+
+						vActive ,
+
+						Seen,
+
+						ValidFrom,Validto,pid) values
+
+						            (
+
+										@voucherdetails,								
+
+									@code,
+
+									
+
+									@SEAmount,
+
+									@SEVID,
+
+									0,
+
+									@RefRegNo,
+
+									@IST,
+
+									@IST,
+
+									@vactive,
+
+									0,
+
+									@Fromdate  ,@Todate ,@pid
+
+									)
+
+		SELECT @costnt = @costnt + 1
+
+      END
+
+	 if(@SEPaymode='ewallet')            
+
+ begin            
+
+         Declare @payremark as varchar(max)            
+
+   set @payremark='Purchase voucher from E-Wallet '            
+
+   INSERT INTO member_account(payid,regno, transdate, credit, debit, crdb, transtype,remark, trStatus, tdsRate, tdsAmount, trAmount,wallettype)              
+
+   VALUES (@maxPayID, @RefRegNo,getdate() ,0, @SEAmount*@SEQty, 'D', 'PurchaseVoucher',@payremark , 1, 0, 0, 0,1)            
+
+                
+
+ End       
+
+	-- if error in saving details                                    
+
+	Select @Error = @@error                                    
+
+	if(@error<>0)                                    
+
+	Begin                                    
+
+		Set @intResult = 0                                    
+
+		ROLLBACK TRAN                                    
+
+	End                          
+
+	Set @intResult = 1             
+
+COMMIT TRAN                                 
+
+return @intResult 
+
+
+
+
+
+
+**********
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Xml;
+using System.Data;
+using System.Data.SqlClient;
+using System.Web.Services;
+
+public partial class BOA_sellEpin : System.Web.UI.Page
+{
+    DataUtility onjDUT = new DataUtility();
+    Double Amount = 0;
+    Utility objUT = new Utility();
+    DataUtility objDUT = new DataUtility();
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!Page.IsPostBack)
+        {
+            if (Session["A_CurrencySymbol"] == null)
+                Session["A_CurrencySymbol"] = "INR";
+            //int joiningstop = Convert.ToInt32(objDUT.GetScalar("select limits from settings where caption='UnderMaintenance' and sid=5"));
+            //if (joiningstop > 0)
+            //{
+            //    Response.Redirect("../Stopwesite.htm");
+            //}
+            bindall();
+            txtDate.Value = IndianTime.GetIndianTime().ToString("MM/dd/yyyy");
+        }
+    }
+    protected void btSearch_ServerClick(object sender, EventArgs e)
+    {
+
+    }
+    protected void btSubmit_ServerClick(object sender, EventArgs e)
+    {
+          
+        if (ddlproduct.SelectedIndex == 0)
+        {
+            errorT.InnerText = "Choose package type";
+            errorT.Attributes.Add("class", "alert alert-error");
+            errorT.Visible = true;
+            ddlproduct.Focus();
+            return;
+        }
+        if (txtNoOfEpin.Text=="")
+        {
+            errorT.InnerText = "Enter Quantity";
+            errorT.Attributes.Add("class", "alert alert-error");
+            errorT.Visible = true;
+            txtNoOfEpin.Focus();
+            return;
+        }
+
+
+        long regNo = objUT.GetRegistrationNo(txtUserName.Value);
+        decimal Current_balance = CurrentBalance.getBalance(regNo);
+        string wallamt = string.Format("{0:f}", Current_balance);
+       if (selPayMode.SelectedValue == "ewallet")
+        {
+            if (Convert.ToDecimal(wallamt) < Convert.ToDecimal(txtAmount.Value))
+            {
+                errorT.InnerText = "Insufficial amount ";
+                errorT.Attributes.Add("class", "alert alert-error");
+                errorT.Visible = true;
+                return;
+            }
+        }
+        
+         string  cash = string.Format("{0:f}", Current_balance);
+         if (selPayMode.SelectedValue == "Cash")
+        {
+            if (Convert.ToDecimal(wallamt) < Convert.ToDecimal(txtAmount.Value))
+            {
+                errorT.InnerText = "Insufficial amount ";
+                errorT.Attributes.Add("class", "alert alert-error");
+                errorT.Visible = true;
+                return;
+            }
+        }
+
+         if (selPayMode.SelectedIndex == 0)
+         {
+             errorT.InnerText = "Please Select Payment Mod";
+             errorT.Attributes.Add("class", "alert alert-error");
+             errorT.Visible = true;
+             ddlproduct.Focus();
+             return;
+         }
+        int returnValue = 0;
+    
+
+        
+
+        try
+        {
+
+            SqlParameter[] p = new SqlParameter[20];
+            p[0] = new SqlParameter("@RefRegNo", DbType.Int64);
+            p[0].Value = regNo;
+            p[1] = new SqlParameter("@SEName", DbType.String);
+            p[1].Value = txtName.Value;
+            p[2] = new SqlParameter("@SEAddress", DbType.String);
+            p[2].Value = txtAddress.Value;
+            p[3] = new SqlParameter("@SEMobile", DbType.String);
+            p[3].Value = "";
+            p[4] = new SqlParameter("@SECity", DbType.String);
+            p[4].Value = txtLocation.Value;
+            p[5] = new SqlParameter("@SEState", DbType.String);
+            p[5].Value = txtProvince.Value;
+            p[6] = new SqlParameter("@SEQty", DbType.Int32);
+            p[6].Value = Convert.ToInt32(txtNoOfEpin.Text);
+            p[7] = new SqlParameter("@SEPaymode", DbType.String);
+            p[7].Value = selPayMode.SelectedValue;
+            p[8] = new SqlParameter("@SEPayDate", DbType.DateTime);
+            p[8].Value = Convert.ToDateTime(txtDate.Value);
+            p[9] = new SqlParameter("@SERefNo", DbType.String);
+            p[9].Value = txtRef.Value;
+            p[10] = new SqlParameter("@SEBankName", DbType.String);
+            p[10].Value = txtBank.Value;
+            p[11] = new SqlParameter("@SEAmount", DbType.Decimal);
+            p[11].Value = Convert.ToDecimal(txtAmount.Value) / Convert.ToDecimal(txtNoOfEpin.Text);
+            p[12] = new SqlParameter("@kid", DbType.Int32);
+            p[12].Value = 0;
+            p[13] = new SqlParameter("@SETAmount", DbType.Decimal);
+            p[13].Value = Convert.ToDecimal(txtAmount.Value);
+            p[14] = new SqlParameter("@reqid1", DbType.Int32);
+            p[14].Value = 0;
+            p[15] = new SqlParameter("@sellby", DbType.Int32);
+            p[15].Value = 0;
+            p[16] = new SqlParameter("@intResult", DbType.Int32);
+            p[16].Direction = ParameterDirection.Output;
+            p[17] = new SqlParameter("@Fromdate", DbType.DateTime);
+            p[17].Value = "01-01-2019";
+            p[18] = new SqlParameter("@Todate", DbType.DateTime);
+            p[18].Value = "01-01-2020";
+            p[19] = new SqlParameter("@Pid", DbType.Int32);
+            p[19].Value = Convert.ToInt32(ddlproduct.SelectedValue);
+            //returnValue = objDUT.ExecuteSqlSP(p, "SP_RequestEvoucher"); 
+            returnValue = objDUT.ExecuteSqlSP(p, "SP_RequestEvoucher1"); 
+
+            
+
+            if (returnValue > 0)
+            {
+                if (selPayMode.SelectedValue == "ewallet")
+                {
+                errorT.InnerText = "Successfully save! ";
+                errorT.Attributes.Add("class", "alert alert-success");
+                errorT.Visible = true;
+                btSubmit.Attributes.Add("disabled", "disabled");
+
+                }else{
+
+                    errorT.InnerText = " Request Successfully! ";
+                errorT.Attributes.Add("class", "alert alert-info");
+                errorT.Visible = true;
+                btSubmit.Attributes.Add("disabled", "disabled");
+                
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            LogException.WriteToLog(ex);
+        }
+        finally
+        {
+
+        }
+         
+    }
+
+
+    public void bindall()
+    {
+        DataTable dtP = objDUT.GetDataTable("select pid,Pname=pname+' Rs.'+Cast(dp as varchar) from Product_master where pActive=1 and Usedascombo=1 order by pname");
+        if (dtP.Rows.Count > 0)
+        {
+            ddlproduct.DataSource = dtP;
+            ddlproduct.DataValueField = "PID";
+            ddlproduct.DataTextField = "Pname";
+            ddlproduct.DataBind();
+            ddlproduct.Items.Insert(0,"---Select ---");
+        }
+
+
+        lbl_totalevoucher.Text = Convert.ToString(objDUT.GetScalar("select count(*)  from voucher_master "));
+        lbl_freeevoucher.Text = Convert.ToString(objDUT.GetScalar("select  count(regno)  from voucher_master where regno =0 "));
+        lbl_soldevoucher.Text = Convert.ToString(objDUT.GetScalar("select  isnull(count(regno),0) from voucher_master where regno >0 "));
+    }
+
+    
+    
+    protected void txtNoOfEpin_TextChanged(object sender, EventArgs e)
+    {
+        if (txtNoOfEpin.Text != "")
+        {
+            // string pid = ddlproduct.Value;
+            if (ddlproduct.SelectedIndex == -1)
+            {
+                errorT.InnerText = "Please select Package Name ";
+                errorT.Attributes.Add("class", "alert alert-error");
+                errorT.Visible = true;
+                ddlproduct.Focus();
+                return;
+            }
+            else
+            {
+                DataTable DTP = objDUT.GetDataTable("select * from Product_master where pid=" + ddlproduct.SelectedValue + "");
+                if (DTP.Rows.Count > 0)
+                {
+                    txtAmount.Value = (Convert.ToDecimal(DTP.Rows[0]["DP"]) * Convert.ToDecimal(txtNoOfEpin.Text)).ToString();
+                }
+
+
+            }
+
+        }
+    }
+    protected void ddlproduct_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (txtNoOfEpin.Text != "")
+        {
+            // string pid = ddlproduct.Value;
+            if (ddlproduct.SelectedIndex == -1)
+            {
+                errorT.InnerText = "Please select Package Name ";
+                errorT.Attributes.Add("class", "alert alert-error");
+                errorT.Visible = true;
+                ddlproduct.Focus();
+                return;
+            }
+            else
+            {
+                DataTable DTP = objDUT.GetDataTable("select * from Product_master where pid=" + ddlproduct.SelectedValue + "");
+                if (DTP.Rows.Count > 0)
+                {
+                    txtAmount.Value = (Convert.ToDecimal(DTP.Rows[0]["DP"]) * Convert.ToDecimal(txtNoOfEpin.Text)).ToString();
+                }
+
+
+            }
+
+        }
+    }
+}
+********
+                                      <button  id="Cancel_Button"  class="btn btn-success"  runat="server" tabindex="33" onserverclick="Submit_Click"   > <i class="icon-ok icon-white" ></i>Submit</button> 
+                                        

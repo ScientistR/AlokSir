@@ -1,0 +1,1750 @@
+//**************************************************************
+//  Creator Name    : Dipak Sinha    
+//  Creation Date   : 17/10/2007
+//  Reason          : To create Database driven generic methods.
+//  Updated By      :
+//  Update Date     : 19/10/2007
+//**************************************************************
+//------------------------Database Query------------------------//
+
+using System;
+using System.Data;
+using System.Configuration;
+using System.Data.SqlClient;
+/// <summary>
+/// This class work as a Model,
+/// all DB driven generic methods to be placed here. 
+/// </summary>
+
+public class DataUtility
+{
+    #region All Constructors
+    /// <summary>
+    /// This default or no argument constructor.
+    /// </summary>
+    public DataUtility()
+	{
+		//
+		// TODO: Add constructor logic here
+		//
+        }
+    /// <summary>
+    /// This parametrized constructor
+    /// </summary>
+    /// <param name="Connection">string</param>
+
+    public DataUtility(string Connection)
+    {
+        this._mCon = new SqlConnection(Connection);
+    }
+    #endregion
+
+    #region All Propreties
+    private SqlConnection _mCon;
+    
+    public SqlConnection mCon
+    {
+        get { return _mCon; }
+        set { _mCon = value; }
+    }
+
+   
+    private SqlCommand _mDataCom;
+    
+    public SqlCommand mDataCom
+    {
+        get { return _mDataCom; }
+        set { _mDataCom = value; }
+    }
+
+    private SqlDataAdapter _mDa;
+
+    public SqlDataAdapter mDa
+    {
+        get
+        {
+            if (_mDa == null)
+            {
+                _mDa = new SqlDataAdapter();
+            }
+            return _mDa;
+        }
+        set { _mDa = value; }
+    }
+
+    private DataTable _DataTable;
+
+    public DataTable DataTable
+    {
+        get
+        {
+            if (_DataTable == null)
+            {
+                _DataTable = new DataTable();
+            }
+            return _DataTable; 
+        }
+        set { _DataTable = value; }
+    }
+
+    private DataSet _DataSet;
+
+    public DataSet DataSet
+    {
+        get
+        {
+            if (_DataSet == null)
+            {
+                _DataSet = new DataSet();
+            }
+            return _DataSet;
+        }
+        set { _DataSet = value; }
+    }
+	
+	
+    #endregion
+
+    #region All private methods
+    /// <summary>
+    ///  1. Initialize Connection object with parameterize constructor.
+    ///  2. Initialize Command object wiht default or no argument constructor.
+    ///  3. Set active connectin with Command object.
+    /// </summary>
+    private void OpenConnection()
+    {
+        // Check Connection object for null.
+        if (_mCon == null)
+        {
+            _mCon = new SqlConnection(ConfigurationManager.AppSettings["ConnectionString"].ToString());
+           
+        }
+        // Check Connection State.
+        if (_mCon.State == ConnectionState.Closed)
+        {
+            _mCon.Close();
+            _mCon.Open();
+
+            // Initialize Command object.
+            _mDataCom = new SqlCommand();
+
+            // Set active connection with Command object.
+            _mDataCom.Connection = _mCon;
+        }
+
+    }
+    /// <summary>
+    /// This method  is used for close the connection.
+    /// </summary>
+    private void CloseConnection()
+    {
+        // Check Connection is open.
+        if (_mCon.State == ConnectionState.Open)
+        {
+            _mCon.Close();
+        }
+    }
+    /// <summary>
+    /// This method is used for Dispose the connection object.
+    /// </summary>
+    private void DisposeConnection()
+    {
+        if (_mCon != null)
+        {
+            _mCon.Dispose();
+            // Initialize Connection object with null.
+            _mCon = null;
+        }
+    }
+    #endregion
+
+    #region All public methods
+    /// <summary>
+    /// This method is used to execute DML  using SQL as text.
+    /// </summary>
+    /// <param name="strSql">string</param>
+    /// <returns>int, no of rows affected</returns>
+    public int ExecuteSql(string strSql)
+    {
+        // Open the connection.
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 18000;
+        // Execute the method.
+        int intResult = _mDataCom.ExecuteNonQuery();
+        // Close the connection.
+        CloseConnection();
+        // Release the resources.
+        DisposeConnection();
+        return intResult;
+    }
+    /// <summary>
+    /// This method is used to execute DML using parameterized SQL query.
+    /// Passing SqlParameter array and SQL query.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSql">string</param>
+    /// <returns>int, no of rows affected</returns>
+    public int ExecuteSql(SqlParameter [] arrParam,string strSql)
+    {
+        
+            OpenConnection();
+            _mDataCom.CommandType = CommandType.Text;
+            _mDataCom.CommandText = strSql;
+            _mDataCom.CommandTimeout = 18000;
+            for (int i = 0; i < arrParam.Length; i++)
+            {
+                _mDataCom.Parameters.Add(arrParam[i]);
+            }
+            int intResult = _mDataCom.ExecuteNonQuery();
+            CloseConnection();
+            DisposeConnection();
+            return intResult;
+    }
+
+    /// <summary>
+    /// This method is used to execute DML using stored procedure.
+    /// Passing SqlParameter array and procedure name.  
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSPName">string</param>
+    /// <returns>string, no of records affected</returns>
+    public string ExecuteSqlSPS(SqlParameter[] arrParam, string strSPName)
+    {
+        OpenConnection();
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSPName;
+        _mDataCom.CommandTimeout = 600;
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+
+        _mDataCom.ExecuteNonQuery();
+        string strResult = (_mDataCom.Parameters["@strResult"].Value.ToString());
+        CloseConnection();
+        DisposeConnection();
+        return strResult;
+    }
+
+    /// <summary>
+    /// This method is used to execute DML using stored procedure.
+    /// Passing SqlParameter array and procedure name.  
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSPName">string</param>
+    /// <returns>int, no of records affected</returns>
+    public int ExecuteSqlSP(SqlParameter[] arrParam, string strSPName)
+    {
+        OpenConnection();
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSPName;
+        _mDataCom.CommandTimeout = 18000;
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+       
+        _mDataCom.ExecuteNonQuery();
+        int intResult = Int32.Parse(_mDataCom.Parameters["@intResult"].Value.ToString());
+        CloseConnection();
+        DisposeConnection();
+        return intResult;
+    }
+
+    /// <summary>
+    /// This is to validate a record if its already there in the table.
+    /// If record exist return true else return false.
+    /// </summary>
+    /// <param name="strSql">string</param>
+    /// <returns>bool</returns>
+    public bool IsExist(string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 18000;
+        // Execute the method
+        int intResult = (int)_mDataCom.ExecuteScalar(); // typecasting because ExecuteScalar return object.
+        CloseConnection();
+        DisposeConnection();
+        
+        // Check the result.
+        if (intResult > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    /// <summary>
+    /// This method is used to return frist column of the selected record.
+    /// Pass SQL query as text.
+    /// Return object so type cast it.
+    /// Created Date : 31/10/2005
+    /// Created By   : Dipak Sinha.
+    /// </summary>
+    /// <param name="strSql">string</param>
+    /// <returns>object</returns>
+    public object GetScalar(string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 18000;
+        // Execute the method
+        object intResult = _mDataCom.ExecuteScalar(); 
+        CloseConnection();
+        DisposeConnection();
+        return intResult;
+    }
+
+    /// <summary>
+    /// This method check whether record already exist in the table.
+    /// Passing SqlParameter array and SQL query as text.
+    /// If exist return true else return false.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSql">string</param>
+    /// <returns>bool</returns>
+    public bool IsExist(SqlParameter [] arrParam, string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+       _mDataCom.CommandTimeout = 18000;
+
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+        // Execute the method
+        int intResult = (int)_mDataCom.ExecuteScalar(); // typecasting because ExecuteScalar return object.
+        CloseConnection();
+        DisposeConnection();
+
+        // Check the result.
+        if (intResult > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    /// <summary>
+    /// This method is used to execute DML using stored procedure.
+    /// Passing SqlParameter array and procedure name.  
+    /// If exist return true else return false.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSPName">string</param>
+    /// <returns>bool</returns>
+    public bool IsExistSP(SqlParameter[] arrParam, string strSPName)
+    {
+        OpenConnection();
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSPName;
+        _mDataCom.CommandTimeout = 18000;
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+
+       _mDataCom.ExecuteScalar();
+       int  intResult = Int32.Parse(_mDataCom.Parameters["@intResult"].Value.ToString());
+        CloseConnection();
+        DisposeConnection();
+        if (intResult > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+    /// <summary>
+    /// This method is used to execute DML using stored procedure.
+    /// Passing procedure name.  
+    /// If exist return true else return false.
+    /// </summary>
+    /// <param name="strSPName">string stored procedure name</param>
+    /// <returns>bool</returns>
+    public bool IsExistSP(string strSPName)
+    {
+        OpenConnection();
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSPName;
+        _mDataCom.CommandTimeout = 18000;
+        _mDataCom.ExecuteScalar();
+        int intResult = Int32.Parse(_mDataCom.Parameters["@intResult"].Value.ToString());
+        CloseConnection();
+        DisposeConnection();
+        if( intResult > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    /// <summary>
+    /// This is to read data in Disconnected mode using SQL as text.
+    /// </summary>
+    /// <param name="strSql">string</param>
+    /// <returns>DataTable</returns>
+    public DataTable GetDataTable(string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 18000;
+
+        // Initialize SqlDataAdapter object.
+        _mDa = new SqlDataAdapter();
+        // Set the Command object in DataAdapter.
+        _mDa.SelectCommand = _mDataCom;
+
+        // Initialize DataTable object.
+        _DataTable = new DataTable();
+        _mDa.Fill(_DataTable);
+        CloseConnection();
+        DisposeConnection();
+        return _DataTable;
+    }
+
+    /// <summary>
+    /// This is to read data in Disconnected mode using parameterized SQL.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSql">string</param>
+    /// <returns>DataTable</returns>
+    public DataTable GetDataTable(SqlParameter[] arrParam, string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 0;
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+        // Initialize SqlDataAdapter object.
+        _mDa = new SqlDataAdapter();
+        // Set the Command object in DataAdapter.
+        _mDa.SelectCommand = _mDataCom;
+        // Initialize DataTable object.
+        _DataTable = new DataTable();
+        _mDa.Fill(_DataTable);
+        CloseConnection();
+        DisposeConnection();
+        return _DataTable;
+
+    }
+    /// <summary>
+    /// This is to read data using Disconnected mode using stored procedure.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSPName">string</param>
+    /// <returns>DataTable</returns>
+    public DataTable GetDataTableSP(SqlParameter[] arrParam, string strSPName)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.StoredProcedure; ;
+        _mDataCom.CommandText =strSPName;
+        _mDataCom.CommandTimeout =18000;
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+        // Initialize SqlDataAdapter object.
+        _mDa = new SqlDataAdapter();
+        // Set the Command object in DataAdapter.
+        _mDa.SelectCommand = _mDataCom;
+        // Initialize DataTable object.
+        _DataTable = new DataTable();
+        _mDa.Fill(_DataTable);
+        CloseConnection();
+        DisposeConnection();
+        return _DataTable;
+
+    }
+    /// <summary>
+    /// This is to read data using Disconnected mode using stored procedure.
+    /// Passing procedure name as parameter.
+    /// </summary>
+    /// <param name="strSPName">string stored procedure name</param>
+    /// <returns>DataTable object</returns>
+    public DataTable GetDataTableSP(string strSPName)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSPName;
+        _mDataCom.CommandTimeout = 18000;
+        // Initialize SqlDataAdapter object.
+        _mDa = new SqlDataAdapter();
+        // Set the Command object in DataAdapter.
+        _mDa.SelectCommand = _mDataCom;
+        // Initialize DataTable object.
+        _DataTable = new DataTable();
+        _mDa.Fill(_DataTable);
+        CloseConnection();
+        DisposeConnection();
+        return _DataTable;
+
+    }
+    /// <summary>
+    /// This is to read data in Disconnected mode using SQL as text.
+    /// </summary>
+    /// <param name="strSql">string </param>
+    /// <returns>DataSet</returns>
+    public DataSet GetDataSet(string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 18000;
+        // Initailize SqlDataAdapter object.
+        _mDa = new SqlDataAdapter();
+        // Set the Command object in DataAdapter.
+        _mDa.SelectCommand = _mDataCom;
+        // Initialize DataSet object.
+        _DataSet = new DataSet();
+        _mDa.Fill(_DataSet);
+        CloseConnection();
+        DisposeConnection();
+        return _DataSet;
+
+    }
+    /// <summary>
+    /// This is to read data in Disconnected mode using parameterized SQL as text.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter[]</param>
+    /// <param name="strSql">string</param>
+    /// <returns>DataSet</returns>
+    public DataSet GetDataSet(SqlParameter[] arrParam, string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 18000;
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+        // Initialize SqlDataAdapter object.
+        _mDa = new SqlDataAdapter();
+        // Set the Command object in DataAdapter.
+        _mDa.SelectCommand = _mDataCom;
+        // Initialize DataSet object.
+        _DataSet = new DataSet();
+        _mDa.Fill(_DataSet);
+        CloseConnection();
+        DisposeConnection();
+        return _DataSet;
+    }
+
+    /// <summary>
+    /// This is to read data in Disconnected mode using stored procedure.
+    /// Passing stored procedure name.
+    /// </summary>
+    /// <param name="strSPName">string stored procedure name</param>
+    /// <returns>DataSet</returns>
+    public DataSet GetDataSetSP(string strSPName)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSPName;
+        _mDataCom.CommandTimeout = 18000;
+        // Initialize SqlDataAdapter object.
+        _mDa = new SqlDataAdapter();
+        // Set the Command object in DataAdapter.
+        _mDa.SelectCommand = _mDataCom;
+        // Initialize DataSet object.
+        _DataSet = new DataSet();
+        _mDa.Fill(_DataSet);
+        CloseConnection();
+        DisposeConnection();
+        return _DataSet;
+    }
+
+    /// <summary>
+    /// This is to read data in Disconnected mode using parameterized stored procedure.
+    /// Passing SqlParameter collection stored procedure name.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter[]</param>
+    /// <param name="strSPName">string</param>
+    /// <returns>DataSet</returns>
+    public DataSet GetDataSetSP(SqlParameter[] arrParam, string strSPName)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSPName;
+        _mDataCom.CommandTimeout = 18000;
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+        // Initialize SqlDataAdapter object.
+        _mDa = new SqlDataAdapter();
+        // Set the Command object in DataAdapter.
+        _mDa.SelectCommand = _mDataCom;
+        // Initialize DataSet object.
+        _DataSet = new DataSet();
+        _mDa.Fill(_DataSet);
+        CloseConnection();
+        DisposeConnection();
+        return _DataSet;
+
+    }
+
+    /// <summary>
+    /// This is to read data using Connected mode using SQL as text.
+    /// </summary>
+    /// <param name="strSql">string</param>
+    /// <returns>SqlDataReader</returns>
+    public SqlDataReader GetDataReader(string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+       _mDataCom.CommandTimeout = 18000;
+
+        // Create SqlDataReader object.
+        SqlDataReader dReader;
+        dReader = _mDataCom.ExecuteReader(CommandBehavior.CloseConnection);
+        return dReader;
+    }
+    /// <summary>
+    /// This is to read data using Connected mode using parameterized SQL.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSql">string</param>
+    /// <returns>SqlDataReader</returns>
+    public SqlDataReader GetDataReader(SqlParameter[] arrParam, string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 18000;
+
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+        // Create SqlDataReader object.
+        SqlDataReader dReader;
+        dReader = _mDataCom.ExecuteReader(CommandBehavior.CloseConnection);
+        return dReader;
+
+    }
+
+    /// <summary>
+    /// This is to read data in Connected mode using stored procedure.
+    /// Passing SqlParameter and procedure name as parameter.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSql">string</param>
+    /// <returns>SqlDataReader</returns>
+    public SqlDataReader GetDataReaderSP(SqlParameter[] arrParam, string strSPName)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSPName;
+        _mDataCom.CommandTimeout = 18000;
+
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+             _mDataCom.Parameters.Add(arrParam[i]);
+        }
+        // Create SqlDataReader object.
+        SqlDataReader dReader;
+        dReader = _mDataCom.ExecuteReader(CommandBehavior.CloseConnection);
+        return dReader;
+
+    }
+    /// <summary>
+    /// This is to read data in Connected mode using stored procedure.
+    /// Passing procedure name as parameter.
+    /// </summary>
+    /// <param name="strSPName">string stored procedure name</param>
+    /// <returns>SqlDataReader object</returns>
+    public SqlDataReader GetDataReaderSP(string strSPName)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSPName;
+        _mDataCom.CommandTimeout = 18000;
+        // Create SqlDataReader object.
+        SqlDataReader dReader;
+        dReader = _mDataCom.ExecuteReader(CommandBehavior.CloseConnection);
+        return dReader;
+    }
+
+    /// <summary>
+    /// This is to read Single data using Connected mode using SQL as text.
+    /// </summary>
+    /// <param name="strSql">string</param>
+    /// <returns>Object</returns>
+    public object GetScaler(SqlParameter[] arrParam, string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.Parameters.Clear();
+        _mDataCom.CommandType = CommandType.Text;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 18000;
+        _mDataCom.Parameters.Add(arrParam[0]);
+
+        // Create SqlDataReader object.
+        //SqlDataReader dReader;
+        Object oObject;
+        oObject = _mDataCom.ExecuteScalar();
+        return oObject;
+    }
+    public object GetScalerSP(SqlParameter[] arrParam, string strSql)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.Parameters.Clear();
+        _mDataCom.CommandType = CommandType.StoredProcedure;
+        _mDataCom.CommandText = strSql;
+        _mDataCom.CommandTimeout = 18000;
+        _mDataCom.Parameters.Add(arrParam[0]);
+
+        // Create SqlDataReader object.
+        //SqlDataReader dReader;
+        Object oObject;
+        oObject = _mDataCom.ExecuteScalar();
+        return oObject;
+    }
+
+    /// <summary>
+    /// This is to read data using Disconnected mode using stored procedure.
+    /// </summary>
+    /// <param name="arrParam">SqlParameter</param>
+    /// <param name="strSPName">string</param>
+    /// <returns>DataTable</returns>
+    public DataTable GetMaster(SqlParameter[] arrParam)
+    {
+        OpenConnection();
+        // Set Command object properties.
+        _mDataCom.CommandType = CommandType.StoredProcedure; ;
+        _mDataCom.CommandText = "USP_GetMaster";
+        _mDataCom.CommandTimeout = 18000;
+        for (int i = 0; i < arrParam.Length; i++)
+        {
+            _mDataCom.Parameters.Add(arrParam[i]);
+        }
+        // Initialize SqlDataAdapter object.
+        _mDa = new SqlDataAdapter();
+        // Set the Command object in DataAdapter.
+        _mDa.SelectCommand = _mDataCom;
+        // Initialize DataTable object.
+        _DataTable = new DataTable();
+        _mDa.Fill(_DataTable);
+        CloseConnection();
+        DisposeConnection();
+        return _DataTable;
+
+    }
+
+    #endregion
+}
+************
+//***************************************************
+//  Creator Name    : Dipak Sinha    
+//  Creation Date   : 17/10/2007
+//  Reason          : To create all BL generic methods.
+//  Updated By      :
+//  Update Date     : 26/10/2007
+//***************************************************
+
+
+using System;
+using System.Data;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Data.SqlClient;
+using System.Xml.Serialization;
+using System.IO;
+using System.Web.SessionState;
+using System.Collections;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+/// <summary>
+/// This class work as a Model,
+/// all BL driven generic methods to be placed here.
+/// </summary>
+public class Utility
+{
+    DataUtility objDUT = new DataUtility();
+    public Utility()
+    {
+        //
+        // TODO: Add constructor logic here
+        //
+    }
+    /// <summary>
+    /// This is created to show user defined message.
+    /// </summary>
+    /// <param name="msg">Enum</param>
+    /// <returns>String</returns>
+
+    public string ShowMsg(MsgType msg)
+    {
+        switch (msg)
+        {
+           
+            case MsgType.DELETE :
+                return ConfigurationManager.AppSettings["DeleteMsg"].ToString();
+                break;
+            case MsgType.INSERT:
+                return ConfigurationManager.AppSettings["InsertMsg"].ToString();
+                break;
+            case MsgType.ERROR:
+                return ConfigurationManager.AppSettings["ErrorMsg"].ToString();
+                break;
+            case MsgType.ISEXIST :
+                return ConfigurationManager.AppSettings["ExistMsg"].ToString();
+                break;
+            case MsgType.UPDATE :
+                return ConfigurationManager.AppSettings["UpdateMsg"].ToString();
+                break;
+            case MsgType.UNDEFINE :
+                return ConfigurationManager.AppSettings["UndefineMsg"].ToString();
+                break;
+            case MsgType.LOGINPASSWORD :
+                return ConfigurationManager.AppSettings["LoginMsg"].ToString();
+            case MsgType.PARENTNOT :
+                return ConfigurationManager.AppSettings["ParentMsg"].ToString();
+            case MsgType.PARENTFULL :
+                return ConfigurationManager.AppSettings["ParentFullMsg"].ToString();
+            case MsgType.PARENTNOTINTREE :
+                return ConfigurationManager.AppSettings["ParetnTreeMsg"].ToString();
+            case MsgType.SPONSOR :
+                return ConfigurationManager.AppSettings["SponsorMsg"].ToString();
+            case MsgType.ASSOCIATE :
+                return ConfigurationManager.AppSettings["AssociateMsg"].ToString();
+            case MsgType.SPONSOREXIST :
+                return ConfigurationManager.AppSettings["SponsorEMsg"].ToString();
+            case MsgType.BOARD :
+                return ConfigurationManager.AppSettings["BoardMsg"].ToString();
+            case MsgType.STATENOT :
+                return ConfigurationManager.AppSettings["StateMsg"].ToString();
+            case MsgType.LOGINALREADY:
+                return ConfigurationManager.AppSettings["LoginAlreadyMsg"].ToString();
+            case MsgType.ACSTATEMENT:
+                return ConfigurationManager.AppSettings["ACStatementMsg"].ToString();
+            case MsgType.SPONSORLIST:
+                return ConfigurationManager.AppSettings["SponsorList"].ToString();
+            case MsgType.DOWNLINE:
+                return ConfigurationManager.AppSettings["DownlineList"].ToString();
+            case MsgType.CHILDLIST:
+                return ConfigurationManager.AppSettings["ChildList"].ToString();
+            default :
+                return "Error !!";
+                break;
+        }
+    }
+
+    ///<Summry>
+    ///This method check the permission of an user on page
+    /// </Summry>
+    /// <param name="userId">bigint</param>
+    /// <param name="PageName">string</param>
+    /// <returns>bool</returns>
+    public Boolean isAccessible(Int64 userId, string pageName)
+    {
+        Boolean Flag = true;
+        Int32 result = 0;
+        SqlParameter[] arrParam = new SqlParameter[3];
+        arrParam[0] = new SqlParameter("@userId", SqlDbType.BigInt); // change to bigint
+        arrParam[0].Value = userId;
+        arrParam[1] = new SqlParameter("@pageName", SqlDbType.VarChar, 50); // change to bigint
+        arrParam[1].Value = pageName;
+        arrParam[2] = new SqlParameter("@intResult", SqlDbType.Int);
+        arrParam[2].Direction = ParameterDirection.Output;
+
+        result = Convert.ToInt32(objDUT.ExecuteSqlSP(arrParam, "USP_checkPermission").ToString());
+        if (result == 0)
+            Flag = false;
+        else
+            Flag = true;
+        return Flag;
+    } 
+
+
+    /// <summary>
+    /// This method check input string is numeric or not.
+    /// If numeric return true else false.
+    /// Creation Date : 23/10/2007.
+    /// </summary>
+    /// <param name="strValue">string</param>
+    /// <returns>bool</returns>
+    public bool IsNumeric(string strValue)
+    {
+        string strValidChars = "0123456789";
+        bool Flag = true;
+        for (int i = 0; i < strValue.Length && Flag == true; i++)
+        {
+            char s = Convert.ToChar(strValue.Substring(i, 1));
+            if (strValidChars.IndexOf(s) == -1)
+            {
+                Flag = false;
+            }
+        }
+        return Flag;
+
+    }
+    /// <summary>
+    /// This method is used to get registration number.
+    /// Pass loginid or Login Id and Zone Code as argument .
+    /// Creation Date : 23/10/2007.
+    /// Updation Date : 01/10/2010.
+    /// </summary>
+    /// <param name="strValue">string</param>
+    /// <param name="zone">string</param>
+    /// <returns>long, Registration Number</returns>
+    public long GetRegistrationNo(string strValue)
+    {
+        long lngRegNo=0;
+        long lngRegNos=0;
+       bool Flag = IsNumeric(strValue);
+        // Create Datautility object.
+        DataUtility objDUT = new DataUtility();
+        if (Flag)
+        {
+
+            string lngRandomid = Convert.ToString(strValue.Trim());
+            string strSql = " select regno from Member_master where randomid = @lngRandomid or loginid = @lngRandomid ";
+            SqlParameter[] arrParam = new SqlParameter[1];
+            arrParam[0] = new SqlParameter("@lngRandomid", SqlDbType.VarChar, 50); // change to bigint
+            arrParam[0].Value = lngRandomid;
+            SqlDataReader dReader = objDUT.GetDataReader(arrParam, strSql);
+            while (dReader.Read())
+            {
+                lngRegNo = Convert.ToInt64(dReader["Regno"]);
+            }
+            return lngRegNo;
+        }
+        else
+        {
+            string strLoginId = strValue.Trim();
+            string strSqlRegno = " select regno from Member_master where loginid = @strLoginId ";
+            SqlParameter[] arrParams = new SqlParameter[1];
+            arrParams[0] = new SqlParameter("@strLoginId", SqlDbType.VarChar, 50);
+            arrParams[0].Value = strLoginId;
+            //arrParams[1] = new SqlParameter("@zoneCode", SqlDbType.VarChar, 50); // change to bigint
+            //arrParams[1].Value = zone;
+            SqlDataReader dReader = objDUT.GetDataReader(arrParams, strSqlRegno);
+            while (dReader.Read())
+            {
+                lngRegNos = Convert.ToInt64(dReader["Regno"]);
+            }
+            return lngRegNos;
+        }
+        
+    }
+    /// <summary>
+    /// This method is used to get registration number.
+    /// Pass loginid or Login Id and Branch Code as argument.
+    /// This return regno if member exist in that branch
+    /// Creation Date : 23/10/2007.
+    /// Updation Date : 10/11/2010.
+    /// </summary>
+    /// <param name="strValue">string</param>
+    /// <param name="branch">string</param>
+    /// <returns>long, Registration Number</returns>
+    public long GetRegNoBranch(string strValue, string branch)
+    {
+        long lngRegNo = 0;
+        long lngRegNos = 0;
+        bool Flag = IsNumeric(strValue);
+        // Create Datautility object.
+        DataUtility objDUT = new DataUtility();
+        if (Flag)
+        {
+
+            //long lngmemcode= Convert.ToInt64(strValue.Trim());
+            string strSql = " select regno from Member_master where Active=1 and customerid = @lngmemcode and BranchCode=@branchCode";
+            SqlParameter[] arrParam = new SqlParameter[2];
+            arrParam[0] = new SqlParameter("@lngmemcode", SqlDbType.VarChar, 50); // change to bigint
+            arrParam[0].Value = strValue;
+            arrParam[1] = new SqlParameter("@branchCode", SqlDbType.VarChar, 50); // change to bigint
+            arrParam[1].Value = branch;
+            SqlDataReader dReader = objDUT.GetDataReader(arrParam, strSql);
+            while (dReader.Read())
+            {
+                lngRegNo = Convert.ToInt64(dReader["Regno"]);
+            }
+            return lngRegNo;
+        }
+        else
+        {
+            string strLoginId = strValue.Trim();
+            string strSqlRegno = " select regno from Member_master where Active=1 and customerid = @strLoginId and BranchCode=@branchCode";
+            SqlParameter[] arrParams = new SqlParameter[2];
+            arrParams[0] = new SqlParameter("@strLoginId", SqlDbType.VarChar, 50);
+            arrParams[0].Value = strLoginId;
+            arrParams[1] = new SqlParameter("@branchCode", SqlDbType.VarChar, 50); // change to bigint
+            arrParams[1].Value = branch;
+            SqlDataReader dReader = objDUT.GetDataReader(arrParams, strSqlRegno);
+            while (dReader.Read())
+            {
+                lngRegNos = Convert.ToInt64(dReader["Regno"]);
+            }
+            return lngRegNos;
+        }
+
+    }
+    //This method is used to get registration number.
+   //  Pass Only Login Id as argument.
+    public long GetRegNo(string strValue)
+    {
+        
+        long lngRegNos = 0;
+        bool Flag = IsNumeric(strValue);
+        // Create Datautility object.
+        DataUtility objDUT = new DataUtility();
+       
+            string strLoginId = strValue.Trim();
+            string strSqlRegno = " select regno from Member_master where Active=1 and loginid = @strLoginId";
+            SqlParameter[] arrParams = new SqlParameter[1];
+            arrParams[0] = new SqlParameter("@strLoginId", SqlDbType.VarChar, 50);
+            arrParams[0].Value = strLoginId;
+            SqlDataReader dReader = objDUT.GetDataReader(arrParams, strSqlRegno);
+            while (dReader.Read())
+            {
+                lngRegNos = Convert.ToInt64(dReader["Regno"]);
+            }
+            return lngRegNos;
+       
+
+    }
+
+
+    /// <summary>
+    /// This method is used to get Login Id of that registration number or Member Code.
+    /// Creation Date : 23/10/2007.
+    /// </summary>
+    /// <param name="lngRegNo">long, Registration Number or Member Code</param>
+    /// <returns>string, Login Id</returns>
+    public string GetLoginId(long lngRegNo)
+    {
+        string strLoginId=String.Empty;
+        // Create Datautility object.
+        DataUtility objDUT = new DataUtility();
+        string strSql = " select loginid from Member_master where regno =@lngRegNo";
+        SqlParameter[] arrParam = new SqlParameter[1];
+        arrParam[0] = new SqlParameter("@lngRegNo", SqlDbType.Int, 8); // replace with bigint
+        arrParam[0].Value = lngRegNo;
+        SqlDataReader dReader = objDUT.GetDataReader(arrParam, strSql);
+        while (dReader.Read())
+        {
+            strLoginId = dReader["loginid"].ToString();
+        }
+        dReader.Close();
+        return strLoginId;
+    }
+    /// <summary>
+    /// This method is used to get Login Id of that registration number or Member Code.
+    /// from member_cycle_master by cpid and joining with member_board table.
+    /// Creation Date : 23/10/2007.
+    /// </summary>
+    /// <param name="lngRegNo">long, Registration Number or Member Code</param>
+    /// <returns>string, Login Id</returns>
+    public string GetLoginIdbycpid(long lngRegNo, long cpid)
+    {
+        string strLoginId = String.Empty;
+        // Create Datautility object.
+        DataUtility objDUT = new DataUtility();
+        string strSql = "  select mcm.loginid from member_cycle_master mcm left outer join member_board mb on mcm.cpid=mb.cpid where mcm.regno=@lngRegNo and mcm.cpid=@cpid ";
+        SqlParameter[] arrParam = new SqlParameter[2];
+        arrParam[0] = new SqlParameter("@lngRegNo", SqlDbType.Int, 8); // replace with bigint
+        arrParam[0].Value = lngRegNo;
+        arrParam[1] = new SqlParameter("@cpid", SqlDbType.Int, 8); // replace with bigint
+        arrParam[1].Value = cpid;
+        SqlDataReader dReader = objDUT.GetDataReader(arrParam, strSql);
+        while (dReader.Read())
+        {
+            strLoginId = dReader["loginid"].ToString();
+        }
+        dReader.Close();
+        return strLoginId;
+    }
+    /// <summary>
+    /// This method is used to get Multiple Login Id According to multiple Registration Number.
+    /// Creation Date : 23/10/2007.
+    /// </summary>
+    /// <param name="strRegNo">string, Multiple Registration Number </param>
+    /// <returns>string, Multiple Login Id</returns>
+    public string GetLoginId(string strRegNo)
+    {
+        string strLoginId = String.Empty;
+        // Create Datautility object.
+        DataUtility objDUT = new DataUtility();
+        string strSql = " select loginid from Member_master where regno in ("+strRegNo+")"; // =@lngRegNo or loginid=@lngRegNo";
+       // SqlParameter[] arrParam = new SqlParameter[1];
+        //arrParam[0] = new SqlParameter("@strRegNo", SqlDbType.VarChar);
+        //arrParam[0].Value = strRegNo;
+        SqlDataReader dReader = objDUT.GetDataReader(strSql);
+        while (dReader.Read())
+        {
+            strLoginId = strLoginId + dReader["loginid"].ToString();
+            strLoginId = strLoginId + ",";
+        }
+        dReader.Close();
+        return strLoginId;
+    }
+
+    /// <summary>
+    /// This method is used to get Member Code of that registration number or loginid.
+    /// Creation Date : 23/10/2007.
+    /// </summary>
+    /// <param name="strValue">string, Registraion Number or LoginId</param>
+    /// <returns>long, MemberCode</returns>
+    public long GetMemberCode(string strValue)
+    {
+        long lngMemCode = 0;
+        long lngMemCodes = 0;
+        bool Flag = IsNumeric(strValue);
+        // Create Datautility object.
+        DataUtility objDUT = new DataUtility();
+        if (Flag)
+        {
+
+            long lngRegNo = Convert.ToInt64(strValue.Trim());
+            string strSql = " select Memcode from Member_master where regno = @lngRegNo";
+            SqlParameter[] arrParam = new SqlParameter[1];
+            arrParam[0] = new SqlParameter("@lngRegNo", SqlDbType.Int, 4); // replace with bigint
+            arrParam[0].Value = lngRegNo;
+            SqlDataReader dReader = objDUT.GetDataReader(arrParam, strSql);
+            while (dReader.Read())
+            {
+                lngMemCode = Convert.ToInt64(dReader["Memcode"]);
+            }
+            dReader.Close();
+            return lngMemCode;
+        }
+        else
+        {
+            string strLoginId = strValue.Trim();
+            string strSqlloginid = " select Memcode from Member_master where loginid = @strLoginId";
+            SqlParameter[] arrParams = new SqlParameter[1];
+            arrParams[0] = new SqlParameter("@strLoginId", SqlDbType.VarChar, 50);
+            arrParams[0].Value = strLoginId;
+            SqlDataReader dReader = objDUT.GetDataReader(arrParams, strSqlloginid);
+            while (dReader.Read())
+            {
+                lngMemCodes = Convert.ToInt64(dReader["memCode"]);
+            }
+            dReader.Close();
+            return lngMemCodes;
+        }
+        
+    }
+    public ArrayList getAllMobile(string regno)
+    {
+        ArrayList a = new ArrayList();
+        a.Add(objDUT.GetScalar("Select mobile from member_master where regno=" + regno + ""));
+        String[] ob = objDUT.GetScalar("Select More_MobileNo from member_master where regno=" + regno + "").ToString().Split(',');
+        if (ob.Length > 0)
+        {
+            foreach (string s in ob)
+            {
+                if (s != "")
+                {
+                    a.Add(s);
+                }
+            }
+        }
+        return a;
+    }
+    public string getAllMobileInComma(string regno)
+    {
+        string allmobile = string.Empty;
+        string number = string.Empty, number1 = string.Empty ;
+        allmobile = objDUT.GetScalar("Select mobile from member_master where regno=" + regno + "").ToString();
+        String moreMob = objDUT.GetScalar("Select More_MobileNo from member_master where regno=" + regno + "").ToString();
+        if (moreMob != "")
+        {
+            string[] arrNum = moreMob.Split(',');
+            if (arrNum.Length > 0)
+            {
+                for (int i = 0; i < arrNum.Length; i++)
+                {
+                    if (arrNum[i] != "")
+                    {
+                        number = "91" + arrNum[i] ;
+                    }
+                    if (i < Convert.ToInt32(arrNum.Length - 1))
+                    {
+                        number1 += number + ",";
+                    }
+                    else
+                    {
+                        number1 += number ;
+                    }
+                }
+            }
+            allmobile = allmobile + "," + number1;
+        }
+        return allmobile;
+    }
+
+    public int InsertSmsDetail(string regno,string Msg, string MsgType )
+    {
+        int intResult=0;
+        string number;
+        number = getAllMobileInComma(regno);
+        if (number != "")
+        {
+                string strSPInsert = "Usp_SmsDetail";
+
+                SqlParameter[] SmsDetail = new SqlParameter[5];
+                SmsDetail[0] = new SqlParameter("@Regno", SqlDbType.Int, 8);
+                SmsDetail[0].Value = Convert.ToInt64(regno);
+
+                SmsDetail[1] = new SqlParameter("@Mobile", SqlDbType.VarChar, 200);
+                SmsDetail[1].Value = number;
+
+                SmsDetail[2] = new SqlParameter("@SendMsg", SqlDbType.VarChar);
+                SmsDetail[2].Value = Msg;
+
+                SmsDetail[3] = new SqlParameter("@QueryType", SqlDbType.VarChar, 50);
+                SmsDetail[3].Value = MsgType;
+
+                SmsDetail[4] = new SqlParameter("@intResult", SqlDbType.Int, 4);
+                SmsDetail[4].Direction = ParameterDirection.Output;
+
+                intResult = objDUT.ExecuteSqlSP(SmsDetail, strSPInsert);
+                if (intResult > 0)
+                {
+                    long Smsid = Convert.ToInt64(objDUT.GetScalar("select max(smsID) from sms_details").ToString());
+                    HttpWebRequest myReq = (HttpWebRequest)WebRequest.Create("http://www.txtguru.in/imobile/api.php?username=bpcl&password=91751260&source=BPCLLP&dmobile=91" + number + "&message=" + Msg + "");
+                    HttpWebResponse MyResponse = (HttpWebResponse)myReq.GetResponse();
+                    Stream dataStream2 = MyResponse.GetResponseStream();
+                    // Open the stream using a StreamReader for easy access.
+                    StreamReader reader2 = new StreamReader(dataStream2);
+                    string returnvalue = reader2.ReadToEnd();
+                    //string returnvalue =  displayMsg(reader2.ReadToEnd());
+                    reader2.Close();
+                    string updateMsg = "update sms_details set ReceiveMsg='" + returnvalue + "' where smsID=" + Smsid + "";
+                    int ExeRes = objDUT.ExecuteSql(updateMsg);
+                }
+        }
+        else
+        {
+            intResult = 0;
+        }
+        return intResult;
+       
+        
+    }
+    public string displayMsg(string str)
+    {
+        string[] arr;
+        arr = str.Split('|');
+        return arr[0];
+    }
+
+    public static void showAlertMessage(Page page, string msg)
+    {
+        ScriptManager.RegisterClientScriptBlock(page, page.GetType(), "Key", "<script language='javascript'>alert('" + msg + "');</script>", false);
+    }
+
+    ////#region FillLookupDropDownList
+    //public static void FillLookupDropDownList(LookupTypes type, DropDownList ddl)
+    //{
+    //    DataSet dsLookup = new DataSet();
+    //    SqlHelper sqlHelper = new SqlHelper();
+    //    SqlParameter[] param = new SqlParameter[1];
+    //    SqlParameter[] LookupParam = new SqlParameter[2];
+    //    string spName = string.Empty;
+    //    switch (type)
+    //    {
+    //        case LookupTypes.Institute:
+    //            spName = "[uspInstitute]";
+    //            param[0] = new SqlParameter("@QueryType", "BindInstituteList");
+    //            dsLookup = SqlHelper.ExecuteDataset(sqlHelper.conn, CommandType.StoredProcedure, spName, param);
+    //            break;
+    //        case LookupTypes.State:
+    //            spName = "[uspState]";
+    //            param[0] = new SqlParameter("@QueryType", "BindStateList");
+    //            dsLookup = SqlHelper.ExecuteDataset(sqlHelper.conn, CommandType.StoredProcedure, spName, param);
+    //            break;
+    //        case LookupTypes.Course:
+    //            spName = "[uSPCourse]";
+    //            param[0] = new SqlParameter("@QueryType", "GetCourseList");
+    //            dsLookup = SqlHelper.ExecuteDataset(sqlHelper.conn, CommandType.StoredProcedure, spName, param);
+    //            break;
+    //        case LookupTypes.Bank:
+    //            spName = "[uspBank]";
+    //            param[0] = new SqlParameter("@SpQueryType", "GetActiveBank");
+    //            dsLookup = SqlHelper.ExecuteDataset(sqlHelper.conn, CommandType.StoredProcedure, spName, param);
+    //            break;
+    //        case LookupTypes.User:
+    //            spName = "[uspUser]";
+    //            param[0] = new SqlParameter("@QueryType", "BindUserList");
+    //            dsLookup = SqlHelper.ExecuteDataset(sqlHelper.conn, CommandType.StoredProcedure, spName, param);
+    //            break;
+    //        default:
+    //            spName = "[uspLookup]";
+    //            LookupParam[0] = new SqlParameter("@LookupTypeCode", (int)type);
+    //            LookupParam[1] = new SqlParameter("@QueryType", "GetLookupList");
+    //            dsLookup = SqlHelper.ExecuteDataset(sqlHelper.conn, CommandType.StoredProcedure, spName, LookupParam);
+    //            break;
+    //    }
+    //    ddl.DataSource = dsLookup.Tables[0];
+    //    ddl.DataTextField = "LookupName";
+    //    ddl.DataValueField = "LookupCode";
+    //    ddl.DataBind();
+    //    ddl.Items.Insert(0, new ListItem("Select", "0"));
+    //}
+    //#endregion
+
+    #region Base64Encode
+    public static string Base64Encode(string data)
+    {
+        byte[] encData_byte = new byte[data.Length];
+        encData_byte = System.Text.Encoding.UTF8.GetBytes(data);
+        string encodedData = Convert.ToBase64String(encData_byte);
+        return encodedData;
+    }
+    #endregion
+
+    #region Base64Decode
+    public static string Base64Decode(string data)
+    {
+        System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
+        System.Text.Decoder utf8Decode = encoder.GetDecoder();
+
+        byte[] todecode_byte = Convert.FromBase64String(data);
+        int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
+        char[] decoded_char = new char[charCount];
+        utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
+        string result = new String(decoded_char);
+        return result;
+    }
+    #endregion
+
+    #region SerializeToXML
+    public static string SerializeToXML(object toSerialize)
+    {
+        string toReturn = String.Empty;
+        if (toSerialize != null)
+        {
+            StringWriter stringWriter = new StringWriter();
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+            xmlSerializer.Serialize(stringWriter, toSerialize);
+            toReturn = stringWriter.ToString();
+            stringWriter.Close();
+        }
+        return toReturn;
+    }
+    #endregion
+
+    #region DeSerializeFromXML
+    public static object DeSerializeFromXML(string toDeSerialize, Type objectType)
+    {
+        object toReturn = null;
+        if (toDeSerialize != null && toDeSerialize != String.Empty)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(objectType);
+            toReturn = xmlSerializer.Deserialize(new StringReader(toDeSerialize));
+        }
+        return toReturn;
+    }
+    #endregion
+
+    #region ToSafeString
+    public static string ToSafeString(string value, string defaultValue)
+    {
+        string returnValue;
+        if (string.IsNullOrEmpty(value))
+        {
+            returnValue = defaultValue;
+        }
+        else
+        {
+            returnValue = value;
+
+        }
+        return returnValue;
+    }
+    #endregion
+
+    #region ToInt32
+    public static int ToInt32(string value, int defaultValue)
+    {
+        int returnValue;
+        if (string.IsNullOrEmpty(value))
+        {
+            returnValue = defaultValue;
+        }
+        else
+        {
+            if (!int.TryParse(value, out returnValue))
+            {
+                returnValue = defaultValue;
+            }
+        }
+        return returnValue;
+    }
+    #endregion
+
+    #region ToBool
+    public static bool ToBool(string value, bool defaultValue)
+    {
+        bool returnValue;
+        if (string.IsNullOrEmpty(value))
+        {
+            returnValue = defaultValue;
+        }
+        else
+        {
+            if (!bool.TryParse(value, out returnValue))
+            {
+                returnValue = defaultValue;
+            }
+        }
+        return returnValue;
+    }
+    #endregion
+
+    #region SaveToSession
+    public static void SaveToSession(string key, object value)
+    {
+        HttpSessionState Session = HttpContext.Current.Session;
+        Session[key] = value;
+    }
+    #endregion
+
+    #region LoadFromSession
+    public static object LoadFromSession(string key, object defaultValue)
+    {
+        HttpSessionState Session = HttpContext.Current.Session;
+        object returnValue = Session[key];
+        if (returnValue == null && defaultValue != null)
+        {
+            returnValue = defaultValue;
+        }
+        return returnValue;
+    }
+    #endregion
+
+    #region LoadDropDowns selected value int
+    public static void LoadDropDowns(int selectedValue, DropDownList ddl)
+    {
+        foreach (ListItem item in ddl.Items)
+        {
+            if (ToInt32(item.Value, 0) == selectedValue)
+            {
+                ddl.SelectedValue = item.Value;
+            }
+        }
+    }
+    #endregion
+
+    #region LoadDropDowns selected value string
+    public static void LoadDropDowns(string selectedValue, DropDownList ddl)
+    {
+        foreach (ListItem item in ddl.Items)
+        {
+            if (item.Value == selectedValue)
+            {
+                ddl.SelectedValue = item.Value;
+            }
+        }
+    }
+    #endregion
+
+    #region RepeaterCurrentRowCssClass
+    private static int rowCounter = 0;
+    public static string RepeaterCurrentRowCssClass
+    {
+        get
+        {
+            string toReturn = "";
+            if (rowCounter % 2 == 0)
+            {
+                toReturn = "bg_grey";
+            }
+            if (rowCounter == Int32.MaxValue)
+            {
+                rowCounter = 0;
+            }
+
+            else
+            {
+                rowCounter++;
+            }
+            return toReturn;
+        }
+    }
+    #endregion
+
+    #region FillDropDownList
+    public static void FillDropDownList(string ProcedureName, DropDownList ddl, string DataTextColName, string DataValueColName)
+    {
+        DataSet dsDdl = new DataSet();
+        DataUtility objDUT = new DataUtility();
+        ddl.Items.Clear();
+        ddl.DataSource = objDUT.GetDataTableSP(ProcedureName);
+        ddl.DataTextField = DataTextColName;
+        ddl.DataValueField = DataValueColName;
+        ddl.DataBind();
+        ddl.Items.Insert(0, new ListItem("Select", "0"));
+    }
+    #endregion
+
+    #region ViewAlertMessage
+    public static void ViewAlertMessage(Page page, string msg)
+    {
+        page.ClientScript.RegisterStartupScript(page.GetType(), "exampleScript", "<script language = " + "'javascript'>alert('" + msg + "')</script>");
+    }
+    #endregion
+
+    #region Get Page Name
+    public static string GetCurrentPagename()
+    {
+
+        string sPath = System.Web.HttpContext.Current.Request.Url.AbsolutePath;
+        System.IO.FileInfo oInfo = new System.IO.FileInfo(sPath);
+        string sRet = oInfo.Name;
+        
+        return sRet;
+       
+    }
+    #endregion
+   // #region RepeaterCurrentRowCssClass
+   //// private static int rowCounter = 0;
+   // public static string RepeaterCurrentRowCssClass
+   // {
+   //     get
+   //     {
+   //         string toReturn = "";
+   //         if (rowCounter % 2 == 0)
+   //         {
+   //             toReturn = "bg_grey";
+   //         }
+   //         if (rowCounter == Int32.MaxValue)
+   //         {
+   //             rowCounter = 0;
+   //         }
+
+   //         else
+   //         {
+   //             rowCounter++;
+   //         }
+   //         return toReturn;
+   //     }
+   // }
+   // #endregion
+
+    //#region showAlertMessage
+    //public static void showAlertMessage(Page page, string msg)
+    //{
+    //    ScriptManager.RegisterClientScriptBlock(page, page.GetType(), "Key", "<script language='javascript'>alert('" + msg + "');</script>", false);
+    //}
+    //#endregion
+
+    // Added Reset Function for Reseting controls of Page
+
+    //private void Reset()
+    //{
+    //    Control crtl;
+    //    ClearControl(crtl);
+    //}
+
+    ///// <summary>
+    ///// used to clear all controls
+    ///// </summary>
+    ///// <param name="root"></param>
+    //public void ClearControl(Control root)
+    //{
+    //    foreach (Control ctrl in root.Controls)
+    //    {
+    //        ClearControl(ctrl);
+    //        if (ctrl is TextBox)
+    //        {
+    //            ((TextBox)ctrl).Text = string.Empty;
+    //        }
+    //        if (ctrl is DropDownList)
+    //        {
+    //            ((DropDownList)ctrl).ClearSelection();
+    //        }
+    //        if (ctrl is RadioButtonList)
+    //        {
+    //            ((RadioButtonList)ctrl).ClearSelection();
+    //        }
+    //        if (ctrl is CheckBox)
+    //        {
+    //            ((CheckBox)ctrl).Checked = false;
+    //        }
+
+
+    //    }
+    //}
+
+    public static long GetTeamSize(long regno)
+    {
+        DataUtility objDUT = new DataUtility();
+        SqlParameter[] objMemInsert = new SqlParameter[6];
+        objMemInsert[0] = new SqlParameter("@mregno", SqlDbType.BigInt);
+        objMemInsert[0].Value = Convert.ToInt64(regno);
+        objMemInsert[1] = new SqlParameter("@side", SqlDbType.Char);
+        objMemInsert[1].Value = "";
+        objMemInsert[2] = new SqlParameter("@count", SqlDbType.Int);
+        objMemInsert[2].Value = 1;
+        objMemInsert[3] = new SqlParameter("@kid", SqlDbType.Int);
+        objMemInsert[3].Value = 0;
+        objMemInsert[4] = new SqlParameter("@payid", SqlDbType.Int);
+        objMemInsert[4].Value = 0;
+        objMemInsert[5] = new SqlParameter("@strResult", SqlDbType.VarChar, 1000);
+        objMemInsert[5].Direction = ParameterDirection.Output;
+        string intResult = objDUT.ExecuteSqlSPS(objMemInsert, "usp_downlineDetails").ToString();
+        long team_size = Convert.ToInt64(intResult);
+        return team_size;
+    }
+    public static string GetAutoshipStatus(long regno, string type)
+    {
+        SqlCommand cmd;
+        SqlConnection cnn = new SqlConnection(ConfigurationManager.AppSettings["ConnectionString"].ToString());
+        DataUtility objDUT = new DataUtility();
+        //------------- Get AutoShip Status
+        cmd = new SqlCommand();
+        cmd.CommandText = "sp_checkAutoShip";
+        cmd.Connection = cnn;
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@regno", regno);
+        cmd.Parameters.AddWithValue("@type", type);
+        SqlParameter strP = new SqlParameter("@strResult", SqlDbType.VarChar, 1000);
+        strP.Direction = ParameterDirection.Output;
+        cmd.Parameters.Add(strP);
+        cnn.Open();
+        SqlDataReader sdr = cmd.ExecuteReader();
+        string results = strP.Value.ToString();
+        cnn.Close();
+        return results;
+    }
+	public string Convert_DataTable_To_JSON(System.Data.DataTable dt)
+    {
+        System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+        List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+        Dictionary<string, object> row;
+        foreach (System.Data.DataRow dr in dt.Rows)
+        {
+            row = new Dictionary<string, object>();
+            foreach (System.Data.DataColumn col in dt.Columns)
+            {
+                row.Add(col.ColumnName, dr[col]);
+            }
+            rows.Add(row);
+        }
+        return serializer.Serialize(rows);
+    }
+	public DataTable Convert_JSON_To_DataTable(string jsonString)
+    {
+        DataTable dt = new DataTable();
+        try
+        {
+            //strip out bad characters
+            string[] jsonParts = Regex.Split(jsonString.Replace("[", "").Replace("]", ""), "},{");
+
+            //hold column names
+            List<string> dtColumns = new List<string>();
+
+            //get columns
+            foreach (string jp in jsonParts)
+            {
+                //only loop thru once to get column names
+                string[] propData = Regex.Split(jp.Replace("{", "").Replace("}", ""), ",");
+                foreach (string rowData in propData)
+                {
+                    try
+                    {
+                        int idx = rowData.IndexOf(":");
+                        string n = rowData.Substring(0, idx - 1);
+                        string v = rowData.Substring(idx + 1);
+                        if (!dtColumns.Contains(n))
+                        {
+                            dtColumns.Add(n.Replace("\"", ""));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(string.Format("Error Parsing Column Name : {0}", rowData));
+                    }
+
+                }
+                break; // TODO: might not be correct. Was : Exit For
+            }
+
+            //build dt
+            foreach (string c in dtColumns)
+            {
+                dt.Columns.Add(c);
+            }
+            //get table data
+            foreach (string jp in jsonParts)
+            {
+                string[] propData = Regex.Split(jp.Replace("{", "").Replace("}", ""), ",");
+                DataRow nr = dt.NewRow();
+                foreach (string rowData in propData)
+                {
+                    try
+                    {
+                        int idx = rowData.IndexOf(":");
+                        string n = rowData.Substring(0, idx - 1).Replace("\"", "");
+                        string v = rowData.Substring(idx + 1).Replace("\"", "");
+                        nr[n] = v;
+                    }
+                    catch (Exception ex)
+                    {
+                        continue;
+                    }
+
+                }
+                dt.Rows.Add(nr);
+            }
+        }
+        catch
+        {
+            dt = null;
+        }
+        return dt;
+    }
+}
+    
+***********

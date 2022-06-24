@@ -1,0 +1,172 @@
+///---------Repeter-------------// 
+<asp:Repeater ID="Currency_MasterRep" runat="server" OnItemCommand="Currency_MasterRep_ItemCommand" OnItemDataBound="Currency_MasterRep_ItemDataBound">
+  <ItemTemplate>
+                               
+ <li><a href='CurrencySessionManage.aspx?CMID=<%#  Eval("CMID") %>&CountryID=<%#  Eval("CID") %>'>
+                                           
+ <span class="photo">
+ 
+<img src='<%# Eval("Flag") %>' alt="flag" /></span>
+
+ <span class="subject">
+                                                   
+ <span class="from"> <%# Eval("CurrencyName")%></span>
+
+ <span class="time">
+                                                         
+ <%# Eval("CurrencySymbol") %>
+                                                       
+ <%# Eval("CurrencyRate", "{0:f}")%>
+                                                       
+ <%# Eval("CurrencyCode")%>
+
+</span>
+
+</span>
+                                            
+<span class="message">
+                                                       
+ <%# Eval("CountryName")%>
+                                                    
+</span></a></li>
+                                   
+ </ItemTemplate>
+                               
+ </asp:Repeater>
+____________________________________
+//-------------DropDownList Assing In Variable----------//
+     ***Counrty*****      
+           var parm = document.getElementById('<%= ddlcountry.ClientID %>')
+            var Countryid = parm.options[parm.selectedIndex].value;
+            var CountryName = parm.options[parm.selectedIndex].text;
+
+            var parm2 = document.getElementById('<%= ddlstate.ClientID %>');
+            var stateid = parm2.options[parm2.selectedIndex].value;
+            var Statename = parm2.options[parm2.selectedIndex].text;
+
+            var parmD = document.getElementById('<%= ddlDsistrict.ClientID %>');
+            var distID = parmD.options[parmD.selectedIndex].value;
+            var distName = parmD.options[parmD.selectedIndex].text;
+  
+	*****If Condition******
+	   Countryid = "0";
+            var CountryName = "";
+
+            if ($("#<%=ddlcountry.ClientID%>").length > 0) 
+	      {
+                 var parm = $("#<%= ddlcountry.ClientID%>").val();
+                 var parm = document.getElementById('<%= ddlcountry.ClientID %>')
+
+                  Countryid = parm.options[parm.selectedIndex].value;
+                  CountryName = parm.options[parm.selectedIndex].text;
+            }
+            else 
+		{
+                CountryName = $("#<%= txt_country.ClientID%>").val();
+               }
+
+            var stateid = "0";
+            var Statename = "";
+
+            if ($("#<%=ddlstate.ClientID%>").length > 0) 
+	      {
+                  var parm2 = document.getElementById('<%= ddlstate.ClientID %>');
+                  stateid = parm2.options[parm2.selectedIndex].value;
+                  Statename = parm2.options[parm2.selectedIndex].text;
+            }
+            else {
+                Statename = $("#<%= txtState.ClientID%>").val();
+            }
+
+            var distID = "0";
+            var distName = "";
+            if ($("#<%=ddlDsistrict.ClientID%>").length > 0) 
+	     {
+                  var parmD = document.getElementById('<%= ddlDsistrict.ClientID %>');
+                  var  distID = parmD.options[parmD.selectedIndex].value;
+                  var  distName = parmD.options[parmD.selectedIndex].text;
+            }
+            else 
+		{
+                distName = $("#<%= txtDistrict.ClientID%>").val();
+            }
+
+            var CityID = 0;
+            var Cityname = "";
+            if ($("#<%=ddlcity.ClientID%>").length > 0) {
+                var parm3 = document.getElementById('<%= ddlcity.ClientID %>');
+                  CityID = parm3.options[parm3.selectedIndex].value;
+                  Cityname = parm3.options[parm3.selectedIndex].text;
+            }
+            else {
+                Cityname = $("#<%= txtcity.ClientID%>").val();
+            }
+
+
+//--------Assing Gender in variable--------//
+
+           var gndr = document.getElementById('<%= ddlgender.ClientID %>')
+            var genderID = gndr.options[gndr.selectedIndex].value;
+            var gendername = gndr.options[gndr.selectedIndex].text;
+
+//------------Assing Session in Valiable In Jquery--------//
+   var loginid = null;
+      jQuery(document).ready(function () {
+          // initiate layout and plugins
+          App.init();
+          loginid = '<%= Session["username"] %>'
+
+      });
+
+//-------------Image------------//
+private void CreateFolder()
+    {
+        string path = Server.MapPath("~/mImage/" + regno + "");
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+    }
+//--------------CheckBox------------------/
+       var error = 0;
+        if (!($('#checkboxid').is(':checked'))) 
+	{
+            error = 1
+            alert("Please Tick the Agree to Terms of Use");
+        }
+
+-------------------
+
+  if($(this).is(":checked")){
+                alert("Checkbox is checked.");
+            }
+
+var isChecked = $('#chkSelect').is(':checked');
+        alert(isChecked);
+        if(isChecked)
+          $('p').html('Checkbox is checked: <b>True</b>');
+---------------------------
+
+ function CheckValidation(check)
+   {
+       if (check.is(':checked'))
+       {
+
+       }
+
+   }
+
+----------------------
+
+
+var isChecked = $('#chkSelect').attr('checked')?true:false;
+
+
+var isChecked = $('#chkSelect').prop('checked');
+
+
+var isChecked = $('#chkSelect:checked').val()?true:false;
+
+
+var isChecked = $('#chkSelect').is(':checked');
+------------------------------------

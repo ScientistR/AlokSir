@@ -1,0 +1,671 @@
+<asp:HiddenField ID="HiddenField_regno" Value='<%#Eval("Regno") %>' runat="server" />
+
+---------
+[WebMethod]
+    public List<Memberdetail> PayoutPayment(string loginid, string payid, string balance, string release, string type, string totalbalance, string bank)
+    {
+        List<Memberdetail> GetList = new List<Memberdetail>();
+        try
+        {
+            sdr = null;
+            SqlParameter[] param = new SqlParameter[7];
+            param[0] = new SqlParameter("@loginid", SqlDbType.VarChar, 100);
+            param[0].Value = loginid;
+            param[1] = new SqlParameter("@type", SqlDbType.Int, 4);
+            param[1].Value = Convert.ToInt32(type);
+            param[2] = new SqlParameter("@balance", SqlDbType.Money);
+            if (balance == "0")
+            {
+                param[2].Value = Convert.ToDouble(0);
+            }
+            else
+            {
+                param[2].Value = Convert.ToDouble(balance);
+            }
+            param[3] = new SqlParameter("@maxrelease", SqlDbType.Money);
+            if (release == "0")
+            {
+                param[3].Value = Convert.ToDouble(0);
+            }
+            else
+            {
+                param[3].Value = Convert.ToDouble(release);
+            }
+            param[4] = new SqlParameter("@payid", SqlDbType.Int, 4);
+            if (payid == "0")
+            {
+                param[4].Value = Convert.ToInt32(0);
+            }
+            else
+            {
+                param[4].Value = Convert.ToInt32(payid);
+            }
+            param[5] = new SqlParameter("@totalbal", SqlDbType.Money);
+            if (totalbalance == "0")
+            {
+                param[5].Value = Convert.ToInt32(0);
+            }
+            else
+            {
+                param[5].Value = Convert.ToDouble(totalbalance);
+            }
+            param[6] = new SqlParameter("@bankname", SqlDbType.VarChar, 50);
+            if (bank == "")
+            {
+                param[6].Value = "";
+            }
+            else
+            {
+                param[6].Value = bank;
+            }
+            sdr = objDUT.GetDataReaderSP(param, "Sp_GetActualBallance");
+            while (sdr.Read())
+            {
+                Memberdetail list = new Memberdetail();
+                // list.kankid = sdr[""].ToString();
+                //  list.bankname = sdr["corebank"].ToString();
+                list.regno = sdr["regno"].ToString();
+                list.Username = sdr["loginid"].ToString();
+                list.Name = sdr["Name"].ToString();
+                list.mempan = sdr["mempan"].ToString();
+                list.Address = sdr["address"].ToString();
+                list.CurrentBalance = string.Format("{0:f}", sdr["Total"]);
+                list.ReleaseAmt = string.Format("{0:f}", sdr["released"]);
+                GetList.Add(list);
+            }
+            sdr.Dispose();
+        }
+        catch (Exception exce)
+        {
+            LogException.WriteToLog(exce);
+        }
+        return GetList;
+    }
+--------------------------------
+  st = "Select * from Shop_master where shopID= '" + payid + "' ";
+        DataTable dt = objDUT.GetDataTable(st);
+       foreach (DataRow row in dt.Rows)
+       {
+           RechargeShop Payout = new RechargeShop();
+           Payout.shopName = row["shopName"].ToString();
+           Payout.shopContactPerson = row["shopContactPerson"].ToString();
+           Payout.shopMobile = row["shopMobile"].ToString();
+           Payout.shopEmail = row["shopEmail"].ToString();
+           PayoutList.Add(Payout);
+       }
+---------------------------------
+[WebMethod]
+    public List<RechargeShop> GetShopID(string payid)
+    {
+        sdr = null;
+
+        string st = null;
+        List<RechargeShop> PayoutList = new List<RechargeShop>();
+
+
+
+        DataTable ds = objDUT.GetDataTable("Select * from Shop_master where shopID='" + payid + "'");
+        if (ds.Rows.Count > 0)
+        {
+            RechargeShop Payout = new RechargeShop();
+            Payout.shopName = ds.Rows[0]["shopName"].ToString();
+            Payout.shopMobile = ds.Rows[0]["shopMobile"].ToString();
+            Payout.shopContactPerson = ds.Rows[0]["shopContactPerson"].ToString();
+            Payout.shopEmail = ds.Rows[0]["shopEmail"].ToString();
+            PayoutList.Add(Payout);
+
+        }
+
+
+        //----------------------------------//
+      
+
+
+           
+        return PayoutList;
+    }
+---------------------
+function GetShop() {
+            var shopid = $("#<%=ddlShopCode.ClientID%>").val();
+            if (shopid == "0") {
+
+             }
+             else {
+                getShopID(shopid);
+               
+             }
+        }
+
+        function getShopID(shopid)
+        {
+
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/GetShopID",
+                data: "{ payid : '" + shopid + "' }",
+                //data: "{ shopID : '" + ShopCode + "' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: GetID,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>Error , </strong>There are some technical error. Please Try Again.");
+                }
+            });
+
+        }
+        function GetID(msg) {
+            var JsonData = msg.d;
+            $("#<%=txtShopName.ClientID%>").val(JsonData[0].shopName)
+            $("#<%=txtCntPrsn.ClientID%>").val(JsonData[0].shopContactPerson)
+            $("#<%=txtEmail.ClientID%>").val(JsonData[0].shopEmail)
+            $("#<%=txtMobile.ClientID%>").val(JsonData[0].shopMobile)
+
+        }
+------------------
+
+<asp:DropDownList ID="ddlShopCode" Visible="true" CssClass="span8   tooltips" onchange=" GetShop()"
+                                                runat="server" data-placement="right" data-original-title="Select Shop Code " >
+
+                                            </asp:DropDownList>
+-----------------------------------
+ //_______________________Bind Payout Dropdown____________________
+        function GetPayout() {
+
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/GetPayout",
+                data: "",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuildCategoryDropDownList,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>Error , </strong>There are some technical error. Please Try Again.");
+                }
+
+            });
+        }
+        function BuildCategoryDropDownList(result) {
+            var JoinCtr = 0;
+            var RechargeCtr = 0;
+            var table = '<option value="0">-- Select Payout ---</option>';
+            var jsonData = result.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                table += '<option value=' + jsonData[iCount].payid + '>' + jsonData[iCount].pay + '</option>';
+            }
+            $("#<%=Sel1.ClientID%>").html(table);
+        }
+----------------
+                datareader = objDUT.GetDataReader(@"Select docname,doctitle ,UpdatedOn ,docid , url from doc_download where isdeleted=0 and docid= '" + docid + "' order by docid desc");
+   while (datareader.Read())
+            {
+                Files files = new Files();
+                files.name = datareader["docname"].ToString();
+                files.title = Convert.ToString(datareader["doctitle"]);
+                files.date = Convert.ToDateTime(datareader["UpdatedOn"]).ToString("dd/MM/yyyy");
+                files.id = Convert.ToInt32(datareader["docid"]);
+                files.url = Convert.ToString(datareader["url"]);
+                filelist.Add(files);
+            } sdr.Close();
+            sdr.Dispose();
+        }
+        catch (Exception ex)
+        {
+        }
+        return filelist;
+    }
+
+ [WebMethod]
+    public string getkitcode(string kid)
+    {
+        string returnvalue = string.Empty;
+        try
+        {
+            returnvalue = objDUT.GetScalar("select kitcode from kit_master where kid=" + Convert.ToInt32(kid)).ToString();
+        }
+        catch (Exception ex)
+        { }
+        return returnvalue;
+    }
+
+
+ public string SellRequestedEpin(string RequestedID, string noofpin, string netamount, string vatamount, string shipamt, string linkto, string shiprate, string vatrate)
+    {
+        sdr = null;
+        string res = "0";
+        string SellBy = string.Empty, ReqID = string.Empty, LogionID = string.Empty, Name = string.Empty, Location = string.Empty, State = string.Empty, Address = string.Empty, KCode = string.Empty, Quantity = string.Empty, PayMode = string.Empty, PayDate = string.Empty, PayNo = string.Empty, PayBank = string.Empty;
+        if (Convert.ToInt32(objDUT.GetScalar("Select Count(reqid) from Epin_Request where reqid=" + RequestedID + "").ToString()) > 0)
+        {
+            SqlParameter[] param = new SqlParameter[1];
+            param[0] = new SqlParameter("@reqid", SqlDbType.VarChar, 50);
+            param[0].Value = RequestedID;
+            sdr = objDUT.GetDataReaderSP(param, "sp_req_details");
+            while (sdr.Read())
+            {
+                SellBy = "";
+                ReqID = RequestedID;
+                LogionID = sdr["loginid"].ToString();
+                Name = sdr["memname"].ToString();
+                Location = sdr["city"].ToString();
+                State = sdr["state"].ToString();
+                Address = sdr["Address"].ToString();
+                KCode = sdr["KitCode"].ToString();
+                Quantity = sdr["noOfEpin"].ToString();
+                PayMode = sdr["paymode"].ToString();
+                PayDate = string.Format("{0:MM/dd/yyyy}", sdr["refdate"]);//Convert.ToDateTime(sdr["paymode"].ToString("dd/MM/yyyy"));
+                PayNo = sdr["Referencenumber"].ToString();
+                PayBank = sdr["bankName"].ToString();
+            }
+            sdr.Close();
+            sdr.Dispose();
+            if (Convert.ToInt32(objDUT.GetScalar("Select reqstatus from Epin_Request where reqid='" + RequestedID + "'")) == 1)
+            {
+                res = "2";
+                return res;
+            }
+            else
+            {
+                res = SellEpin(SellBy, ReqID, LogionID, Name, Location, State, Address, KCode, Quantity, PayMode, PayDate, PayNo, PayBank, noofpin, netamount, vatamount, shipamt, linkto, shiprate, vatrate);
+                return res;
+            }
+        }
+        else
+        {
+            res = "3";
+            return res;
+        }
+    }
+
+------------------
+ [WebMethod]
+    public List<ManageState> Getstate(int CID)
+    {
+        List<ManageState> stateList = new List<ManageState>();
+        try
+        {
+            if (CID <= 0)
+            {
+                sdr = objDUT.GetDataReader(@"select  C.CountryName,S.Sid,S.CID, S.StateName,s.sActive,Active=(case when s.sActive=1 then 'Active'else 'De-Active' End) From State S,Country C  where S.CID=C.CID order by S.stateName ");
+            }
+            else
+            {
+                sdr = objDUT.GetDataReader(@"select  C.CountryName,S.Sid,S.CID, S.StateName,s.sActive,Active=(case when s.sActive=1 then 'Active'else 'De-Active' End) From State S,Country C  where S.CID=C.CID and S.SID='" + CID + "' order by S.stateName");
+            }
+            while (sdr.Read())
+            {
+                ManageState state = new ManageState();
+                state.countryname = sdr["CountryName"].ToString();
+                state.Statename = sdr["StateName"].ToString();
+                state.CID = Convert.ToInt32(sdr["CID"].ToString());
+                state.SID = Convert.ToInt32(sdr["Sid"].ToString());
+                int status = Convert.ToInt32(Convert.ToBoolean(sdr["sActive"].ToString()));
+                state.Active = status == 1 ? "Acitve" : "Deactive";
+                state.Activeclass = status == 1 ? "success" : "warning";
+                state.statusIcon = status == 1 ? "icon-remove" : "icon-ok";
+                state.statusText = status == 1 ? "Deactivate" : "Activate";
+                stateList.Add(state);
+            } sdr.Close();
+            sdr.Dispose();
+        }
+        catch (Exception ex)
+        {
+        }
+        return stateList;
+    }
+-----------------
+[WebMethod]
+    public List<districlist> getdistrictList(int CountryId)
+    {
+        sdr = null;
+        string Query = null;
+        List<districlist> dList = new List<districlist>();
+        try
+        {
+            if (CountryId <= 0)
+            {
+                Query = @"select Sid,distID,DistName from District where Active=1 order by DistName";
+            }
+            else
+            {
+                Query = @"select Sid,distID,DistName from District where Sid='" + CountryId + "' and Active=1 order by DistName";
+            }
+            sdr = objDUT.GetDataReader(Query);
+            while (sdr.Read())
+            {
+                districlist dtItem = new districlist();
+                dtItem.sid = Convert.ToInt32(sdr["Sid"].ToString());
+                dtItem.distID = Convert.ToInt32(sdr["distID"].ToString());
+                dtItem.DistName = sdr["DistName"].ToString();
+                dList.Add(dtItem);
+            } sdr.Close();
+            sdr.Dispose();
+        }
+        catch (Exception ex)
+        {
+        }
+        return dList;
+    }
+
+----------
+ public List<Payout> SGetPayid()
+    {
+        sdr = null;
+        string st = null;
+        List<Payout> PayoutList = new List<Payout>();
+        try
+        {
+            st = "select spayid,pay=(cast(spayid as varchar)+'->'+convert(varchar(10),spayfromdate,103)+'-'+convert(varchar(10),SpayToDate,103)) from payout_settlement order by spayid desc";
+            sdr = objDUT.GetDataReader(st);
+            while (sdr.Read())
+            {
+                Payout Payout = new Payout();
+                Payout.pay = sdr["pay"].ToString();
+                Payout.payid = Convert.ToInt32(sdr["spayid"].ToString());
+                PayoutList.Add(Payout);
+            }
+            sdr.Close();
+            sdr.Dispose();
+        }
+        catch (Exception ex)
+        {
+            LogException.WriteToLog(ex);
+        }
+        finally
+        {
+        }
+        return PayoutList;
+    }
+
+ //Query = "Select * from Shop_master where shopID='" + ShopID + "'";
+            //Query = "Select * from Shop_master where shopID=1";
+
+
+            //if (CountryId <= 0)
+            //{
+            //    Query = @"select Sid,distID,DistName from District where Active=1 order by DistName";
+            //}
+            //else
+            //{
+            //    Query = @"Select * from Shop_master where shopID='" + ShopID + "'";
+            //}
+
+--------------------------
+  function chan() {
+            var payid = $("#<%=Sel1.ClientID%>").val();
+            if (payid == "") {
+                $('#txtgrid').hide();
+            }
+            else {
+                //$('#txtgrid').show();
+                // getPayoutIncome(payid)
+                window.location = 'payout_paywise.aspx?id=' + payid;
+            }
+        }
+
+function getPayoutIncome(payid) {
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/getPayoutIncomePayidWise",
+                data: "{payid:'" + payid + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BindActivetionRequest1,
+                error: function (xhr, status, error) {
+
+                }
+
+            });
+        }
+-----------------------
+ [WebMethod]
+    public List<PayoutDeatils> getPayoutIncomePayidWise(string payid)
+    {
+        sdr = null;
+
+        string st = null;
+        List<PayoutDeatils> PayoutList = new List<PayoutDeatils>();
+
+
+        if (payid != "")
+        {
+            st = @"select (select  DesigName+'( '+ cast(slab as varchar(10))+'% )' as DesigName from slabrates where levels=mp.desigid) as designation, p.dabpointvalue,p.dbpointvalue,mp.directorPoints, mp.regno,mp.payid,mm.loginid+' / '+mm.randomid as loginid ,fullname=(mm.fname+' '+isnull(mm.lname,'')),CAST( MP.PPV AS VARCHAR(20))+'/'+ CAST( MP.PBV AS VARCHAR(20)) AS 'PS',
+CAST( (MP.gpv+mp.PPV)  AS VARCHAR(20))+'/'+ CAST((MP.pbv+mp.gbv) AS   VARCHAR(20)) AS 'TGS',
+CAST((MP.ppv+MP.PVPGS) AS VARCHAR(20))+'/'+ CAST((MP.pbv+MP.PGS) AS VARCHAR(20)) AS 'PGS' , mp.retailBonus,firstOrderBonus,leadershipincome,directorACHpv,directorACHbonus,DIRECTORBONUS,TRAVELBONUS,LevelIncome=isnull(mp.LevelIncome,0) ,leveldesig=(case when mp.qualifieddirectorle=0 then '' else (select DesigName from slabrates where levels=mp.qualifieddirectorle) end),totalincome=(isnull(mp.totalincome,0) )  
+,mp.travelBonus,mp.YEPbonus,mp.carFund,mp.houseFund,mp.chairmanGlobalFund , p.carfundRate ,p.Yepbrate   ,p.travelbonusRate    ,p.housefundRate   ,mp.ChairManBonus   ,mp.chairmanGFlevel,mp.chairmanGFPoint,mp.qualifiedDLeg, case when  mp.qualifieddirect=1 then  'Y' else 'N' end  as directorstatus
+
+from MEMBER_PAYOUT mp,member_master mm , payout p  where mp.payid=p.payID and  mp.regno=mm.regno and mp.payid='" + payid + "' and isnull(mp.totalincome,0)>0 order by mp.regno ";
+
+        }
+        DataTable dt = objDUT.GetDataTable(st);
+        foreach (DataRow row in dt.Rows)
+        {
+            PayoutDeatils Payout = new PayoutDeatils();
+            Payout.regno = Convert.ToInt32(row["regno"].ToString());
+            Payout.Loginid = row["loginid"].ToString();
+            Payout.payid = objDUT.GetScalar("select (cast(payid as varchar)+'->'+cast(convert(date,paydate,103) as varchar))  from payout where payid=" + payid + "").ToString(); //row["payid"].ToString();
+
+            //Payout.payid = Convert.ToString(objDUT.GetScalar("select ((cast(payid as varchar)+'->'+cast(paydate as varchar)) as paydate from payout where payid=" + payid + "").ToString()); //row["payid"].ToString();
+            Payout.fullName = row["fullname"].ToString();
+            Payout.llpv = string.Format("{0:f}", row["PS"]);
+            Payout.lpv = string.Format("{0:f}", row["TGS"]);
+            Payout.PVIncome = string.Format("{0:f}", row["PGS"]);
+            Payout.netpayble = row["leveldesig"].ToString();
+            Payout.singleLegIncome = string.Format("{0:f}", row["firstOrderBonus"]); // firstOrderBonus
+            Payout.singlelegDed = string.Format("{0:f}", row["directorACHbonus"]);//directorACHpv
+            Payout.paidpv = string.Format("{0:f}", row["DIRECTORBONUS"]);
+            Payout.DirectIncome = string.Format("{0:f}", row["LevelIncome"]);
+            Payout.rpv = string.Format("{0:f}", row["leadershipincome"]);
+            Payout.totalincome = string.Format("{0:f}", row["totalincome"]);
+            Payout.confrside = string.Format("{0:f}", row["dabpointvalue"]);//d a b point value
+            Payout.conflside = string.Format("{0:f}", row["dbpointvalue"]);
+            Payout.CFlpv = string.Format("{0:f}", row["directorPoints"]);
+            Payout.Mobile = row["designation"].ToString();
+
+            Payout.travelBonus = string.Format("{0:f}", row["travelBonus"]);
+            Payout.YEPbonus = string.Format("{0:f}", row["YEPbonus"]);
+            Payout.carFund = string.Format("{0:f}", row["carFund"]);
+            Payout.houseFund = string.Format("{0:f}", row["houseFund"]);
+            Payout.chairmanGlobalFund = string.Format("{0:f}", row["chairmanGlobalFund"]);
+            Payout.carfundRate = string.Format("{0:f}", row["carfundRate"]);
+            Payout.Yepbrate = string.Format("{0:f}", row["Yepbrate"]);
+            Payout.travelbonusRate = string.Format("{0:f}", row["travelbonusRate"]);
+            Payout.housefundRate = string.Format("{0:f}", row["housefundRate"]);
+            Payout.chairmanGFRate = string.Format("{0:f}", row["ChairManBonus"]);
+            Payout.chairmanGFlevel = string.Format("{0:f}", row["chairmanGFlevel"]);
+            Payout.chairmanGFPoint = string.Format("{0:f}", row["chairmanGFPoint"]);
+            Payout.qualifiedDLeg = row["qualifiedDLeg"].ToString();
+            Payout.qualifiedSTATUS = row["directorstatus"].ToString();
+
+            PayoutList.Add(Payout);
+        }
+        //dt.Dispose();
+        //}
+        //catch (Exception ex)
+        //{
+        //    LogException.WriteToLog(ex);
+        //}
+        //finally
+        //{
+
+        //}
+        return PayoutList;
+    }
+------------------
+[Serializable]
+public class RechargeShop
+{
+    public string shopName      { get; set; }
+    public string shopContactPerson { get; set; }
+    public string shopMobile { get; set; }
+    public string shopEmail { get; set; }
+}
+------------------
+  [WebMethod(EnableSession = true)]
+    public int RechargeShop(string shopID, string rechargeAmount, string paymentMode, string paymentRefNo, string paymentBank, string Comment)
+    {
+       int session = Convert.ToInt32(Session["ADID"].ToString());
+
+        int a = 0;
+
+        try
+        {
+
+        SqlParameter[] p = new SqlParameter[13];
+        p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+        p[0].Value = shopID;
+
+        p[1] = new SqlParameter("@rechargeAmount", SqlDbType.Int);                      
+        p[1].Value = rechargeAmount;
+
+        p[2] = new SqlParameter("@paymentMode", SqlDbType.VarChar, 50);                       
+        p[2].Value = paymentMode;
+
+        p[3] = new SqlParameter("@paymentRefNo", SqlDbType.VarChar, 50); 
+        p[3].Value = paymentRefNo;
+
+        p[4] = new SqlParameter("@paymentBank", SqlDbType.VarChar, 50); 
+        p[4].Value = paymentBank;
+
+        p[5] = new SqlParameter("@paymentDepositBank", SqlDbType.VarChar, 50);
+        p[5].Value = " ";
+
+        p[6] = new SqlParameter("@paymentDepositRefNo", SqlDbType.VarChar, 50);
+        p[6].Value = "";
+
+        p[7] = new SqlParameter("@paymentDepositAcc", SqlDbType.VarChar, 50);
+        p[7].Value = "";
+
+        p[8] = new SqlParameter("@Comment", SqlDbType.VarChar, 500); 
+        p[8].Value = Comment;
+
+        p[9] = new SqlParameter("@appBy", SqlDbType.Int);
+        
+
+       p[9].Value = session;
+       
+      
+
+        p[10] = new SqlParameter("@appIP ", SqlDbType.VarChar, 50);
+        p[10].Value = "127.0.0.1";
+
+        p[11] = new SqlParameter("@rechargeStatus", SqlDbType.Int);
+        p[11].Value = 1;
+
+       
+        p[12] = new SqlParameter("@intResult ", SqlDbType.Int);
+        p[12].Direction = ParameterDirection.Output;
+
+         a = objDUT.ExecuteSqlSP(p, "usp_rechargeShop"); 
+
+        
+        }
+        catch
+        {
+            a = 100;
+        }
+        return a;
+    }
+-------------------
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="styles/kendo.default.min.css" />
+    <link rel="stylesheet" href="styles/kendo.default.mobile.min.css" />
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/kendo.all.min.js"></script>
+    
+
+</head>
+<body>
+<div id="example">
+
+
+            <div class="demo-section k-content">
+
+                <h4>Categories:</h4>
+                <input id="categories" style="width: 100%;" />
+
+                <h4 style="margin-top: 2em;">Products:</h4>
+                <input id="products" disabled="disabled" style="width: 100%;" />
+
+                <h4 style="margin-top: 2em;">Orders:</h4>
+                <input id="orders" disabled="disabled" style="width: 100%;" />
+
+                <button class="k-button k-primary" id="get" style="margin-top: 2em; float: right;">View Order</button>
+
+            </div>
+
+            <style>
+                .k-readonly
+                {
+                    color: gray;
+                }
+            </style>
+
+            <script>
+                $(document).ready(function() {
+                    var categories = $("#categories").kendoDropDownList({
+                        optionLabel: "Select category...",
+                        dataTextField: "CategoryName",
+                        dataValueField: "CategoryID",
+                        dataSource: {
+                            type: "odata",
+                            serverFiltering: true,
+                            transport: {
+                                read: "https://demos.telerik.com/kendo-ui/service/Northwind.svc/Categories"
+                            }
+                        }
+                    }).data("kendoDropDownList");
+
+                    var products = $("#products").kendoDropDownList({
+                        autoBind: false,
+                        cascadeFrom: "categories",
+                        optionLabel: "Select product...",
+                        dataTextField: "ProductName",
+                        dataValueField: "ProductID",
+                        dataSource: {
+                            type: "odata",
+                            serverFiltering: true,
+                            transport: {
+                                read: "https://demos.telerik.com/kendo-ui/service/Northwind.svc/Products"
+                            }
+                        }
+                    }).data("kendoDropDownList");
+
+                    var orders = $("#orders").kendoDropDownList({
+                        autoBind: false,
+                        cascadeFrom: "products",
+                        optionLabel: "Select order...",
+                        dataTextField: "Order.ShipCity",
+                        dataValueField: "OrderID",
+                        dataSource: {
+                            type: "odata",
+                            serverFiltering: true,
+                            transport: {
+                                read: "https://demos.telerik.com/kendo-ui/service/Northwind.svc/Order_Details?$expand=Order"
+                            }
+                        }
+                    }).data("kendoDropDownList");
+
+                    $("#get").click(function() {
+                        var categoryInfo = "\nCategory: { id: " + categories.value() + ", name: " + categories.text() + " }",
+                            productInfo = "\nProduct: { id: " + products.value() + ", name: " + products.text() + " }",
+                            orderInfo = "\nOrder: { id: " + orders.value() + ", name: " + orders.text() + " }";
+
+                        alert("Order details:\n" + categoryInfo + productInfo + orderInfo);
+                    });
+                });
+            </script>
+        </div>
+
+
+</body>
+</html>

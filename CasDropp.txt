@@ -1,0 +1,345 @@
+ [WebMethod]
+    public List<ManageState> Getstate(int CID)
+    {
+
+        List<ManageState> stateList = new List<ManageState>();
+        try
+        {
+            if (CID <= 0)
+            {
+                sdr = objDUT.GetDataReader(@"select  C.CountryName,S.Sid,S.CID, S.StateName,s.sActive,Active=(case when s.sActive=1 then 'Active'else 'De-Active' End) From State S,Country C  where S.CID=C.CID order by S.stateName ");
+            }
+            else
+            {
+                sdr = objDUT.GetDataReader(@"select  C.CountryName,S.Sid,S.CID, S.StateName,s.sActive,Active=(case when s.sActive=1 then 'Active'else 'De-Active' End) From State S,Country C  where S.CID=C.CID and S.SID='" + CID + "' order by S.stateName");
+
+            }
+
+
+            while (sdr.Read())
+            {
+                ManageState state = new ManageState();
+
+                state.countryname = sdr["CountryName"].ToString();
+                state.Statename = sdr["StateName"].ToString();
+                state.CID = Convert.ToInt32(sdr["CID"].ToString());
+                state.SID = Convert.ToInt32(sdr["Sid"].ToString());
+
+
+                int status = Convert.ToInt32(Convert.ToBoolean(sdr["sActive"].ToString()));
+                state.Active = status == 1 ? "Acitve" : "Deactive";
+                state.Activeclass = status == 1 ? "success" : "warning";
+                state.statusIcon = status == 1 ? "icon-remove" : "icon-ok";
+                state.statusText = status == 1 ? "Deactivate" : "Activate";
+
+
+
+                stateList.Add(state);
+            }
+        }
+        catch (Exception ex)
+        {
+
+
+        }
+        return stateList;
+    }
+
+    [WebMethod]
+    public List<statelist> getStateList(int CountryId)
+    {
+
+        sdr = null;
+        string Query = null;
+        List<statelist> sList = new List<statelist>();
+        try
+        {
+
+            if (CountryId <= 0)
+            {
+                Query = @"select Sid,Statename,cid from State where  sActive=1 order by statename";
+            }
+            else
+            {
+                Query = @"select Sid,Statename,cid from State where cid='" + CountryId + "' and sActive=1 order by statename";
+
+            }
+
+            sdr = objDUT.GetDataReader(Query);
+            while (sdr.Read())
+            {
+                statelist stItem = new statelist();
+                stItem.cid = Convert.ToInt32(sdr["cid"].ToString());
+                stItem.sid = Convert.ToInt32(sdr["sid"].ToString());
+                stItem.Statename = sdr["Statename"].ToString();
+                sList.Add(stItem);
+            }
+        }
+        catch (Exception ex)
+        {
+
+
+        }
+
+        return sList;
+    }
+
+
+    [WebMethod]
+    public List<districlist> getdistrictList(int CountryId)
+    {
+
+        sdr = null;
+        string Query = null;
+        List<districlist> dList = new List<districlist>();
+        try
+        {
+            if (CountryId <= 0)
+            {
+                Query = @"select Sid,distID,DistName from District where Active=1 order by DistName";
+            }
+            else
+            {
+                Query = @"select Sid,distID,DistName from District where Sid='" + CountryId + "' and Active=1 order by DistName";
+
+            }
+            sdr = objDUT.GetDataReader(Query);
+            while (sdr.Read())
+            {
+                districlist dtItem = new districlist();
+                dtItem.sid = Convert.ToInt32(sdr["Sid"].ToString());
+                dtItem.distID = Convert.ToInt32(sdr["distID"].ToString());
+                dtItem.DistName = sdr["DistName"].ToString();
+                dList.Add(dtItem);
+            }
+        }
+        catch (Exception ex)
+        {
+        }
+        return dList;
+    }
+
+------------------
+ //______________   Bind CountryList ________________
+
+        function getcountry(CountryId) {
+
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/GetCountryList",
+                //Pass the "Count" parameter, via JSON object.
+                data: "{CountryId:'0'}",
+
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuildCategoryDropDownList,
+                error: function (xhr, status, error) {
+
+                }
+
+            });
+        }
+        function BuildCategoryDropDownList(result) {
+
+            var JoinCtr = 0;
+            var RechargeCtr = 0;
+            var table = '<option  value="0" >  Select country  </option>';
+            var jsonData = result.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                table += '<option value=' + jsonData[iCount].cid + '>' + jsonData[iCount].Countryname + '</option>';
+            }
+            $('#Ddl_Category').html(table);
+            $('#ddlsearchCountry').html(table);
+            $('#ddlsearchCountry').val(96);
+
+
+        }
+
+        //______________________ Category  Dropdownlist Selected Index Changed _____________________
+
+        function Ddl_Category_SelectedIndexChanged(value) {
+
+            $('#Ddl_Pcode').html('<option value=0>Loading...</option>');
+            var _Category = {};
+            _Category.CountryId = value;
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/getStateList",
+                data: "{CountryId:'" + value + "' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuildProductCodeDropDownList,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>Error , </strong>There are some technical error. Please Try Again2.");
+                }
+            });
+        }
+        function BuildProductCodeDropDownList(PcodeResult) {
+            $('#Ddl_Pcode').html('');
+            var JoinCtr = 0;
+            var RechargeCtr = 0;
+            var table = '<option  value="0" >  Select State  </option>';
+            var table1 = '<option  value="0" >  Select District  </option>';
+            var jsonData = PcodeResult.d;
+            if (jsonData.length > 0) {
+                $('#Ddl_Pcode').removeAttr("disabled");
+                $('#ddlsearchstate').removeAttr("disabled");
+
+                for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                    table += '<option value=' + jsonData[iCount].sid + '>' + jsonData[iCount].Statename + '</option>';
+                }
+            }
+            else {
+                $('#Ddl_Pcode').html('');
+                $('#Ddl_Pcode').attr("disabled", "disabled");
+                $('#ddlSerdistrict').attr("disabled", "disabled");
+                table = '<option  value="0" >  Not Found  </option>';
+                table1 = '<option  value="0" >  Not Found  </option>';
+            }
+            $('#ddlsearchstate').html(table);
+            $('#Ddl_Pcode').html(table);
+            $('#ddlSerdistrict').html(table1);
+
+        }
+
+
+        //--------------------------
+
+        function Ddl_ProductCode_SelectedIndexChanged(value) {
+
+            $('#Select1').html('<option value=0>Loading...</option>');
+            $('#ddlSerdistrict').html('<option value=0>Loading...</option>');
+
+            var _Category = {};
+
+            _Category.CountryId = value;
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/getdistrictList",
+                data: "{CountryId:'" + value + "' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuilddistricDropDownList,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>Error , </strong>There are some technical error. Please Try Again.");
+                }
+            });
+        }
+        function BuilddistricDropDownList(pResult) {
+            $('#Select1').html('');
+            $('#ddlSerdistrict').html('');
+
+            var JoinCtr = 0;
+            var RechargeCtr = 0;
+            var table = '<option  value="0" >  Select District  </option>';
+            var jsonData = pResult.d;
+            if (jsonData.length > 0) {
+                $('#Select1').removeAttr("disabled");
+                $('#ddlSerdistrict').removeAttr("disabled");
+                for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                    table += '<option value=' + jsonData[iCount].distID + '>' + jsonData[iCount].DistName + '</option>';
+                }
+            }
+            else {
+                $('#Select1').html('');
+                $('#Select1').attr("disabled", "disabled");
+                $('#ddlSerdistrict').html('');
+                $('#ddlSerdistrict').attr("disabled", "disabled");
+                table = '<option  value="0" >  Not Found  </option>';
+                ddlSerdistrict
+            }
+            $('#Select1').html(table);
+            $('#ddlSerdistrict').html(table);
+        }
+
+        //______________________ Category  Dropdownlist Selected Index Changed _____________________
+        var eddistid;
+        function editedBinddistrict(sid, distid) {
+            eddistid = distid;
+            $('#Select1').html('<option value=0>Loading...</option>');
+            $('#ddlSerdistrict').html('<option value=0>Loading...</option>');
+
+            var _Category = {};
+
+            _Category.CountryId = sid;
+            $.ajax({
+                type: "POST",
+                url: "getData.asmx/getdistrictList",
+                data: "{CountryId:'" + sid + "' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuilddistricDropDownList,
+                error: function (xhr, status, error) {
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').show();
+                    $('#errorDiv').removeClass().addClass('alert alert-error');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>Error , </strong>There are some technical error. Please Try Again2.");
+                }
+            });
+        }
+        function BuilddistricDDlList(pResult) {
+            $('#Select1').html('');
+
+
+            var JoinCtr = 0;
+            var RechargeCtr = 0;
+            var table = '<option  value="0" >Loading......... </option>';
+            var jsonData = pResult.d;
+            if (jsonData.length > 0) {
+                $('#Select1').removeAttr("disabled");
+                $('#ddlSerdistrict').removeAttr("disabled");
+                for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                    table += '<option value=' + jsonData[iCount].distID + '>' + jsonData[iCount].DistName + '</option>';
+                }
+            }
+            else {
+                $('#Select1').html('');
+                $('#Select1').attr("disabled", "disabled");
+                $('#ddlSerdistrict').html('');
+                $('#ddlSerdistrict').attr("disabled", "disabled");
+                table = '<option  value="0" >  Not Found  </option>';
+                ddlSerdistrict
+            }
+            $('#Select1').html(table);
+            $('#Select1').val(eddistid)
+        }
+----------
+div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Country</label>
+                                        <div class="controls">
+                                            <select class="span8" id="Ddl_Category" onchange="Ddl_Category_SelectedIndexChanged(this.value);"
+                                                tabindex="1">
+                                            </select>
+                                        </div>
+                                    </div>
+
+ <div class="span3">
+                                    <div class="control-group">
+                                        <label class="control-label" style="width: 100px">
+                                            Country</label>
+                                        <div style="width: 400px">
+                                            <select class="span5" id="ddlsearchCountry" onchange="Ddl_Category_SelectedIndexChanged(this.value);"
+                                                tabindex="1">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div id="div5" class="control-group">
+                                        <label class="control-label" style="width: 100px">
+                                            State</label>
+                                        <div style="width: 400px">
+                                            <select class="span5" id="ddlsearchstate" onchange="Ddl_ProductCode_SelectedIndexChanged(this.value);"
+                                                tabindex="1">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>

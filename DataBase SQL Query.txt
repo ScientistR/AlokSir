@@ -1,0 +1,3152 @@
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[addgeneraldetails_seller_old]    Script Date: 9/11/2019 10:15:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[addgeneraldetails_seller_old]                                                                                
+@querytype varchar(200)='update',                                                      
+@intresult as int out ,                                      
+@productcode varchar(200)='SKU',                                                                                
+@productname varchar(500)='SKU',                                               
+@pid int = 0,                                               
+@seller_price as money=0.00,                                                               
+@offered_price as money=0.00,                                              
+@company_price as money=0.00,                                              
+@Offeredstat_date as varchar(20)='01/01/1990',                                              
+@offeredend_date as varchar(20)='01/01/1990',                                               
+@max_Quantity int=0,                                                       
+@min_Quantity int=0,                                                      
+@avg_Quantity int=0,                                                      
+@reOrder_Quantity int=0,                                                        
+@price as money=0,                                                                              
+@oferedDisc as decimal=0,                                                                              
+@companydiscount as decimal=0,                                                                              
+@brandid as int =0,                                                                                       
+@shortdes as varchar(8000)='',                                                           
+@producturl as varchar(250)='',                                        
+@trackinventory as varchar(1)='0',                                        
+@outstockPurchase as varchar(1)='0',                                        
+@barcode  as varchar(max)='',                                     
+@slid as  int=0  ,                                  
+@categoryid as bigint=0,          
+@Approved as int=0  ,    
+@PTCID as int=1,    
+@Comodity_ID as int=1  ,    
+@CourierCharge as money=0,    
+@DCommission as money=0,    
+@Dmargin as money=0  ,    
+@bv as money=0,    
+@dp as money=0                                                                                                                     
+as                                                                                                                        
+   begin transaction                                                                                
+   declare @count as int                                                                    
+   declare @catalogid as int                                                                    
+   declare @IST as datetime                                                                 
+   declare @cid as int                          
+   set @IST=dateadd(mi,0,getutcdate())                                           
+    if (@querytype = 'insert')                                                                                
+     begin                                                                        
+        select @count = count (*) from product_master where pcode = @productcode                                            
+        if (@count>0)                                                                                
+         begin                                                                                
+           set @intresult = 2                                                                                
+           rollback transaction                                                                                
+           return                                                                                
+         end                                    
+  insert into product_master (pcode,categoryID,pname,expenseRate,shortdesc,new_product,featured,brandid,slid,pactive,companyapproved,companydiscount,                                    
+      max_Quantity,min_Quantity,reOrder_Quantity,avg_Quantity,pEntryDate,mrp,directdiscount,productURL,seller_price ,offered_price,company_price,Offeredstat_date,offeredend_date,trackinventory,outstockPurchase,barcode,PTCID,Comodity_ID)                   
+                               
+   values (@productcode,@categoryid,@productname,0,@shortdes,0,0,@brandid,@slid,1,1,@companydiscount,@max_Quantity,@min_Quantity,@reOrder_Quantity,                         
+   @avg_Quantity,@IST,@price,@oferedDisc, @producturl,@seller_price,@offered_price,@company_price,@Offeredstat_date,@offeredend_date ,                                    
+   @trackinventory, @outstockPurchase,@barcode,@PTCID,@Comodity_ID)                                                                                
+ select  @pid=max(pid)  from product_master    
+ insert into productimage_master values(@pid,'A.jpg','../ProductImages/Default.jpg',1,1,0,getdate())  
+ insert into productimage_master values(@pid,'Default2.jpg','../ProductImages/Default2.jpg',0,1,0,getdate())  
+ insert into productimage_master values(@pid,'Default2.jpg','../ProductImages/Default2.jpg',0,1,0,getdate())  
+ insert into productimage_master values(@pid,'Default2.jpg','../ProductImages/Default2.jpg',0,1,0,getdate())  
+ insert into productimage_master values(@pid,'Default2.jpg','../ProductImages/Default2.jpg',0,1,0,getdate())    
+ insert into category_product(categoryid,pid,isactive) values(@categoryid,@pid,1)                             
+ declare @testCount int    
+ set @testCount=0    
+ select @testCount=count(*) from Commodity_TaxHead where CoMoID=@Comodity_ID and PTCID=@PTCID    
+  if(@testCount=0)    
+  insert into Commodity_TaxHead (CoMoID,PTCID,IsActive,IsDeleteD) values(@Comodity_ID,@PTCID, 1,0)    
+          
+ set @intresult = 1                                                                                                           
+     end                                                                             
+    if (@@error<>0)                                                                
+     begin                                                                                
+        set @intresult = 0                                                                                
+        rollback transaction                                                                                
+        return                                                                            
+     end                                                                      
+    if (@querytype = 'update')                                                                                
+     begin                               
+  if(@productcode='SKU')                          
+   select @productcode=pcode from product_master where pid=@pid                          
+  if(@productname='SKU')                          
+   select @productname=pname  from product_master where pid=@pid                           
+  select @count = count (*) from product_master where pcode = @productcode and pid <> @pid                                      
+  if (@count>0 )                                                  
+   begin                                                                                
+   set @intresult = 0                                                        
+   rollback transaction                                                                                
+   return                                                                                
+   end                                               
+  if(@productname='SKU')                          
+   select @productname=pName from product_master where pid = @pid                          
+  update product_master set CategoryID=@categoryid,  pname = @productname, pcode = @productcode ,pActive=@Approved, shortdesc=@shortdes, brandid=@brandid,max_Quantity=@max_Quantity,min_Quantity=min_Quantity,reOrder_Quantity=@reOrder_Quantity, productURL= 
+  
+@producturl,        
+  trackinventory=@trackinventory,outstockPurchase=@outstockPurchase,barcode=@barcode,slid=@slid ,PTCID=@PTCID,Comodity_ID=@Comodity_ID  where pid = @pid        
+---insert into category_product(categoryid,pid,isactive) values(@categoryid,@pid,1)        
+Update category_product set categoryid=@categoryid where pid=@pid    
+set @testCount=0    
+select @testCount=count(*) from Commodity_TaxHead where CoMoID=@Comodity_ID and PTCID=@PTCID    
+if(@testCount=0)    
+ insert into Commodity_TaxHead (CoMoID,PTCID,IsActive,IsDeleteD) values(@Comodity_ID,@PTCID, 1,0)    
+  --exec sp_sellerSaveProduct   @slid,@pid,@max_Quantity,@price,1,'update',@categoryid,@shortdes,@producturl,@seller_price,@offered_price,@intresult                                        
+  set @intresult = 1                                   
+  end                                   
+    if (@@error<>0)                                                                              
+     begin                       
+  set @intresult = 0                                                        rollback transaction                                                        
+        return                       
+     end                                                         
+    if (@querytype = 'updatePrice')                                                                                
+     begin                               
+  select  @max_Quantity=max_Quantity from product_master where pid=@pid                            
+  update product_master set  companydiscount=@companydiscount, mrp = @price , directdiscount = @oferedDisc ,seller_price=@seller_price,                                    
+  offered_price=@offered_price,company_price=@company_price,Offeredstat_date=@Offeredstat_date,offeredend_date=@offeredend_date                                     
+  ,slid=@slid,dp=@dp,expenseRate=@bv,bv=@bv,HandlingCost=@CourierCharge,DCommission=@DCommission,Dmargin=@Dmargin where pid = @pid                                 
+  --exec sp_sellerSaveProduct   @slid,@pid,@max_Quantity,@price,1,'updatePrice',@categoryid,@shortdes,@producturl,@seller_price,@offered_price,@intresult                             
+        set @intresult = 1                                                   
+     end                                               
+    if (@@error<>0)                                                        
+     begin                                                                
+  set @intresult = 0                                                  
+        rollback transaction                                                
+        return                                                   
+     end                                                               
+  commit transaction 
+--------------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[addgeneraldetails_seller]    Script Date: 9/11/2019 10:16:31 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[addgeneraldetails_seller]                                                                              
+@querytype varchar(200)='update',                                                    
+@intresult as int out ,                                    
+@productcode varchar(200)='SKU',                                                                              
+@productname varchar(500)='SKU',                                             
+@pid int = 0,                                             
+@seller_price as money=0.00,                                                             
+@offered_price as money=0.00,                                            
+@company_price as money=0.00,                                            
+@Offeredstat_date as varchar(20)='01/01/1990',                                            
+@offeredend_date as varchar(20)='01/01/1990',                                             
+@max_Quantity int=0,                                                     
+@min_Quantity int=0,                                                    
+@avg_Quantity int=0,                                                    
+@reOrder_Quantity int=0,                                                      
+@price as money=0,                                                                            
+@oferedDisc as decimal=0,                                                                            
+@companydiscount as decimal=0,                                                                            
+@brandid as int =0,                                                                                     
+@shortdes as varchar(8000)='',                                                         
+@description as varchar(8000)='',  
+@producturl as varchar(250)='',                                      
+@trackinventory as varchar(1)='0',                                      
+@outstockPurchase as varchar(1)='0',                                      
+@barcode  as varchar(max)='',                                   
+@slid as  int=0  ,                                
+@categoryid as bigint=0,        
+@Approved as int=0  ,  
+@PTCID as int=1,  
+@Comodity_ID as int=1  ,  
+@CourierCharge as money=0,  
+@DCommission as money=0,  
+@Dmargin as money=0  ,  
+@bv as money=0,  
+@dp as money=0,  
+@Usedforcombo as int ,  
+@Featured varchar(20) = '0'                                                                                                                 
+as                                                                                                                      
+   begin transaction                                                                              
+   declare @count as int ,@calcme as money ,@taxrate as money                                                                
+   declare @catalogid as int                                                                  
+   declare @IST as datetime                                                               
+   declare @cid as int                        
+   set @IST=dateadd(mi,0,getutcdate())   
+select @taxrate=GstRate from GSTCommodity_master where gstid=@PTCID  
+set @taxrate =isnull(@taxrate,0)  
+    if (@querytype = 'insert')                                                                              
+     begin                                                                      
+        select @count = count (*) from product_master where pcode = @productcode                                          
+        if (@count>0)                                                                              
+         begin                                                                              
+           set @intresult = 2                                                                              
+           rollback transaction                                                            
+           return                                                                       
+         end         
+  insert into product_master (usedforcombo,pcode,categoryID,pname,expenseRate,shortdesc,description,new_product,featured,brandid,slid,pactive,companyapproved,companydiscount,                                  
+      max_Quantity,min_Quantity,reOrder_Quantity,avg_Quantity,pEntryDate,mrp,directdiscount,productURL,seller_price                                  
+                         ,offered_price,company_price,Offeredstat_date,offeredend_date,trackinventory,outstockPurchase,barcode,PTCID,Comodity_ID,Taxrate)                                                
+  values (@Usedforcombo,@productcode,@categoryid,@productname,0,@shortdes,@description,0,@Featured,
+  @brandid,@slid,1,1,@companydiscount,@max_Quantity,@min_Quantity,@reOrder_Quantity,                       
+  @avg_Quantity,@IST,@price,@oferedDisc, @producturl,@seller_price,@offered_price,@company_price,
+  @Offeredstat_date,@offeredend_date ,                                  
+  @trackinventory, @outstockPurchase,@barcode,@PTCID,@Comodity_ID,@taxrate)                                                                              
+  select  @pid=max(pid)  from product_master   
+insert into productimage_master values(@pid,'noimage.jpg','../ProductImages/Default2.jpg',1,1,0,getdate())  
+insert into productimage_master values(@pid,'noimage.jpg','../ProductImages/Default2.jpg',0,1,0,getdate())  
+insert into productimage_master values(@pid,'noimage.jpg','../ProductImages/Default2.jpg',0,1,0,getdate())  
+insert into productimage_master values(@pid,'noimage.jpg','../ProductImages/Default2.jpg',0,1,0,getdate())  
+insert into productimage_master values(@pid,'noimage.jpg','../ProductImages/Default2.jpg',0,1,0,getdate())    
+  insert into category_product(categoryid,pid,isactive) values(@categoryid,@pid,1)                           
+ declare @testCount int  
+ set @testCount=0  
+ select @testCount=count(*) from Commodity_TaxHead where CoMoID=@Comodity_ID and PTCID=@PTCID  
+ if(@testCount=0)  
+ insert into Commodity_TaxHead (CoMoID,PTCID,IsActive,IsDeleteD) values(@Comodity_ID,@PTCID, 1,0)  
+  --exec sp_sellerSaveProduct   @slid,@pid,@max_Quantity,@price,1,'Insert',@categoryid,@shortdes,@producturl,@seller_price,@offered_price,@intresult                                
+  set @intresult = 1                                                                                                         
+     end                                                                           
+    if (@@error<>0)                                                              
+     begin                                                                              
+        set @intresult = 0                                                                              
+        rollback transaction                                                                              
+        return                                                                          
+     end                                                                    
+    if (@querytype = 'update')                                                                              
+     begin                             
+  if(@productcode='SKU')                        
+   select @productcode=pcode from product_master where pid=@pid                        
+  if(@productname='SKU')                        
+   select @productname=pname  from product_master where pid=@pid                         
+  select @count = count (*) from product_master where pcode = @productcode and pid <> @pid                                    
+  if (@count>0 )                                                
+   begin                                                                 
+   set @intresult = 0                                                      
+   rollback transaction                                                                              
+return                                                                              
+   end                                       
+  if(@productname='SKU')                        
+   select @productname=pName from product_master where pid = @pid                        
+  update product_master set  Usedforcombo=@Usedforcombo, CategoryID=@categoryid,  pname = @productname, pcode = @productcode ,pActive=@Approved, shortdesc=@shortdes,description=@description,
+  brandid=@brandid,max_Quantity=@max_Quantity,min_Quantity=min_Quantity,  
+  reOrder_Quantity=@reOrder_Quantity, productURL=@producturl, featured=@Featured,  
+  trackinventory=@trackinventory,outstockPurchase=@outstockPurchase,barcode=@barcode,slid=@slid ,
+  PTCID=@PTCID,Comodity_ID=@Comodity_ID,taxrate=@taxrate  where pid = @pid      
+---insert into category_product(categoryid,pid,isactive) values(@categoryid,@pid,1)      
+Update category_product set categoryid=@categoryid where pid=@pid  
+set @testCount=0  
+select @testCount=count(*) from Commodity_TaxHead where CoMoID=@Comodity_ID and PTCID=@PTCID  
+if(@testCount=0)  
+ insert into Commodity_TaxHead (CoMoID,PTCID,IsActive,IsDeleteD) values(@Comodity_ID,@PTCID, 1,0)  
+  --exec sp_sellerSaveProduct   @slid,@pid,@max_Quantity,@price,1,'update',@categoryid,@shortdes,@producturl,@seller_price,@offered_price,@intresult                                      
+  set @intresult = 1                                 
+  end                                 
+    if (@@error<>0)                                                                            
+     begin                     
+  set @intresult = 0 
+	rollback transaction                                                      
+        return                     
+     end                                                       
+    if (@querytype = 'updatePrice')                                                                              
+     begin                             
+     set @calcme=0  
+  select @calcme= @bv*100/pointcalc from subscription_master  
+  set @calcme= isnull(@calcme,0)  
+  select  @max_Quantity=max_Quantity from product_master where pid=@pid                          
+  update product_master set  companydiscount=@companydiscount, mrp = @price , 
+  directdiscount = @oferedDisc ,seller_price=@seller_price,                                  
+  offered_price=@offered_price,company_price=@company_price,Offeredstat_date=@Offeredstat_date,offeredend_date=@offeredend_date                                   
+  ,slid=@slid,dp=@dp,expenseRate=@bv,bv=@calcme,HandlingCost=@CourierCharge,DCommission=@DCommission,Dmargin=@Dmargin where pid = @pid                               
+  --exec sp_sellerSaveProduct   @slid,@pid,@max_Quantity,@price,1,'updatePrice',@categoryid,@shortdes,@producturl,@seller_price,@offered_price,@intresult                           
+        set @intresult = 1                                                 
+     end                                             
+    if (@@error<>0)                                                      
+     begin                                                              
+  set @intresult = 0                                                
+        rollback transaction                                              
+        return                                                 
+     end                                                             
+  commit transaction 
+----------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [alps_dbhealth_live].[sp_achievementBonus]    Script Date: 9/11/2019 10:17:24 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [alps_dbhealth_live].[sp_achievementBonus] @maxPayID as int
+as
+	Declare @totalQualified as int, @mRegNo as bigint, @LPV as money, @RPV as money, @paidpv as money, @freshPair as int
+	Declare @temp as money, @NOJ as int, @totalFund as money, @achRate as money
+	
+	--********** Make Qualify -- 100 pair
+	Update member_payout set achBonusQualify=1 where achBonusQualify=0 and payid=@maxPayID and regno in(select regno from member_payout where achBonusQualify=0 group by regno having (sum(paidpv)/100)>=100)
+	Update member_performance set achBonusQualify=1 where achBonusQualify=0 and regno in(select regno from member_payout where payid=@maxPayID and achBonusQualify>0)
+	Update member_payout set achBonusQualify=1 where achBonusQualify=0 and payid=@maxPayID and regno in(select regno from member_performance where achBonusQualify=1)
+	--******* Make fresh Pair
+	DECLARE getfinal CURSOR  FOR  select regno, (LPV+LPVR) as LPV, (RPV+RPVR) as RPV from member_Payout where  Payid=@maxPayid and achBonusQualify=1 order by regno
+	OPEN getfinal FETCH NEXT FROM getfinal INTO @mRegNo, @LPV, @RPV
+    WHILE @@FETCH_STATUS = 0    
+    BEGIN    
+		
+		IF (@LPV >= 100 AND @RPV >= 100)                                
+		 BEGIN                        
+			IF(@LPV >= @RPV)                         
+			 Begin
+				set @temp=0
+				Set @temp=floor(@RPV/100)
+				SET @paidpv = @temp * 100
+			 End	                                   
+			ELSE  
+			 Begin	
+				set @temp=0
+				Set @temp=floor(@LPV/100)
+				SET @paidpv = @temp * 100
+			 End	
+		 END 
+		set @freshPair=0 
+		set @freshPair=@paidpv / 100
+		if(@freshPair>0)
+			Update member_Payout set freshPair=@freshPair where regno=@mRegNo and payid=@maxPayID
+					 
+	 FETCH NEXT FROM getfinal INTO @mRegNo, @LPV, @RPV
+    END           
+	CLOSE getfinal          
+	DEALLOCATE getfinal    
+	set @totalQualified=0
+	select @totalQualified=count(regno) from member_Payout where  Payid=@maxPayid and achBonusQualify=1 and freshPair>=10
+	set @totalQualified=isnull(@totalQualified,0)
+	
+	if(@totalQualified=0)
+		set @totalQualified=1
+	
+	set @NOJ=0
+	select @NOJ=count(*) from member_master where confpayno=@maxPayID 
+	set @NOJ=isnull(@NOJ,1)
+	if(@NOJ<=0)
+		set @NOJ=1
+		
+	set @totalFund=(@NOJ * 100)
+	set @achRate=(@totalFund/@totalQualified)
+	
+	Update member_Payout set ACVMNTBONUS=@achRate, totalIncome=(totalIncome+@achRate) where payid=@maxPayID and  achBonusQualify=1 and freshPair>=10
+	Update payout set achBonusFund=@totalFund, achBonusRate=@achRate, paidMembersAchievement=@totalQualified where payid=@maxPayID
+	
+-----
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[contest_searchA]    Script Date: 9/11/2019 10:18:20 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[contest_searchA]               
+@mregno as int,                        
+@fromDate as datetime ,                        
+@toDate as datetime,        
+@fromRP as money=0,        
+@TOrp as money=0               
+as                
+begin               
+ Declare @SqlQuery as varchar(max)                     
+ set @sqlQuery='select mm.loginid,
+ mm.regno,
+ Active=(isnull(mm.confpayno,0)),
+ name=(mm.fname+'' ''+isnull(mm.lname,'''')),
+  
+ Bprbv=(select isnull(sum(mp.RBV),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' ),
+ Bpabv=(select isnull(sum(mp.PBV),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +'''),
+ Blbv=((select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')*10),
+ Brbv=((select isnull(sum(mp.RPV),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')*10),
+ Blpv=(select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +'''),
+ Brpv=(select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +'''),
+ Bactual=(case when (select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')>(select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''') then (select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')/1000 else (select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')/1000 end),
+ 
+ gbv=((select isnull(sum(lpv+rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +'''  )*10),
+ prbv=(select isnull(sum(mp.RBV),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +'''),
+ pabv=(select isnull(sum(mp.PBV),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +'''),
+ lbv=((select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +''')*10),
+ rbv=((select isnull(sum(mp.RPV),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +''')*10),
+ lpv=(select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +'''),
+ rpv=(select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +'''),
+ actual=(case when (select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +''')>(select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +''') then (select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +''')/1000 else (select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto>='''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''' and p.payto<='''+ cast( (convert(datetime,@toDate,103)) as varchar(100)) +''')/1000 end) from member_master mm where mm.regno>2'          
+
+ if(@mregno<>'0')            
+ begin            
+	set @SqlQuery= @SqlQuery+' and mm.regno='+cast(@mregno as varchar(10)) +''       
+ end         
+ if(@fromRP<>0 )        
+ begin  
+	set @SqlQuery=@SqlQuery+' and (case when (select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')>(select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''') then ((select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')/1000) else ((select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')/1000) end)>='''+cast(@fromrp as varchar(10))+''''         
+	
+ end        
+if(@torp<>0 )        
+ begin  
+	set @SqlQuery=@SqlQuery+' and (case when (select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')>(select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''') then ((select isnull(sum(mp.rpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')/1000) else ((select isnull(sum(mp.lpv),0) from member_payout mp,payout p where mp.payid=p.payid and regno=mm.regno and p.payto<'''+ cast( (convert(datetime,@fromDate,103)) as varchar(100)) +''')/1000) end)<='''+cast(@torp as varchar(10))+''''         
+	
+ end   
+ set @SqlQuery= @SqlQuery+' order by actual desc'              
+ exec (@SqlQuery)           
+end
+--------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[Get_Binary_details]    Script Date: 9/11/2019 10:21:05 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [dbo].[Get_Binary_details]
+@LoginID as varchar(100)
+as
+	Declare @maxPayid as int, @leftChild as bigint, @rightChild as bigint, @mRegNo as bigint
+	Declare @ch1 as bigint, @ch2 as bigint
+	
+	--********** Left
+	Declare @previusMLeft int, @totalMLeft as int, @currentMLeft as int, @cfMLeft as int
+	Declare @currentGrayMLeft as int, @totalGrayMLeft as int, @directLeft as int, @purpuleLeft as int, @greenLeft Int
+	Declare @totalPVLeft Money, @currentPVLeft Money, @CFPVLeft money, @leftRemainingTotal as money
+	--*********** Right
+	Declare @previusMRight int, @totalMRight as int, @currentMRight as int, @cfMRight as int
+	Declare @currentGrayMRight as int, @totalGrayMRight as int, @totalPVRight Money, @currentPVRight Money
+	Declare @CFPVRight money, @directRight as int, @purpuleRight as int, @greenRight Int, @rightRemainingTotal as money
+	
+	--*********** Tree Child
+	Declare @userNameSelf as varchar(100), @SponsorIDSelf as varchar(100), @statusSelf int
+	Declare @userNameLeft as varchar(100), @SponsorIDLeft as varchar(100), @statusLeft int
+	Declare @userNameRight as varchar(100), @SponsorIDRight as varchar(100), @statusRight int
+	
+	
+	Select @maxPayid=max(payid) from payout
+	Set @maxPayid=isnull(@maxPayid,0)
+	Set @maxPayid=@maxPayid+1
+	
+	Set @mRegNo=0
+	Select @mRegNo=regno from member_master where randomid=@LoginID or Loginid=@LoginID
+	Set @mRegNo=isnull(@mRegNo,0)
+	
+	Select @leftChild=isnull(regno,0) from member_master where parentregnoB=@mRegNo and parentSideB='L'
+	Set @leftChild=isnull(@leftChild,0)
+	Select @rightChild=isnull(regno,0) from member_master where parentregnoB=@mRegNo and parentSideB='R'
+	Set @rightChild=isnull(@rightChild,0)
+	
+	Select 
+		@previusMLeft=(noofmembers-noofmemberscurrent),
+		@totalMLeft=noofmembers,
+		@currentMLeft=noofmemberscurrent,
+		@cfMLeft=remainingMembers-noofmemberscurrent,
+		@currentGrayMLeft=noofmembersgraycurrent,	
+		@totalGrayMLeft=noofmembersgray,	
+		@totalPVLeft=totalPV,
+		@currentPVLeft=totalPVCurrent,
+		@CFPVLeft=RemainingPV-totalPVCurrent,		
+		@directLeft=(select isnull(ldirect,0) from member_master where regno=@mRegNo),
+		@leftRemainingTotal=remainingPV
+		from Member_Downline where regno=@mRegNo and childregno=@leftChild
+		
+	Execute usp_downlinePackageCount @mRegNo, 'L', 1, 2, 0, @purpuleLeft out
+	Execute usp_downlinePackageCount @mRegNo, 'L', 1, 3, 0, @greenLeft out	
+	
+	Select 
+		@previusMRight=(noofmembers-noofmemberscurrent),
+		@totalMRight=noofmembers,
+		@currentMRight=noofmemberscurrent,
+		@cfMRight=remainingMembers-noofmemberscurrent,
+		@currentGrayMRight=noofmembersgraycurrent,	
+		@totalGrayMRight=noofmembersgray,	
+		@totalPVRight=totalPV,
+		@currentPVRight=totalPVCurrent,
+		@CFPVRight=RemainingPV-totalPVCurrent,		
+		@directRight=(select isnull(ldirect,0) from member_master where regno=@mRegNo),
+		@rightRemainingTotal=remainingPV
+		from Member_Downline where regno=@mRegNo and childregno=@RightChild
+		
+	Execute usp_downlinePackageCount @mRegNo, 'R', 1, 2, 0, @purpuleRight out
+	Execute usp_downlinePackageCount @mRegNo, 'R', 1, 3, 0, @greenRight out	
+	
+	if(@currentGrayMLeft<0)
+		set @currentGrayMLeft=0;
+	if(@totalGrayMLeft<0)
+		set @totalGrayMLeft=0;
+	if(@currentGrayMRight<0)
+		set @currentGrayMRight=0;
+	if(@totalGrayMRight<0)
+		set @totalGrayMRight=0;
+		
+	
+	Select @userNameSelf=M.Loginid, @SponsorIDSelf=S.Loginid, @statusSelf=M.ConfPayNo from member_master M, Member_Master S where M.introregno=S.RegNo and M.regno=@mRegNo
+	--****Left
+	select @ch1=regNo from member_master where parentregnoB=@mRegNo and parentSideB='L'
+	set @ch1=isnull(@ch1,0)
+	if(@ch1>0)
+		Select @userNameLeft=M.Loginid, @SponsorIDLeft=S.Loginid, @statusLeft=M.ConfPayNo from member_master M, Member_Master S where M.introregno=S.RegNo and M.regno=@ch1
+	else
+	 Begin
+		set @userNameLeft='0'; Set @SponsorIDLeft='0'; Set @statusLeft=0
+	 End	
+	
+	--*****Right
+	select @ch2=regNo from member_master where parentregnoB=@mRegNo and parentSideB='R'
+	set @ch2=isnull(@ch2,0)
+	if(@ch2>0)
+		Select @userNameRight=M.Loginid, @SponsorIDRight=S.Loginid, @statusRight=M.ConfPayNo from member_master M, Member_Master S where M.introregno=S.RegNo and M.regno=@ch2
+	ELSE
+	 Begin
+		Set @userNameRight='0'; Set @SponsorIDRight='0'; Set @statusRight=0
+	 End
+	
+	
+	Select 	@previusMLeft as previusMLeft,	
+	@totalMLeft as totalMLeft, 
+	@currentMLeft as currentMLeft, 
+	@cfMLeft as cfMLeft, 
+	@currentGrayMLeft as currentGrayMLeft,
+	@totalGrayMLeft as totalGrayMLeft,
+	@totalPVLeft as totalPVLeft,
+	@currentPVLeft as currentPVLeft,
+	@CFPVLeft as CFPVLeft,
+	@directLeft as directLeft,
+	@purpuleLeft as purpuleLeft, 
+	@greenLeft as greenLeft, 	
+	@leftRemainingTotal as leftRemaingTotal,
+	@previusMRight as previusMRight,
+	@totalMRight as totalMRight,
+	@currentMRight as currentMRight,
+	@cfMRight as cfMRight,
+	@currentGrayMRight as currentGrayMRight,
+	@totalGrayMRight as totalGrayMRight,
+	@totalPVRight as totalPVRight, 
+	@currentPVRight as currentPVRight,
+	@CFPVRight as CFPVRight,
+	@directRight as directRight,
+	@purpuleRight as purpuleRight, 
+	@greenRight	as greenRight,	
+	@rightRemainingTotal as rightRemaingTotal,
+	@userNameSelf as userNameSelf, @SponsorIDSelf as SponsorIDSelf, @statusSelf as statusSelf,
+	@userNameLeft as userNameLeft, @SponsorIDLeft as SponsorIDLeft, @statusLeft as statusLeft,
+	@userNameRight as userNameRight, @SponsorIDRight as SponsorIDRight, @statusRight as statusRight
+
+	
+----
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[PO_TO_DSP]    Script Date: 9/11/2019 10:22:03 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[PO_TO_DSP]
+@ProductXML XML='',  
+@BRID bigint=0,--Bill To
+@VID bigint=0, --Bill to company by vendor
+@WHID bigint=0,--Bill by in case of MSS/DSP
+@MSS bigint=0,----Bill by in case of DSP
+@query varchar(50)='',
+@ptcid int=1,
+@Remarks varchar(500)='',
+@Terms varchar(500)='',
+@DiscountTotal money=0,
+@SubTotal money=0,
+@TaxRate money=0,
+@TaxHead varchar(100)='',
+@TotalGrand money=0,
+@ADID bigint=1,
+@cForm int=0,
+@NoOfItems int=0,	
+@VendorIVN varchar(100)='',
+@handlingcharge money=0,
+@intResult int out
+as  
+begin transaction  
+	declare @pcount int,@IST datetime ,@docHandle Int, @vendorprice money, @pid bigint,@MRP money, @QTY int,@BV money,@ME money,@PCODE varchar(100)
+	Declare @MFDate datetime,@EXPDate datetime
+	declare @VCOST money,@BATCHNO varchar(100)  
+	Declare @FYID int , @FY  varchar(10),@pPrefix   varchar(5), @psLIMITS   bigint,@purchaseorder  varchar(25) 
+	Declare @POID bigint,@checkCount int ,@POredeid bigint,@TOredeid bigint,@TransType varchar(100),@Vname varchar(100),@RE_DE_DID bigint
+	declare @redeidReceiveMSP bigint,@redeidShipMSPFINV bigint ,@redeidMSPDIPATCH bigint
+	declare @redeidReceiveBF bigint,@redeidShipFINV bigint,@Dmargin money
+	declare @FP money,@DP money, @Fsid  as int , @Tsid as int,@BRIDCODE varchar(100),@TransRemarks varchar(100)
+	declare @WHCODE varchar(100),@RE_DE_ID bigint,@FranchiseeType as int,@redeidDIPATCH bigint
+	Declare @RE_DE_IDNEW as bigint,@Finvoiceno as varchar(100),@FIPrefix as varchar(100),@Forderno as varchar(100),@InvoiceDetails as varchar(100)
+	declare @VIDSId int,@GtaxAmount money,@GTAXRATE  money, @VAT varchar(50)
+	declare @POpoid bigint, @TOpoind bigint, @MSSTOpoind bigint
+	declare @ProductName varchar(100),@SKUNO varchar(100), @bRCommission money
+	declare @varble varchar(20)
+	declare @TotalAmount money,@TaxAmount money,@TotalBillAmount money
+	set @TotalAmount=0; set @TaxAmount=0; set @TotalBillAmount=0;
+	set @bRCommission=0 
+	set @pcount=0
+	set @redeidDIPATCH=0
+	set @redeidMSPDIPATCH=0;
+	Set @IST=dateadd(mi,330,getutcdate())
+	--- Current Financial year ----
+	 select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1 
+	-- End --
+	set @intresult = 0
+	if(@query='Insert')
+		begin
+			-- ********* Generate TO @TOBSP ******** --
+			if(@BRID>0)
+			begin
+				select @psLimits=psLIMITS, @pPrefix=psCharLimits from product_settings  where psCaption='intraOrder' and FYID=@FYID             
+				set @psLimits=@psLimits+1             
+				update product_settings set psLIMITS=@psLimits where psCaption='intraOrder' and FYID=@FYID             
+				set @purchaseorder=@pPrefix+cast(@psLimits as varchar)+'/'+@FY 
+				-- Check MSS Vis Transfer
+				insert into Purchase_Order(VID,POnumber,PODate,transferto,transferfrom,Terms,remark,reqid,Requisitioner,generatedBy,poStatus,QTY,cForm,poGeneratedDate,POAmount,TaxID,DisAmount,TotalNet,HandlingAmount,AdjustAmount,AdjustType,GrantAmount,ShipID,FOB)    
+				values (0,@purchaseorder,@IST,@BRID,@WHID,@Terms,@Remarks,0,0,@ADID,16,@NoOfItems,0,@IST, @SubTotal,@ptcid,@DiscountTotal,@TotalGrand,@handlingcharge,0,'',@TotalGrand,0,0) 
+				select @TOpoind=ident_Current('Purchase_order');
+				select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1                           
+				select @psLimits=psLIMITS, @pPrefix=psCharLimits from product_settings  where psCaption='intraDispatch' and FYID=@FYID                                     
+				set @psLimits=@psLimits+1                                     
+				update product_settings set psLIMITS=@psLimits where psCaption='intraDispatch' and FYID=@FYID                                     
+				set @purchaseorder=@pPrefix+cast(@psLimits as varchar)+'/'+@FY                        
+				insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,handlingcharge)                            
+				values(@TOpoind, @purchaseorder, 0, 2, @ADID, @brid, @IST,'TDN', @IST, 'Product Dispatch note generated by Warehouse/MSS',@handlingcharge)
+				select @redeidDIPATCH=ident_Current('RE_DE_NOTE');
+				--- End Dispatch---
+				---- Ship to product In Branch Inventory--
+				select @Tsid=sid,@BRIDCODE=brcode,@FranchiseeType=Franchisee from branch_master where brid=@BRID -- Transfer To 
+					if(@FranchiseeType=1)
+						begin
+							select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1 
+							select @Finvoiceno=pslimits ,@FIPrefix=psCharLimits from product_settings where psCaption='FINVOICE' and FYID=@FYID
+							select @Forderno=pslimits  from product_settings where psCaption='FORDER' and FYID=@FYID
+							set @Forderno=isnull(@Forderno,0)
+							set @Forderno=@Forderno+1
+							set @Finvoiceno=isnull(@Finvoiceno,0)
+							set @Finvoiceno=@Finvoiceno+1
+							Update product_settings set pslimits=@Forderno where psCaption='FORDER' and FYID=@FYID
+							Update product_settings set pslimits=@Finvoiceno where psCaption='FINVOICE' and FYID=@FYID
+							set @InvoiceDetails='DSP-'+@FIPrefix+cast(@Finvoiceno as varchar)+'/'+@FY 
+							insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,InvoiceNo,RE_DE_ID_TDN,handlingcharge)
+							values(@TOpoind, @Forderno, 0, 1, @ADID, @brid, @IST, 'TIN', @IST, 'Shippment Note generated for Franchisee',@InvoiceDetails,@redeidDIPATCH,@handlingcharge)
+							select @redeidShipFINV=ident_Current('RE_DE_NOTE');
+							end
+					else
+						begin
+							select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1  
+							select @Finvoiceno=pslimits ,@FIPrefix=psCharLimits from product_settings where psCaption='SHIPIvoice' and FYID=@FYID
+							select @Forderno=pslimits  from product_settings where psCaption='SHIPMENTNO' and FYID=@FYID
+							set @Forderno=isnull(@Forderno,0)
+							set @Forderno=@Forderno+1
+							set @Finvoiceno=isnull(@Finvoiceno,0)
+							set @Finvoiceno=@Finvoiceno+1
+							Update product_settings set pslimits=@Forderno where psCaption='SHIPMENTNO' and FYID=@FYID
+							Update product_settings set pslimits=@Finvoiceno where psCaption='SHIPIvoice' and FYID=@FYID
+							set @InvoiceDetails=@FIPrefix+cast(@Finvoiceno as varchar)+'/'+@FY 
+							set @varble=''
+							set @varble='SHN'+@Forderno
+							insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,InvoiceNo,RE_DE_ID_TDN,handlingcharge)
+							values(@TOpoind, @varble, 0, 1, @ADID, @brid, @IST, 'TSN', @IST, 'Shippment Note generated for Branch',@InvoiceDetails,@redeidDIPATCH,@handlingcharge)
+							select @redeidShipFINV=ident_Current('RE_DE_NOTE');
+						end
+				--- End Ship----
+				--- Dishpatech--> receive in branch--
+					select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1                           
+					select @psLimits=psLIMITS, @pPrefix=psCharLimits from product_settings  where psCaption='intraReceive' and FYID=@FYID                                     
+					Set @psLimits=@psLimits+1                                     
+					Update product_settings set psLIMITS=@psLimits where psCaption='intraReceive' and FYID=@FYID                                     
+					Set @purchaseorder=@pPrefix+cast(@psLimits as varchar)+'/'+@FY 
+					insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,RE_DE_ID_TDN,handlingcharge)
+							values(@TOpoind, @purchaseorder, 0 , 1, @ADID, @brid, @IST, 'TRN', @IST, 'Product Received to DSP',@redeidDIPATCH,@handlingcharge)
+					select @redeidReceiveBF=ident_Current('RE_DE_NOTE');
+				--- End ---
+			end
+			select @WHCODE=brcode,@Fsid=sid from branch_master where brid=@WHID --Debit From
+			EXEC sp_xml_preparedocument @docHandle OUTPUT, @ProductXML                   
+			DECLARE InstCursor CURSOR FOR                                                                                     
+			SELECT  XMLMap.PID,XMLMap.ProductName,XMLMap.MRP,XMLMap.DP,XMLMap.BV,XMLMap.ME , XMLMap.MFDate,XMLMap.EXPDate,XMLMap.QTY, XMLMap.PCODE, XMLMap.VCOST,XMLMap.BATCHNO  FROM OPENXML(@docHandle,'/Purchase/Order',0)                      
+			WITH(PID bigint,ProductName varchar(200), MRP money, DP money, BV money, ME money,MFDate datetime,EXPDate datetime,QTY int, PCODE varchar(50),VCOST money,BATCHNO varchar(100)) XMLMap                                            
+			OPEN InstCursor                                                                                    
+			Fetch NEXT FROM InstCursor INTO @pid,@ProductName,@MRP,@DP,@BV,@ME,@MFDate,@EXPDate,@QTY,@PCODE ,@VCOST,@BATCHNO      
+			While (@@FETCH_STATUS = 0)                                                         
+			BEGIN  				
+				if(@BRID>0)
+				begin		
+						declare @commodity_id int, @CountState int ,  @pCost money 
+						set @CountState=0;   set @pCost=0; set @GtaxAmount=0 ;
+						select @SKUNO=Barcode from product_master where pid=@pid				
+						select @Dmargin =isnull(Dmargin,0),@DP=DP from Product_master where pid=@pid
+						select @bRCommission=isnull(commission,0),@CountState=franchisee from branch_master where brid=@brid
+						set @GtaxAmount=isnull(dbo.UDF_getTaxAmountNRate_Combo_Rate(@pid,@Tsid,@DP),0)
+						if(@CountState=0)
+						begin
+							set @FP=0;
+							set @FP=@DP 	--FP/DSP Price excl tax					
+							--- Checking Intra/Inter State 
+							--- Add at the time of WH to MSS bill Need to check C-Form--
+							--- In case of direct Inventory we assume bill with C-Form--
+							 declare @FPwithTax  money
+							 set @FPwithTax=0;
+							if(@Fsid=@Tsid)-- Exempted in case of company branch transfer F-Form require in case of inter state transfer
+							begin
+								set @GTAXRATE=0
+								set @GtaxAmount=0
+								set @VAT='Exempted'
+								set @FPwithTax=@FP
+							end
+							else
+							begin
+							--- Add at the time of WH to NSP bill Need to check F-Form--
+							--- In case of direct Inventory we assume bill with F-Form--
+								select @VAT=ptc.[Class] from ProductTaxClass ptc where ptc.ttid=4
+								set @GTAXRATE=0
+								set @VAT='Exempted'
+								set @FPwithTax=@FP
+							end
+						end
+						else
+						begin
+							set @FP=0;
+							--set @DP=@DP-@GtaxAmount--Tax VAT Minus as per buyer state
+							set @FP=@DP-(@Dmargin *@bRCommission/100)	--FP/DSP Price excl tax		
+							--set @DP=@DP+@GtaxAmount
+							--- Checking Intra/Inter State 
+							--- Add at the time of WH to MSS bill Need to check C-Form--
+							--- In case of direct Inventory we assume bill with C-Form--
+							 set @FPwithTax=0;
+							if(@Fsid=@Tsid)-- Apply VAT in case of same state also if no C-Form as CST
+							begin
+								set @GTAXRATE=isnull(dbo.UDF_getTaxAmountNRate_Combo(@pid,@Fsid,@FP),0)
+								--set @GtaxAmount=(@FP*(@GTAXRATE/100))
+								select @VAT=ptc.[Class] from ProductTaxClass ptc,product_master p where  ptc.ptcid=p.ptcid and p.pid=@pid
+								--set @FPwithTax=@FP+(@FP*(@GTAXRATE/100))
+								set @FPwithTax=(@FP*100)/(@GTAXRATE+100)
+								set @GtaxAmount=(@FPwithTax*@GTAXRATE)/100
+							end
+							else
+							begin
+								select @VAT=ptc.[Class] from ProductTaxClass ptc where ptc.ttid=4
+								set @GTAXRATE=2
+								set @FPwithTax=(@FP*100)/(@GTAXRATE+100)
+								set @GtaxAmount=(@FPwithTax*@GTAXRATE)/100
+							end
+						end
+					--- Inventory Deduction from Warehouse/MSS --
+						 
+						select @MRP=MRP,@DP=DP from product_master where pid=@pid
+						insert into Purchase_Order_Details(POID,pid,ProductName,Qty,Status,Statusdate,UID,UnitPrice,MRP,SubPrice,Taxname,Taxrate) values            
+															(@TOpoind,@pid,@ProductName,@QTY,1,@IST,1,@FP,@MRP,@DP,@VAT,@GTAXRATE) 
+					--- End TO details Porduct--
+					--- Start TO dispatch from warehouse/MSS to DSP/NSP--
+						insert into re_de_note_details(RE_DE_ID,PID,[Desc],QTY,UID,UnitPrice,VendorCost,PurPrice,ExpCost,MRP,BARCODE,ExpiryDate,manufacturerDate,TaxHead,TaxRate,BatchNo)                      
+						values(@redeidDIPATCH,@pid,'Has to dispatch in other store MSS',@QTY,1,@FP,@DP,@FPwithTax,0,@MRP,@SKUNO,@EXPDate,@MFDate,@VAT,@GTAXRATE,@BatchNo)
+						select @RE_DE_DID=IDENT_CURRENT('re_de_note_details')   
+					--- Inventory Deduction from Warehouse/MSS --
+						 set @TotalAmount=@TotalAmount+(@FPwithTax*@QTY);
+						set @TaxAmount=@TaxAmount+(@GtaxAmount*@QTY);
+						select @Tsid=sid,@BRIDCODE=brcode,@FranchiseeType=Franchisee from branch_master where brid=@BRID -- Transfer To    
+						if(@Fsid=@Tsid)  
+						begin
+							Select @TransType=TransType,@TransRemarks=TransRemarks from Inventory_trans_master where TransType='To-DispShip'               
+						end
+						else         
+						begin				
+							Select @TransType=TransType,@TransRemarks=TransRemarks from Inventory_trans_master where TransType='TR-DispShipMS'            
+						end
+						insert into Store_Inventory_Master(BRID ,TransID ,TransType , PID ,CRDB ,Debit , TransRemarks ,TransDate ,TransStatus,FromTo,LotID,RE_DE_DID,BARCODE)          
+							values(@WHID,@redeidDIPATCH,@TransType,@pid,'D',@QTY,@TransRemarks +' ('+@BRIDCODE+')',@IST,1,@BRID,@RE_DE_DID,@RE_DE_DID,@SKUNO)  
+					--- End ----
+					--- Receive shiP-Product -->DSP
+						insert into re_de_note_details(RE_DE_ID,PID,[Desc],QTY,UID,Unitprice,VendorCost,PurPrice,ExpCost,BARCODE,ExpiryDate,manufacturerDate,MRP,TaxHead,TaxRate,BatchNo)                                                    
+						values(@redeidShipFINV,@pid,'Has to ship in other store MSS',@QTY,1,@FP,@DP,@FPwithTax,0,@SKUNO,@EXPDate,@MFDate,@MRP,@VAT,@GTAXRATE,@BatchNo) 
+						select @RE_DE_DID=IDENT_CURRENT('re_de_note_details')
+						if(@Fsid=@Tsid)              
+						begin              
+							Select @TransType=TransType,@TransRemarks=TransRemarks  from Inventory_trans_master where TransType='To-Rec'                  
+						end              
+						else              
+						begin             
+							Select @TransType=TransType,@TransRemarks=TransRemarks from Inventory_trans_master where TransType='TR-RecMS'                    
+						end  
+						select @CountState=franchisee from branch_master where BRID=@WHID
+						declare @aQty as int, @aLotID as varchar(100),@tempQty int
+						set @tempQty=@Qty
+						if(@CountState=3)
+						begin
+							select @aQty=(credit-debit) from BranchLotWise_Inventory where  brid=@WHID and pid=@pid
+							if(@aQty>=@tempQty)
+							begin
+								While(@tempQty>0)
+								BEGIN
+									select top 1 @aLotID=lotID from BranchLotWise_Inventory where  brid=@WHID and pid=@pid and (credit-debit)>0 and unitPrice=@MRP order by Lotid
+									select @aQty=(credit-debit) from BranchLotWise_Inventory where  brid=@WHID and pid=@pid and Lotid=@aLotID
+									if(@aQty>=@tempQty)
+									Begin
+										update BranchLotWise_Inventory set debit=(debit+@tempQty) where brid=@WHID and pid=@pid and LotID=@aLotID
+										set @tempQty=0
+									End	
+									else
+									BEGIN
+										set @tempQty=(@tempQty-@aQty)
+										update BranchLotWise_Inventory set debit=(debit+@aQty) where brid=@WHID and pid=@pid and LotID=@aLotID	
+									End	                     
+								End	
+							end
+							--update BranchLotWise_Inventory set debit=debit-@QTY where brid=@WHID and pid=@pid and UnitPrice=@MRP
+						END
+						insert into re_de_note_details(RE_DE_ID,PID,[Desc],QTY,UID,UnitPrice,VendorCost,PurPrice,ExpCost,BARCODE,ExpiryDate,manufacturerDate,MRP,TaxHead,TaxRate,BatchNo)                                                    
+						values(@redeidReceiveBF,@pid,'Product Received in DSP',@QTY,1,@Fp,@DP,@FPwithTax,0,@SKUNO,@EXPDate,@MFDate,@MRP,@VAT,@GTAXRATE,@BatchNo) 
+						select @RE_DE_DID=IDENT_CURRENT('re_de_note_details')
+						insert into Store_Inventory_Master(BRID,TransID,TransType,PID ,CRDB,Credit,TransRemarks ,TransDate ,TransStatus,FromTo,LotID,RE_DE_DID,BARCODE )                       
+						values(@BRID,@redeidShipFINV,@TransType,@pid,'C',@QTY,@TransRemarks+' ('+@WHCODE+')',@IST,1,@WHID,@RE_DE_DID,@RE_DE_DID,@SKUNO)
+						insert into BranchLotWise_Inventory (Brid,Pid,Lotid,BARCODE,UnitPrice,Credit,Debit,ManufacturerDate,ExpiryDate,DP,SUB,FP,ME)
+														values(@BRID, @pid,@RE_DE_DID, @SKUNO, @MRP, @QTY,0,@MFDate,@EXPDate,@DP,@DP,@FP,@ME)
+					--------------------
+				 end
+				Fetch NEXT FROM InstCursor INTO @pid,@ProductName,@MRP,@DP,@BV,@ME,@MFDate,@EXPDate,@QTY,@PCODE  ,@VCOST,@BATCHNO        
+				END                                                                                    
+				CLOSE InstCursor                                                                              
+				DEALLOCATE InstCursor
+				set @intresult = 1;
+				Declare @totalQuantity int
+				select  @totalQuantity=sum(QTY)  from RE_DE_NOTE_DETAILS where RE_DE_ID=@redeidShipFINV
+				set @TotalBillAmount=@TotalAmount+@TaxAmount+@handlingcharge;
+				update purchase_order set POAmount=@TotalAmount,TaxAmount=@TaxAmount,TotalNet=@TotalBillAmount,GrantAmount=@TotalBillAmount where poid=@TOpoind
+				Update re_de_note set TotalAmount=@TotalAmount,TaxAmount=@TaxAmount,TotalBillAmount=@TotalBillAmount where poid=@TOpoind
+				Update RE_DE_NOTE_DETAILS set PurPrice=PurPrice+(@handlingcharge/@totalQuantity), ExpCost=(@handlingcharge/@totalQuantity) where re_de_ID in (select re_de_id from re_de_note where poid=@TOpoind)  
+				-- MSS>>DSP Account Section
+				Declare @WhName varchar(100),@brName varchar(100),@AccountHead varchar(100), @TOAmount money
+				Declare	@Particulars varchar(100), @Head varchar(100), @PDPType varchar(100)
+				Select @WHcode=brcode,@WhName=brName from branch_master where brid=@WHID
+				Select @BRIDCODE=brcode,@brName=brName,@AccountHead=(case when franchisee=1 then 'DSP-Invoice' when franchisee=3 then 'MSS-Invoice' else 'NSP-Invoice' end),@PDPType=(case when franchisee=1 then 'DSP' when franchisee=3 then 'MSS' when franchisee=4 then 'MSP' else 'NSP' end) from 
+branch_master where brid=@BRID
+				-- TIN>> Transfer Invoice No. for PDP-F, TSN>> Transfer Shipping No. for PDP
+				select @TOAmount=Sum(VendorCost*QTY) from RE_DE_NOTE_DETAILS where RE_DE_ID=@redeidShipFINV
+				set @AccountHead='W-Invoice'
+				Set @Particulars=@AccountHead+' against '+@InvoiceDetails
+				--set @Whdetails=@CompanyName+'-WH-'+@WhName+'('+@WHcode+')'
+				--set @Whdetails='NONI-WH'
+				 
+				-- For Com Account
+				select @pcount = Onlinestore from branch_master where brid=@MSS
+				if(@pcount=2)
+				begin
+					Insert into Company_Account (CID,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus) 
+										values (1,'WH',@BRID,@redeidShipFINV,@PDPType,@MSS,'Purchase',@Particulars,@TotalBillAmount,0,1)
+				end
+				else
+				begin
+					Insert into Company_Account (CID,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus) 
+										values (1,'MSS',@BRID,@redeidShipFINV,@PDPType,@MSS,@AccountHead,@Particulars,@TotalBillAmount,0,1)
+					-- For PDP/PDP-F Accoun
+				end
+				set @Head='Purchase' 
+					Insert into Company_Account (CID,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus) 
+									values (1,@PDPType,@MSS,@redeidShipFINV,@PDPType,@BRID,@AccountHead,@Particulars,0,@TotalBillAmount,1)
+				-- End MSS Account Section
+			---Error Handle --
+			if (@@error<>0)
+			begin 
+				set @intresult = 0 
+				rollback transaction 
+				return 
+			end		
+		end
+commit transaction 
+-------------
+
+
+
+
+
+
+
+
+
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[PO_TO_DSPMSP]    Script Date: 9/11/2019 10:22:54 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[PO_TO_DSPMSP]
+@ProductXML XML='',  
+@BRID bigint=0,--Bill To
+@VID bigint=0, --Bill to company by vendor
+@WHID bigint=0,--Bill by in case of MSS/DSP
+@MSS bigint=0,----Bill by in case of DSP
+@query varchar(50)='',
+@ptcid int=1,
+@Remarks varchar(500)='',
+@Terms varchar(500)='',
+@DiscountTotal money=0,
+@SubTotal money=0,
+@TaxRate money=0,
+@TaxHead varchar(100)='',
+@TotalGrand money=0,
+@ADID bigint=1,
+@cForm int=0,
+@NoOfItems int=0,	
+@VendorIVN varchar(100)='',
+@handlingcharge money=0,
+@intResult int out
+as  
+begin transaction  
+	declare @pcount int,@IST datetime ,@docHandle Int, @vendorprice money, @pid bigint,@MRP money, @QTY int,@BV money,@ME money,@PCODE varchar(100)
+	Declare @MFDate datetime,@EXPDate datetime
+	declare @VCOST money,@BATCHNO varchar(100)  
+	Declare @FYID int , @FY  varchar(10),@pPrefix   varchar(5), @psLIMITS   bigint,@purchaseorder  varchar(25) 
+	Declare @POID bigint,@checkCount int ,@POredeid bigint,@TOredeid bigint,@TransType varchar(100),@Vname varchar(100),@RE_DE_DID bigint
+	declare @redeidReceiveMSP bigint,@redeidShipMSPFINV bigint ,@redeidMSPDIPATCH bigint
+	declare @redeidReceiveBF bigint,@redeidShipFINV bigint,@Dmargin money
+	declare @FP money,@DP money, @Fsid  as int , @Tsid as int,@BRIDCODE varchar(100),@TransRemarks varchar(100)
+	declare @WHCODE varchar(100),@RE_DE_ID bigint,@FranchiseeType as int,@redeidDIPATCH bigint
+	Declare @RE_DE_IDNEW as bigint,@Finvoiceno as varchar(100),@FIPrefix as varchar(100),@Forderno as varchar(100),@InvoiceDetails as varchar(100)
+	declare @VIDSId int,@GtaxAmount money,@GTAXRATE  money, @VAT varchar(50)
+	declare @POpoid bigint, @TOpoind bigint, @MSSTOpoind bigint
+	declare @ProductName varchar(100),@SKUNO varchar(100), @bRCommission money
+	declare @varble varchar(20)
+	declare @TotalAmount money,@TaxAmount money,@TotalBillAmount money
+	set @TotalAmount=0; set @TaxAmount=0; set @TotalBillAmount=0;
+	
+	set @bRCommission=0 
+	set @pcount=0
+	set @redeidDIPATCH=0
+	set @redeidMSPDIPATCH=0;
+	Set @IST=dateadd(mi,330,getutcdate())
+	--- Current Financial year ----
+	 select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1 
+	-- End --
+	set @intresult = 0
+	if(@query='Insert')
+		begin
+			-- ********* Generate TO @TOBSP ******** --
+			
+			if(@BRID>0)
+			begin
+				select @psLimits=psLIMITS, @pPrefix=psCharLimits from product_settings  where psCaption='intraOrder' and FYID=@FYID             
+				set @psLimits=@psLimits+1             
+				update product_settings set psLIMITS=@psLimits where psCaption='intraOrder' and FYID=@FYID             
+				set @purchaseorder=@pPrefix+cast(@psLimits as varchar)+'/'+@FY 
+				-- Check MSS Vis Transfer
+				
+				insert into Purchase_Order(VID,POnumber,PODate,transferto,transferfrom,Terms,remark,reqid,Requisitioner,generatedBy,poStatus,QTY,cForm,poGeneratedDate,POAmount,TaxID,DisAmount,TotalNet,HandlingAmount,AdjustAmount,AdjustType,GrantAmount,ShipID,FOB)           
+				values (0,@purchaseorder,@IST,@BRID,@WHID,@Terms,@Remarks,0,0,@ADID,16,@NoOfItems,0,@IST, @SubTotal,@ptcid,@DiscountTotal,@TotalGrand,@handlingcharge,0,'',@TotalGrand,0,0) 
+	
+				
+				
+				select @TOpoind=ident_Current('Purchase_order');
+				
+				select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1                           
+				select @psLimits=psLIMITS, @pPrefix=psCharLimits from product_settings  where psCaption='intraDispatch' and FYID=@FYID                                     
+				set @psLimits=@psLimits+1                                     
+				update product_settings set psLIMITS=@psLimits where psCaption='intraDispatch' and FYID=@FYID                                     
+				set @purchaseorder=@pPrefix+cast(@psLimits as varchar)+'/'+@FY                        
+				insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,handlingcharge)                            
+				values(@TOpoind, @purchaseorder, 0, 2, @ADID, @brid, @IST,'TDN', @IST, 'Product Dispatch note generated by Warehouse/MSS',@handlingcharge)
+							
+				select @redeidDIPATCH=ident_Current('RE_DE_NOTE');
+				--- End Dispatch---
+				---- Ship to product In Branch Inventory--
+				select @Tsid=sid,@BRIDCODE=brcode,@FranchiseeType=Franchisee from branch_master where brid=@BRID -- Transfer To 
+					if(@FranchiseeType=4)
+						begin
+							select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1 
+							
+							select @Finvoiceno=pslimits ,@FIPrefix=psCharLimits from product_settings where psCaption='FINVOICE' and FYID=@FYID
+							select @Forderno=pslimits  from product_settings where psCaption='FORDER' and FYID=@FYID
+							set @Forderno=isnull(@Forderno,0)
+							set @Forderno=@Forderno+1
+							set @Finvoiceno=isnull(@Finvoiceno,0)
+							set @Finvoiceno=@Finvoiceno+1
+							
+							Update product_settings set pslimits=@Forderno where psCaption='FORDER' and FYID=@FYID
+							Update product_settings set pslimits=@Finvoiceno where psCaption='FINVOICE' and FYID=@FYID
+							set @InvoiceDetails='MSP-'+@FIPrefix+cast(@Finvoiceno as varchar)+'/'+@FY 
+							insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,InvoiceNo,RE_DE_ID_TDN,handlingcharge)
+							values(@TOpoind, @Forderno, 0, 1, @ADID, @brid, @IST, 'TIN', @IST, 'Shippment Note generated for MSP',@InvoiceDetails,@redeidDIPATCH,@handlingcharge)
+							select @redeidShipFINV=ident_Current('RE_DE_NOTE');
+									
+							 
+							end
+					else
+						begin
+							select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1  
+							select @Finvoiceno=pslimits ,@FIPrefix=psCharLimits from product_settings where psCaption='SHIPIvoice' and FYID=@FYID
+							select @Forderno=pslimits  from product_settings where psCaption='SHIPMENTNO' and FYID=@FYID
+							set @Forderno=isnull(@Forderno,0)
+							set @Forderno=@Forderno+1
+							set @Finvoiceno=isnull(@Finvoiceno,0)
+							set @Finvoiceno=@Finvoiceno+1
+							Update product_settings set pslimits=@Forderno where psCaption='SHIPMENTNO' and FYID=@FYID
+							Update product_settings set pslimits=@Finvoiceno where psCaption='SHIPIvoice' and FYID=@FYID
+							set @InvoiceDetails=@FIPrefix+cast(@Finvoiceno as varchar)+'/'+@FY 
+							
+							set @varble=''
+							set @varble='SHN'+@Forderno
+							
+							insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,InvoiceNo,RE_DE_ID_TDN,handlingcharge)
+							values(@TOpoind, @varble, 0, 1, @ADID, @brid, @IST, 'TSN', @IST, 'Shippment Note generated for Branch',@InvoiceDetails,@redeidDIPATCH,@handlingcharge)
+							select @redeidShipFINV=ident_Current('RE_DE_NOTE');
+									
+						end
+				--- End Ship----
+				
+				--- Dishpatech--> receive in branch--
+					select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1                           
+					select @psLimits=psLIMITS, @pPrefix=psCharLimits from product_settings  where psCaption='intraReceive' and FYID=@FYID                                     
+					Set @psLimits=@psLimits+1                                     
+					Update product_settings set psLIMITS=@psLimits where psCaption='intraReceive' and FYID=@FYID                                     
+					Set @purchaseorder=@pPrefix+cast(@psLimits as varchar)+'/'+@FY 
+					insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,RE_DE_ID_TDN,handlingcharge)
+							values(@TOpoind, @purchaseorder, 0 , 1, @ADID, @brid, @IST, 'TRN', @IST, 'Product Received to MSP',@redeidDIPATCH,@handlingcharge)
+					select @redeidReceiveBF=ident_Current('RE_DE_NOTE');
+				--- End ---
+			end
+			
+			select @WHCODE=brcode,@Fsid=sid from branch_master where brid=@WHID --Debit From
+			
+			EXEC sp_xml_preparedocument @docHandle OUTPUT, @ProductXML                   
+			DECLARE InstCursor CURSOR FOR                                                                                     
+			SELECT  XMLMap.PID,XMLMap.ProductName,XMLMap.MRP,XMLMap.DP,XMLMap.BV,XMLMap.ME , XMLMap.MFDate,XMLMap.EXPDate,XMLMap.QTY, XMLMap.PCODE, XMLMap.VCOST,XMLMap.BATCHNO  FROM OPENXML(@docHandle,'/Purchase/Order',0)                      
+			WITH(PID bigint,ProductName varchar(200), MRP money, DP money, BV money, ME money,MFDate datetime,EXPDate datetime,QTY int, PCODE varchar(50),VCOST money,BATCHNO varchar(100)) XMLMap                                            
+			OPEN InstCursor                                                                                    
+			Fetch NEXT FROM InstCursor INTO @pid,@ProductName,@MRP,@DP,@BV,@ME,@MFDate,@EXPDate,@QTY,@PCODE ,@VCOST,@BATCHNO      
+			While (@@FETCH_STATUS = 0)                                                         
+			BEGIN  				
+				if(@BRID>0)
+				begin		
+						declare @commodity_id int, @CountState int ,  @pCost money 
+						set @CountState=0;   set @pCost=0; set @GtaxAmount=0 ;
+						
+						select @SKUNO=Barcode from product_master where pid=@pid				
+						select @Dmargin =isnull(Dmargin,0),@DP=DP from Product_master where pid=@pid
+						select @bRCommission=isnull(commission,0),@CountState=franchisee from branch_master where brid=@brid
+						set @GtaxAmount=isnull(dbo.UDF_getTaxAmountNRate_Combo_Rate(@pid,@Tsid,@DP),0)
+						if(@CountState=0)
+						begin
+							set @FP=0;
+							 
+							set @FP=@DP 	--FP/DSP Price excl tax					
+							--- Checking Intra/Inter State 
+							--- Add at the time of WH to MSS bill Need to check C-Form--
+							--- In case of direct Inventory we assume bill with C-Form--
+							 declare @FPwithTax  money
+							 set @FPwithTax=0;
+							if(@Fsid=@Tsid)-- Exempted in case of company branch transfer F-Form require in case of inter state transfer
+							begin
+								set @GTAXRATE=0
+								set @GtaxAmount=0
+								set @VAT='Exempted'
+								set @FPwithTax=@FP
+								 
+							end
+							else
+							begin
+							--- Add at the time of WH to NSP bill Need to check F-Form--
+							--- In case of direct Inventory we assume bill with F-Form--
+								select @VAT=ptc.[Class] from ProductTaxClass ptc where ptc.ttid=4
+								set @GTAXRATE=0
+								set @VAT='Exempted'
+								set @FPwithTax=@FP
+							end
+						end
+						else
+						begin
+							set @FP=0;
+							--set @DP=@DP-@GtaxAmount--Tax VAT Minus as per buyer state
+							 
+							set @FP=@DP-(@Dmargin *@bRCommission/100)	--FP/DSP Price excl tax		
+							
+							--- Checking Intra/Inter State 
+							--- Add at the time of WH to MSS bill Need to check C-Form--
+							--- In case of direct Inventory we assume bill with C-Form--
+							 
+							 set @FPwithTax=0;
+							if(@Fsid=@Tsid)-- Apply VAT in case of same state also if no C-Form as CST
+							begin
+								set @GTAXRATE=isnull(dbo.UDF_getTaxAmountNRate_Combo(@pid,@Fsid,@FP),0)
+								--set @GtaxAmount=(@FP*(@GTAXRATE/100))
+								select @VAT=ptc.[Class] from ProductTaxClass ptc,product_master p where  ptc.ptcid=p.ptcid and p.pid=@pid
+								--set @FPwithTax=@FP+(@FP*(@GTAXRATE/100))
+								set @FPwithTax=(@FP*100)/(@GTAXRATE+100)
+								set @GtaxAmount=(@FPwithTax*@GTAXRATE)/100
+							end
+							else
+							begin
+								select @VAT=ptc.[Class] from ProductTaxClass ptc where ptc.ttid=4
+								set @GTAXRATE=2
+								set @FPwithTax=(@FP*100)/(@GTAXRATE+100)
+								set @GtaxAmount=(@FPwithTax*@GTAXRATE)/100
+							end
+							
+						end
+						
+						
+						 
+						select @MRP=MRP,@DP=DP from product_master where pid=@pid
+					--- Inventory Deduction from Warehouse/MSS --
+						insert into Purchase_Order_Details(POID,pid,ProductName,Qty,Status,Statusdate,UID,UnitPrice,MRP,SubPrice,Taxname,Taxrate) values            
+															(@TOpoind,@pid,@ProductName,@QTY,1,@IST,1,@FP,@MRP,@DP,@VAT,@GTAXRATE) 
+					--- End TO details Porduct--
+					--- Start TO dispatch from warehouse/MSS to DSP/NSP--
+						insert into re_de_note_details(RE_DE_ID,PID,[Desc],QTY,UID,UnitPrice,VendorCost,PurPrice,ExpCost,MRP,BARCODE,ExpiryDate,manufacturerDate,TaxHead,TaxRate,BatchNo)                      
+												values(@redeidDIPATCH,@pid,'Has to dispatch in other store ',@QTY,1,@FP,@DP,@FPwithTax,0,@MRP,@SKUNO,@EXPDate,@MFDate,@VAT,@GTAXRATE,@BatchNo)
+						select @RE_DE_DID=IDENT_CURRENT('re_de_note_details')   
+					--- Inventory Deduction from Warehouse/MSS --
+						 
+						 set @TotalAmount=@TotalAmount+(@FPwithTax*@QTY);
+						set @TaxAmount=@TaxAmount+(@GtaxAmount*@QTY);
+					    
+					
+						select @Tsid=sid,@BRIDCODE=brcode,@FranchiseeType=Franchisee from branch_master where brid=@BRID -- Transfer To    
+						if(@Fsid=@Tsid)  
+						begin
+							Select @TransType=TransType,@TransRemarks=TransRemarks from Inventory_trans_master where TransType='To-DispShip'               
+						end
+						else         
+						begin				
+							Select @TransType=TransType,@TransRemarks=TransRemarks from Inventory_trans_master where TransType='TR-DispShipMS'            
+						end
+						
+						
+						insert into Store_Inventory_Master(BRID ,TransID ,TransType , PID ,CRDB ,Debit , TransRemarks ,TransDate ,TransStatus,FromTo,LotID,RE_DE_DID,BARCODE)          
+							values(@WHID,@redeidDIPATCH,@TransType,@pid,'D',@QTY,@TransRemarks +' ('+@BRIDCODE+')',@IST,1,@BRID,@RE_DE_DID,@RE_DE_DID,@SKUNO)  
+						
+						
+					--- End ----
+					--- Receive shiP-Product -->DSP
+						insert into re_de_note_details(RE_DE_ID,PID,[Desc],QTY,UID,Unitprice,VendorCost,PurPrice,ExpCost,BARCODE,ExpiryDate,manufacturerDate,MRP,TaxHead,TaxRate,BatchNo)                                                    
+						values(@redeidShipFINV,@pid,'Has to ship in other store ',@QTY,1,@FP,@DP,@FPwithTax,0,@SKUNO,@EXPDate,@MFDate,@MRP,@VAT,@GTAXRATE,@BatchNo) 
+						select @RE_DE_DID=IDENT_CURRENT('re_de_note_details')
+						if(@Fsid=@Tsid)              
+						begin              
+							Select @TransType=TransType,@TransRemarks=TransRemarks  from Inventory_trans_master where TransType='To-Rec'                  
+						end              
+						else              
+						begin             
+							Select @TransType=TransType,@TransRemarks=TransRemarks from Inventory_trans_master where TransType='TR-RecMS'                    
+						end  
+						
+						select @CountState=franchisee from branch_master where BRID=@WHID
+						if(@CountState=3 or @CountState=1)
+						begin
+						----- ======= Deduction From Lot wise ======= -------
+					declare @aQty as int, @aLotID as varchar(100),@tempQty int
+					set @tempQty=@Qty
+					If(@FranchiseeType<>2)
+					begin
+			
+						select @aQty=(credit-debit) from BranchLotWise_Inventory where  brid=@WHID and pid=@pid
+							if(@aQty>=@tempQty)
+							begin
+								While(@tempQty>0)
+									BEGIN
+										select top 1 @aLotID=lotID from BranchLotWise_Inventory where  brid=@WHID and pid=@pid and (credit-debit)>0 and unitPrice=@MRP order by Lotid
+										select @aQty=(credit-debit) from BranchLotWise_Inventory where  brid=@WHID and pid=@pid and Lotid=@aLotID
+										if(@aQty>=@tempQty)
+										Begin
+											update BranchLotWise_Inventory set debit=(debit+@tempQty) where brid=@WHID and pid=@pid and LotID=@aLotID
+											set @tempQty=0
+										End	
+										else
+										BEGIN
+											set @tempQty=(@tempQty-@aQty)
+											update BranchLotWise_Inventory set debit=(debit+@aQty) where brid=@WHID and pid=@pid and LotID=@aLotID	
+										End	
+										if(@@error<>0)                                                                                                            
+										Begin   
+											Set @intResult=2 
+											ROLLBACK TRANSACTION                                                      
+											return @intResult                                                          
+										End                        
+									End	
+								end
+						end
+							--update BranchLotWise_Inventory set debit=debit-@QTY where brid=@WHID and pid=@pid and UnitPrice=@MRP
+						END
+						
+						insert into re_de_note_details(RE_DE_ID,PID,[Desc],QTY,UID,UnitPrice,VendorCost,PurPrice,ExpCost,BARCODE,ExpiryDate,manufacturerDate,MRP,TaxHead,TaxRate,BatchNo)                                                    
+						values(@redeidReceiveBF,@pid,'Product Received in MSP',@QTY,1,@FP,@DP,@FPwithTax,0,@SKUNO,@EXPDate,@MFDate,@MRP,@VAT,@GTAXRATE,@BatchNo) 
+						select @RE_DE_DID=IDENT_CURRENT('re_de_note_details')
+						
+						insert into Store_Inventory_Master(BRID,TransID,TransType,PID ,CRDB,Credit,TransRemarks ,TransDate ,TransStatus,FromTo,LotID,RE_DE_DID,BARCODE )                       
+						values(@BRID,@redeidShipFINV,@TransType,@pid,'C',@QTY,@TransRemarks+' ('+@WHCODE+')',@IST,1,@WHID,@RE_DE_DID,@RE_DE_DID,@SKUNO)
+						 
+						insert into BranchLotWise_Inventory (Brid,Pid,Lotid,BARCODE,UnitPrice,Credit,Debit,ManufacturerDate,ExpiryDate,DP,SUB,FP,ME)
+														values(@BRID, @pid,@RE_DE_DID, @SKUNO, @MRP, @QTY,0,@MFDate,@EXPDate,@DP,@DP,@FP,@ME)
+						
+						
+						 
+					--------------------
+					
+				 end
+				
+				Fetch NEXT FROM InstCursor INTO @pid,@ProductName,@MRP,@DP,@BV,@ME,@MFDate,@EXPDate,@QTY,@PCODE  ,@VCOST,@BATCHNO        
+				END                                                                                    
+				CLOSE InstCursor                                                                              
+				DEALLOCATE InstCursor
+				set @intresult = 1;
+				Declare @totalQuantity int
+				select  @totalQuantity=sum(QTY)  from RE_DE_NOTE_DETAILS where RE_DE_ID=@redeidShipFINV
+				set @TotalBillAmount=@TotalAmount+@TaxAmount+@handlingcharge;
+				
+				update purchase_order set POAmount=@TotalAmount,TaxAmount=@TaxAmount,TotalNet=@TotalBillAmount,GrantAmount=@TotalBillAmount where poid=@TOpoind
+				Update re_de_note set TotalAmount=@TotalAmount,TaxAmount=@TaxAmount,TotalBillAmount=@TotalBillAmount where poid=@TOpoind
+				Update RE_DE_NOTE_DETAILS set PurPrice=PurPrice+(@handlingcharge/@totalQuantity), ExpCost=(@handlingcharge/@totalQuantity) where re_de_ID in (select re_de_id from re_de_note where poid=@TOpoind)  
+				-- MSS>>DSP Account Section
+				Declare @WhName varchar(100),@brName varchar(100),@AccountHead varchar(100), @TOAmount money
+				Declare	@Particulars varchar(100), @Head varchar(100), @PDPType varchar(100)
+				Select @WHcode=brcode,@WhName=brName from branch_master where brid=@WHID
+				Select @BRIDCODE=brcode,@brName=brName,@AccountHead=(case when franchisee=1 then 'DSP-Invoice' when franchisee=3 then 'MSS-Invoice'  when franchisee=4 then 'MSP-Invoice' else 'NSP-Invoice' end),@PDPType=(case when franchisee=1 then 'DSP' when franchisee=3 then 'MSS' when franchisee=4 then 'MSP'  else 'NSP' end) from branch_master where brid=@BRID
+				set @AccountHead='W-Invoice'
+				-- TIN>> Transfer Invoice No. for PDP-F, TSN>> Transfer Shipping No. for PDP
+				select @TOAmount=Sum(VendorCost*QTY) from RE_DE_NOTE_DETAILS where RE_DE_ID=@redeidShipFINV
+				Set @Particulars=@AccountHead+' against '+@InvoiceDetails
+				--set @Whdetails=@CompanyName+'-WH-'+@WhName+'('+@WHcode+')'
+				--set @Whdetails='NONI-WH'
+			 
+				-- For Com Account
+				select @pcount = Onlinestore from branch_master where brid=@MSS
+				if(@pcount=2)
+				begin
+					Insert into Company_Account (CID,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus) 
+										values (1,'NONI-WH',@BRID,@redeidShipFINV,@PDPType,@MSS,'Purchase',@Particulars,@TotalBillAmount,0,1)
+				end
+				else
+				begin
+					Insert into Company_Account (CID,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus) 
+										values (1,'DSP',@BRID,@redeidShipFINV,@PDPType,@MSS,'Purchase',@Particulars,@TotalBillAmount,0,1)
+					-- For PDP/PDP-F Accoun
+				end
+				set @Head='Purchase' 
+					Insert into Company_Account (CID,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus) 
+									values (1,@PDPType,@MSS,@redeidShipFINV,@PDPType,@BRID,@AccountHead,@Particulars,0,@TotalBillAmount,1)
+				-- End MSS Account Section
+				
+			---Error Handle --
+			if (@@error<>0)
+			begin 
+				set @intresult = 0 
+				rollback transaction 
+				return 
+			end		
+		end
+commit transaction 
+---------------------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[PO_TO_DSPMSP]    Script Date: 9/11/2019 10:22:54 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[PO_TO_DSPMSP]
+@ProductXML XML='',  
+@BRID bigint=0,--Bill To
+@VID bigint=0, --Bill to company by vendor
+@WHID bigint=0,--Bill by in case of MSS/DSP
+@MSS bigint=0,----Bill by in case of DSP
+@query varchar(50)='',
+@ptcid int=1,
+@Remarks varchar(500)='',
+@Terms varchar(500)='',
+@DiscountTotal money=0,
+@SubTotal money=0,
+@TaxRate money=0,
+@TaxHead varchar(100)='',
+@TotalGrand money=0,
+@ADID bigint=1,
+@cForm int=0,
+@NoOfItems int=0,	
+@VendorIVN varchar(100)='',
+@handlingcharge money=0,
+@intResult int out
+as  
+begin transaction  
+	declare @pcount int,@IST datetime ,@docHandle Int, @vendorprice money, @pid bigint,@MRP money, @QTY int,@BV money,@ME money,@PCODE varchar(100)
+	Declare @MFDate datetime,@EXPDate datetime
+	declare @VCOST money,@BATCHNO varchar(100)  
+	Declare @FYID int , @FY  varchar(10),@pPrefix   varchar(5), @psLIMITS   bigint,@purchaseorder  varchar(25) 
+	Declare @POID bigint,@checkCount int ,@POredeid bigint,@TOredeid bigint,@TransType varchar(100),@Vname varchar(100),@RE_DE_DID bigint
+	declare @redeidReceiveMSP bigint,@redeidShipMSPFINV bigint ,@redeidMSPDIPATCH bigint
+	declare @redeidReceiveBF bigint,@redeidShipFINV bigint,@Dmargin money
+	declare @FP money,@DP money, @Fsid  as int , @Tsid as int,@BRIDCODE varchar(100),@TransRemarks varchar(100)
+	declare @WHCODE varchar(100),@RE_DE_ID bigint,@FranchiseeType as int,@redeidDIPATCH bigint
+	Declare @RE_DE_IDNEW as bigint,@Finvoiceno as varchar(100),@FIPrefix as varchar(100),@Forderno as varchar(100),@InvoiceDetails as varchar(100)
+	declare @VIDSId int,@GtaxAmount money,@GTAXRATE  money, @VAT varchar(50)
+	declare @POpoid bigint, @TOpoind bigint, @MSSTOpoind bigint
+	declare @ProductName varchar(100),@SKUNO varchar(100), @bRCommission money
+	declare @varble varchar(20)
+	declare @TotalAmount money,@TaxAmount money,@TotalBillAmount money
+	set @TotalAmount=0; set @TaxAmount=0; set @TotalBillAmount=0;
+	
+	set @bRCommission=0 
+	set @pcount=0
+	set @redeidDIPATCH=0
+	set @redeidMSPDIPATCH=0;
+	Set @IST=dateadd(mi,330,getutcdate())
+	--- Current Financial year ----
+	 select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1 
+	-- End --
+	set @intresult = 0
+	if(@query='Insert')
+		begin
+			-- ********* Generate TO @TOBSP ******** --
+			
+			if(@BRID>0)
+			begin
+				select @psLimits=psLIMITS, @pPrefix=psCharLimits from product_settings  where psCaption='intraOrder' and FYID=@FYID             
+				set @psLimits=@psLimits+1             
+				update product_settings set psLIMITS=@psLimits where psCaption='intraOrder' and FYID=@FYID             
+				set @purchaseorder=@pPrefix+cast(@psLimits as varchar)+'/'+@FY 
+				-- Check MSS Vis Transfer
+				
+				insert into Purchase_Order(VID,POnumber,PODate,transferto,transferfrom,Terms,remark,reqid,Requisitioner,generatedBy,poStatus,QTY,cForm,poGeneratedDate,POAmount,TaxID,DisAmount,TotalNet,HandlingAmount,AdjustAmount,AdjustType,GrantAmount,ShipID,FOB)           
+				values (0,@purchaseorder,@IST,@BRID,@WHID,@Terms,@Remarks,0,0,@ADID,16,@NoOfItems,0,@IST, @SubTotal,@ptcid,@DiscountTotal,@TotalGrand,@handlingcharge,0,'',@TotalGrand,0,0) 
+	
+				
+				
+				select @TOpoind=ident_Current('Purchase_order');
+				
+				select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1                           
+				select @psLimits=psLIMITS, @pPrefix=psCharLimits from product_settings  where psCaption='intraDispatch' and FYID=@FYID                                     
+				set @psLimits=@psLimits+1                                     
+				update product_settings set psLIMITS=@psLimits where psCaption='intraDispatch' and FYID=@FYID                                     
+				set @purchaseorder=@pPrefix+cast(@psLimits as varchar)+'/'+@FY                        
+				insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,handlingcharge)                            
+				values(@TOpoind, @purchaseorder, 0, 2, @ADID, @brid, @IST,'TDN', @IST, 'Product Dispatch note generated by Warehouse/MSS',@handlingcharge)
+							
+				select @redeidDIPATCH=ident_Current('RE_DE_NOTE');
+				--- End Dispatch---
+				---- Ship to product In Branch Inventory--
+				select @Tsid=sid,@BRIDCODE=brcode,@FranchiseeType=Franchisee from branch_master where brid=@BRID -- Transfer To 
+					if(@FranchiseeType=4)
+						begin
+							select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1 
+							
+							select @Finvoiceno=pslimits ,@FIPrefix=psCharLimits from product_settings where psCaption='FINVOICE' and FYID=@FYID
+							select @Forderno=pslimits  from product_settings where psCaption='FORDER' and FYID=@FYID
+							set @Forderno=isnull(@Forderno,0)
+							set @Forderno=@Forderno+1
+							set @Finvoiceno=isnull(@Finvoiceno,0)
+							set @Finvoiceno=@Finvoiceno+1
+							
+							Update product_settings set pslimits=@Forderno where psCaption='FORDER' and FYID=@FYID
+							Update product_settings set pslimits=@Finvoiceno where psCaption='FINVOICE' and FYID=@FYID
+							set @InvoiceDetails='MSP-'+@FIPrefix+cast(@Finvoiceno as varchar)+'/'+@FY 
+							insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,InvoiceNo,RE_DE_ID_TDN,handlingcharge)
+							values(@TOpoind, @Forderno, 0, 1, @ADID, @brid, @IST, 'TIN', @IST, 'Shippment Note generated for MSP',@InvoiceDetails,@redeidDIPATCH,@handlingcharge)
+							select @redeidShipFINV=ident_Current('RE_DE_NOTE');
+									
+							 
+							end
+					else
+						begin
+							select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1  
+							select @Finvoiceno=pslimits ,@FIPrefix=psCharLimits from product_settings where psCaption='SHIPIvoice' and FYID=@FYID
+							select @Forderno=pslimits  from product_settings where psCaption='SHIPMENTNO' and FYID=@FYID
+							set @Forderno=isnull(@Forderno,0)
+							set @Forderno=@Forderno+1
+							set @Finvoiceno=isnull(@Finvoiceno,0)
+							set @Finvoiceno=@Finvoiceno+1
+							Update product_settings set pslimits=@Forderno where psCaption='SHIPMENTNO' and FYID=@FYID
+							Update product_settings set pslimits=@Finvoiceno where psCaption='SHIPIvoice' and FYID=@FYID
+							set @InvoiceDetails=@FIPrefix+cast(@Finvoiceno as varchar)+'/'+@FY 
+							
+							set @varble=''
+							set @varble='SHN'+@Forderno
+							
+							insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,InvoiceNo,RE_DE_ID_TDN,handlingcharge)
+							values(@TOpoind, @varble, 0, 1, @ADID, @brid, @IST, 'TSN', @IST, 'Shippment Note generated for Branch',@InvoiceDetails,@redeidDIPATCH,@handlingcharge)
+							select @redeidShipFINV=ident_Current('RE_DE_NOTE');
+									
+						end
+				--- End Ship----
+				
+				--- Dishpatech--> receive in branch--
+					select @FYID=FYID, @FY=FYName from Financial_Year where isClosed=0 and isActive=1                           
+					select @psLimits=psLIMITS, @pPrefix=psCharLimits from product_settings  where psCaption='intraReceive' and FYID=@FYID                                     
+					Set @psLimits=@psLimits+1                                     
+					Update product_settings set psLIMITS=@psLimits where psCaption='intraReceive' and FYID=@FYID                                     
+					Set @purchaseorder=@pPrefix+cast(@psLimits as varchar)+'/'+@FY 
+					insert into re_de_note(poid, NoteCode, cForm, status, genaratedby, recievedby, recievedOn, NOTE_TYPE, NoteDate, Comment,RE_DE_ID_TDN,handlingcharge)
+							values(@TOpoind, @purchaseorder, 0 , 1, @ADID, @brid, @IST, 'TRN', @IST, 'Product Received to MSP',@redeidDIPATCH,@handlingcharge)
+					select @redeidReceiveBF=ident_Current('RE_DE_NOTE');
+				--- End ---
+			end
+			
+			select @WHCODE=brcode,@Fsid=sid from branch_master where brid=@WHID --Debit From
+			
+			EXEC sp_xml_preparedocument @docHandle OUTPUT, @ProductXML                   
+			DECLARE InstCursor CURSOR FOR                                                                                     
+			SELECT  XMLMap.PID,XMLMap.ProductName,XMLMap.MRP,XMLMap.DP,XMLMap.BV,XMLMap.ME , XMLMap.MFDate,XMLMap.EXPDate,XMLMap.QTY, XMLMap.PCODE, XMLMap.VCOST,XMLMap.BATCHNO  FROM OPENXML(@docHandle,'/Purchase/Order',0)                      
+			WITH(PID bigint,ProductName varchar(200), MRP money, DP money, BV money, ME money,MFDate datetime,EXPDate datetime,QTY int, PCODE varchar(50),VCOST money,BATCHNO varchar(100)) XMLMap                                            
+			OPEN InstCursor                                                                                    
+			Fetch NEXT FROM InstCursor INTO @pid,@ProductName,@MRP,@DP,@BV,@ME,@MFDate,@EXPDate,@QTY,@PCODE ,@VCOST,@BATCHNO      
+			While (@@FETCH_STATUS = 0)                                                         
+			BEGIN  				
+				if(@BRID>0)
+				begin		
+						declare @commodity_id int, @CountState int ,  @pCost money 
+						set @CountState=0;   set @pCost=0; set @GtaxAmount=0 ;
+						
+						select @SKUNO=Barcode from product_master where pid=@pid				
+						select @Dmargin =isnull(Dmargin,0),@DP=DP from Product_master where pid=@pid
+						select @bRCommission=isnull(commission,0),@CountState=franchisee from branch_master where brid=@brid
+						set @GtaxAmount=isnull(dbo.UDF_getTaxAmountNRate_Combo_Rate(@pid,@Tsid,@DP),0)
+						if(@CountState=0)
+						begin
+							set @FP=0;
+							 
+							set @FP=@DP 	--FP/DSP Price excl tax					
+							--- Checking Intra/Inter State 
+							--- Add at the time of WH to MSS bill Need to check C-Form--
+							--- In case of direct Inventory we assume bill with C-Form--
+							 declare @FPwithTax  money
+							 set @FPwithTax=0;
+							if(@Fsid=@Tsid)-- Exempted in case of company branch transfer F-Form require in case of inter state transfer
+							begin
+								set @GTAXRATE=0
+								set @GtaxAmount=0
+								set @VAT='Exempted'
+								set @FPwithTax=@FP
+								 
+							end
+							else
+							begin
+							--- Add at the time of WH to NSP bill Need to check F-Form--
+							--- In case of direct Inventory we assume bill with F-Form--
+								select @VAT=ptc.[Class] from ProductTaxClass ptc where ptc.ttid=4
+								set @GTAXRATE=0
+								set @VAT='Exempted'
+								set @FPwithTax=@FP
+							end
+						end
+						else
+						begin
+							set @FP=0;
+							--set @DP=@DP-@GtaxAmount--Tax VAT Minus as per buyer state
+							 
+							set @FP=@DP-(@Dmargin *@bRCommission/100)	--FP/DSP Price excl tax		
+							
+							--- Checking Intra/Inter State 
+							--- Add at the time of WH to MSS bill Need to check C-Form--
+							--- In case of direct Inventory we assume bill with C-Form--
+							 
+							 set @FPwithTax=0;
+							if(@Fsid=@Tsid)-- Apply VAT in case of same state also if no C-Form as CST
+							begin
+								set @GTAXRATE=isnull(dbo.UDF_getTaxAmountNRate_Combo(@pid,@Fsid,@FP),0)
+								--set @GtaxAmount=(@FP*(@GTAXRATE/100))
+								select @VAT=ptc.[Class] from ProductTaxClass ptc,product_master p where  ptc.ptcid=p.ptcid and p.pid=@pid
+								--set @FPwithTax=@FP+(@FP*(@GTAXRATE/100))
+								set @FPwithTax=(@FP*100)/(@GTAXRATE+100)
+								set @GtaxAmount=(@FPwithTax*@GTAXRATE)/100
+							end
+							else
+							begin
+								select @VAT=ptc.[Class] from ProductTaxClass ptc where ptc.ttid=4
+								set @GTAXRATE=2
+								set @FPwithTax=(@FP*100)/(@GTAXRATE+100)
+								set @GtaxAmount=(@FPwithTax*@GTAXRATE)/100
+							end
+							
+						end
+						
+						
+						 
+						select @MRP=MRP,@DP=DP from product_master where pid=@pid
+					--- Inventory Deduction from Warehouse/MSS --
+						insert into Purchase_Order_Details(POID,pid,ProductName,Qty,Status,Statusdate,UID,UnitPrice,MRP,SubPrice,Taxname,Taxrate) values            
+															(@TOpoind,@pid,@ProductName,@QTY,1,@IST,1,@FP,@MRP,@DP,@VAT,@GTAXRATE) 
+					--- End TO details Porduct--
+					--- Start TO dispatch from warehouse/MSS to DSP/NSP--
+						insert into re_de_note_details(RE_DE_ID,PID,[Desc],QTY,UID,UnitPrice,VendorCost,PurPrice,ExpCost,MRP,BARCODE,ExpiryDate,manufacturerDate,TaxHead,TaxRate,BatchNo)                      
+												values(@redeidDIPATCH,@pid,'Has to dispatch in other store ',@QTY,1,@FP,@DP,@FPwithTax,0,@MRP,@SKUNO,@EXPDate,@MFDate,@VAT,@GTAXRATE,@BatchNo)
+						select @RE_DE_DID=IDENT_CURRENT('re_de_note_details')   
+					--- Inventory Deduction from Warehouse/MSS --
+						 
+						 set @TotalAmount=@TotalAmount+(@FPwithTax*@QTY);
+						set @TaxAmount=@TaxAmount+(@GtaxAmount*@QTY);
+					    
+					
+						select @Tsid=sid,@BRIDCODE=brcode,@FranchiseeType=Franchisee from branch_master where brid=@BRID -- Transfer To    
+						if(@Fsid=@Tsid)  
+						begin
+							Select @TransType=TransType,@TransRemarks=TransRemarks from Inventory_trans_master where TransType='To-DispShip'               
+						end
+						else         
+						begin				
+							Select @TransType=TransType,@TransRemarks=TransRemarks from Inventory_trans_master where TransType='TR-DispShipMS'            
+						end
+						
+						
+						insert into Store_Inventory_Master(BRID ,TransID ,TransType , PID ,CRDB ,Debit , TransRemarks ,TransDate ,TransStatus,FromTo,LotID,RE_DE_DID,BARCODE)          
+							values(@WHID,@redeidDIPATCH,@TransType,@pid,'D',@QTY,@TransRemarks +' ('+@BRIDCODE+')',@IST,1,@BRID,@RE_DE_DID,@RE_DE_DID,@SKUNO)  
+						
+						
+					--- End ----
+					--- Receive shiP-Product -->DSP
+						insert into re_de_note_details(RE_DE_ID,PID,[Desc],QTY,UID,Unitprice,VendorCost,PurPrice,ExpCost,BARCODE,ExpiryDate,manufacturerDate,MRP,TaxHead,TaxRate,BatchNo)                                                    
+						values(@redeidShipFINV,@pid,'Has to ship in other store ',@QTY,1,@FP,@DP,@FPwithTax,0,@SKUNO,@EXPDate,@MFDate,@MRP,@VAT,@GTAXRATE,@BatchNo) 
+						select @RE_DE_DID=IDENT_CURRENT('re_de_note_details')
+						if(@Fsid=@Tsid)              
+						begin              
+							Select @TransType=TransType,@TransRemarks=TransRemarks  from Inventory_trans_master where TransType='To-Rec'                  
+						end              
+						else              
+						begin             
+							Select @TransType=TransType,@TransRemarks=TransRemarks from Inventory_trans_master where TransType='TR-RecMS'                    
+						end  
+						
+						select @CountState=franchisee from branch_master where BRID=@WHID
+						if(@CountState=3 or @CountState=1)
+						begin
+						----- ======= Deduction From Lot wise ======= -------
+					declare @aQty as int, @aLotID as varchar(100),@tempQty int
+					set @tempQty=@Qty
+					If(@FranchiseeType<>2)
+					begin
+			
+						select @aQty=(credit-debit) from BranchLotWise_Inventory where  brid=@WHID and pid=@pid
+							if(@aQty>=@tempQty)
+							begin
+								While(@tempQty>0)
+									BEGIN
+										select top 1 @aLotID=lotID from BranchLotWise_Inventory where  brid=@WHID and pid=@pid and (credit-debit)>0 and unitPrice=@MRP order by Lotid
+										select @aQty=(credit-debit) from BranchLotWise_Inventory where  brid=@WHID and pid=@pid and Lotid=@aLotID
+										if(@aQty>=@tempQty)
+										Begin
+											update BranchLotWise_Inventory set debit=(debit+@tempQty) where brid=@WHID and pid=@pid and LotID=@aLotID
+											set @tempQty=0
+										End	
+										else
+										BEGIN
+											set @tempQty=(@tempQty-@aQty)
+											update BranchLotWise_Inventory set debit=(debit+@aQty) where brid=@WHID and pid=@pid and LotID=@aLotID	
+										End	
+										if(@@error<>0)                                                                                                            
+										Begin   
+											Set @intResult=2 
+											ROLLBACK TRANSACTION                                                      
+											return @intResult                                                          
+										End                        
+									End	
+								end
+						end
+							--update BranchLotWise_Inventory set debit=debit-@QTY where brid=@WHID and pid=@pid and UnitPrice=@MRP
+						END
+						
+						insert into re_de_note_details(RE_DE_ID,PID,[Desc],QTY,UID,UnitPrice,VendorCost,PurPrice,ExpCost,BARCODE,ExpiryDate,manufacturerDate,MRP,TaxHead,TaxRate,BatchNo)                                                    
+						values(@redeidReceiveBF,@pid,'Product Received in MSP',@QTY,1,@FP,@DP,@FPwithTax,0,@SKUNO,@EXPDate,@MFDate,@MRP,@VAT,@GTAXRATE,@BatchNo) 
+						select @RE_DE_DID=IDENT_CURRENT('re_de_note_details')
+						
+						insert into Store_Inventory_Master(BRID,TransID,TransType,PID ,CRDB,Credit,TransRemarks ,TransDate ,TransStatus,FromTo,LotID,RE_DE_DID,BARCODE )                       
+						values(@BRID,@redeidShipFINV,@TransType,@pid,'C',@QTY,@TransRemarks+' ('+@WHCODE+')',@IST,1,@WHID,@RE_DE_DID,@RE_DE_DID,@SKUNO)
+						 
+						insert into BranchLotWise_Inventory (Brid,Pid,Lotid,BARCODE,UnitPrice,Credit,Debit,ManufacturerDate,ExpiryDate,DP,SUB,FP,ME)
+														values(@BRID, @pid,@RE_DE_DID, @SKUNO, @MRP, @QTY,0,@MFDate,@EXPDate,@DP,@DP,@FP,@ME)
+						
+						
+						 
+					--------------------
+					
+				 end
+				
+				Fetch NEXT FROM InstCursor INTO @pid,@ProductName,@MRP,@DP,@BV,@ME,@MFDate,@EXPDate,@QTY,@PCODE  ,@VCOST,@BATCHNO        
+				END                                                                                    
+				CLOSE InstCursor                                                                              
+				DEALLOCATE InstCursor
+				set @intresult = 1;
+				Declare @totalQuantity int
+				select  @totalQuantity=sum(QTY)  from RE_DE_NOTE_DETAILS where RE_DE_ID=@redeidShipFINV
+				set @TotalBillAmount=@TotalAmount+@TaxAmount+@handlingcharge;
+				
+				update purchase_order set POAmount=@TotalAmount,TaxAmount=@TaxAmount,TotalNet=@TotalBillAmount,GrantAmount=@TotalBillAmount where poid=@TOpoind
+				Update re_de_note set TotalAmount=@TotalAmount,TaxAmount=@TaxAmount,TotalBillAmount=@TotalBillAmount where poid=@TOpoind
+				Update RE_DE_NOTE_DETAILS set PurPrice=PurPrice+(@handlingcharge/@totalQuantity), ExpCost=(@handlingcharge/@totalQuantity) where re_de_ID in (select re_de_id from re_de_note where poid=@TOpoind)  
+				-- MSS>>DSP Account Section
+				Declare @WhName varchar(100),@brName varchar(100),@AccountHead varchar(100), @TOAmount money
+				Declare	@Particulars varchar(100), @Head varchar(100), @PDPType varchar(100)
+				Select @WHcode=brcode,@WhName=brName from branch_master where brid=@WHID
+				Select @BRIDCODE=brcode,@brName=brName,@AccountHead=(case when franchisee=1 then 'DSP-Invoice' when franchisee=3 then 'MSS-Invoice'  when franchisee=4 then 'MSP-Invoice' else 'NSP-Invoice' end),@PDPType=(case when franchisee=1 then 'DSP' when franchisee=3 then 'MSS' when franchisee=4 then 'MSP'  else 'NSP' end) from branch_master where brid=@BRID
+				set @AccountHead='W-Invoice'
+				-- TIN>> Transfer Invoice No. for PDP-F, TSN>> Transfer Shipping No. for PDP
+				select @TOAmount=Sum(VendorCost*QTY) from RE_DE_NOTE_DETAILS where RE_DE_ID=@redeidShipFINV
+				Set @Particulars=@AccountHead+' against '+@InvoiceDetails
+				--set @Whdetails=@CompanyName+'-WH-'+@WhName+'('+@WHcode+')'
+				--set @Whdetails='NONI-WH'
+			 
+				-- For Com Account
+				select @pcount = Onlinestore from branch_master where brid=@MSS
+				if(@pcount=2)
+				begin
+					Insert into Company_Account (CID,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus) 
+										values (1,'NONI-WH',@BRID,@redeidShipFINV,@PDPType,@MSS,'Purchase',@Particulars,@TotalBillAmount,0,1)
+				end
+				else
+				begin
+					Insert into Company_Account (CID,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus) 
+										values (1,'DSP',@BRID,@redeidShipFINV,@PDPType,@MSS,'Purchase',@Particulars,@TotalBillAmount,0,1)
+					-- For PDP/PDP-F Accoun
+				end
+				set @Head='Purchase' 
+					Insert into Company_Account (CID,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus) 
+									values (1,@PDPType,@MSS,@redeidShipFINV,@PDPType,@BRID,@AccountHead,@Particulars,0,@TotalBillAmount,1)
+				-- End MSS Account Section
+				
+			---Error Handle --
+			if (@@error<>0)
+			begin 
+				set @intresult = 0 
+				rollback transaction 
+				return 
+			end		
+		end
+commit transaction 
+-----------------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[Sp_Account_Transaction]    Script Date: 9/11/2019 10:25:48 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[Sp_Account_Transaction]
+@intResult int out,
+@Account varchar(50)='',
+@TransType varchar(50)='',
+@PartyID BigINT=0,
+@Amount money=0,
+@transDate datetime='1-1-1990',
+@PaymentMode varchar(50)='',
+@BankName varchar(100)='',
+@Refno varchar(50)='',
+@Refdate datetime,
+@CardType varchar(50)='',
+@CardNo varchar(50)='',
+@CvvNo varchar(50)='',
+@Descriptions nVarchar(500)='',
+@TransBy varchar(50)='',
+@TransIP varchar(50)='',
+@transStatus varchar(50)='',
+@Head varchar(50)='',
+@ATID bigint=0,
+@payBYID bigint=0
+as  
+begin transaction 
+	declare @trcount int,@IST datetime, @Particulars varchar(100), @brcode varchar(100),@trStatus int, @OnlineStore int
+	declare @Vname varchar(100), @WHID bigint, @Comdetails varchar(50),@WHCODE varchar(100), @MSS bigint, @MSSDETAILS varchar(50),@MSSCODE varchar(100)
+	set @trcount=0; set @OnlineStore=0;
+	Set @IST=dateadd(mi,330,getutcdate())
+	Set @transDate=@IST
+	Declare @billcheck as int, @orderDate2 as datetime
+	set @orderDate2=dateaDD(mi,330,getutcdate())  
+	set @intresult = 0
+			if(@transStatus='Confirmed')
+				set @trStatus=1
+			if(@transStatus='Pending')
+				set @trStatus=0
+			if(@transStatus='Reject')
+				set @trStatus=2
+			if(@ATID=0)
+			begin
+				if((@TransType='Payment' or @TransType='Recharge') and @Account='DSP' )
+				Begin
+					select @trcount=count(*) from Account_Transaction_Details where AID=@payBYID and dateaDD(mi,2,transDate)>=@orderDate2 
+					if(@trcount=0)
+						begin	
+							select @MSSCODE=Brcode ,@MSS=ParentId,@OnlineStore=OnlineStore from branch_master where brid=@PartyID  
+							-- Insertion In transaction table
+							Insert Into Account_Transaction_Details 
+							(CID,AID,Account,TransType,PartyID,Amount,transDate,PaymentMode,BankName,Refno,Refdate,CardType,CardNo,CvvNo,Descriptions,TransBy,VerifiedBy,TransIP,transStatus,isactive)
+							Values (1,@PartyID,@Account,@TransType,@MSS,@Amount,@transDate,@PaymentMode,@BankName,@Refno,@Refdate,@CardType,@CardNo,@CvvNo,@Descriptions,@TransBy,@TransBy,@TransIP,@transStatus,1)
+							select @ATID=IDENT_CURRENT('Account_Transaction_Details')
+							-- Insertion in Company_Account for MSS
+							select @Brcode=Brcode  from branch_master where brid=@payBYID			
+							
+							 
+							-- Insert Credit and Debit in his MSS account
+							select @MSSCODE=Brcode ,@MSS=ParentId,@OnlineStore=OnlineStore from branch_master where brid=@PartyID  
+							If(@OnlineStore=0)
+							begin
+								set @Particulars='Payment by '+@Brcode
+								Insert into Company_Account (CID,trDate,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus,InputSource) 
+													values (1,@transDate,'COM-WH',1,@ATID,'COM-WH',@MSS,'Payment',@Particulars,@Amount,0,@trStatus,'ByForm')	
+								select @MSSCODE=Brcode  from branch_master where brid=@MSS  
+								set @Particulars='Received by '+@MSSCODE
+								Insert into Company_Account (CID,trDate,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus,InputSource) 
+													values (1,@transDate,'CNF',@PartyID,@ATID,'CNF',@MSS,'Receive',@Particulars,0,@Amount,@trStatus,'ByForm')
+								
+								select @MSSCODE=Brcode ,@MSS=ParentId from branch_master where brid=@PartyID
+								set @Particulars='Payment for Account Recharge to '+@MSSCODE					
+								Insert into Company_Account (CID,trDate,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus,InputSource) 
+												values (1,@transDate,'DSP',@MSS,@ATID,'DSP',@PartyID,'Payment',@Particulars,@Amount,0,@trStatus,'ByForm')									
+							
+							end
+							else
+							begin
+								 
+								select @MSSCODE=Brcode ,@MSS=ParentId from branch_master where brid=@PartyID
+								set @Particulars='Payment for Account Recharge to '+@MSSCODE					
+								Insert into Company_Account (CID,trDate,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus,InputSource) 
+														values (1,@transDate,'DSP',1,@ATID,'DSP',@PartyID,@Head,@Particulars,@Amount,0,@trStatus,'ByForm')	
+							end				
+							set @intresult = @ATID
+						End
+						else
+						begin
+							set @intresult =-2
+						end
+					if(@@error<>0)
+					begin
+						set @intresult = 0
+						rollback transaction
+					end
+				End
+				else if((@TransType='Recharge' or @TransType='Payment') and @Account='MSP' )
+				Begin
+					select @trcount=count(*) from Account_Transaction_Details where AID=@payBYID and dateaDD(mi,2,transDate)>=@orderDate2 
+					if(@trcount=0)
+						begin	
+							select @MSSCODE=Brcode ,@MSS=ParentId,@OnlineStore=OnlineStore from branch_master where brid=@PartyID  
+							-- Insertion In transaction table
+							Insert Into Account_Transaction_Details 
+							(CID,AID,Account,TransType,PartyID,Amount,transDate,PaymentMode,BankName,Refno,Refdate,CardType,CardNo,CvvNo,Descriptions,TransBy,VerifiedBy,TransIP,transStatus,isactive)
+							Values (1,@PartyID,@Account,@TransType,@MSS,@Amount,@transDate,@PaymentMode,@BankName,@Refno,@Refdate,@CardType,@CardNo,@CvvNo,@Descriptions,@TransBy,@TransBy,@TransIP,@transStatus,1)
+							select @ATID=IDENT_CURRENT('Account_Transaction_Details')
+							-- Insertion in Company_Account for MSS
+							select @Brcode=Brcode  from branch_master where brid=@payBYID			
+							set @Particulars='Received by '+@brcode
+							-- Insert Credit and Debit in his MSS account
+							select @MSSCODE=Brcode ,@MSS=ParentId,@OnlineStore=OnlineStore from branch_master where brid=@PartyID  
+							If(@OnlineStore=0)
+							begin			
+								Insert into Company_Account (CID,trDate,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus,InputSource) 
+											values (1,@transDate,'DSP',@PartyID,@ATID,'DSP',@MSS,'Receive',@Particulars,0,@Amount,@trStatus,'ByForm')
+								
+								select @MSSCODE=Brcode ,@MSS=ParentId from branch_master where brid=@PartyID
+								set @Particulars='Payment for Account Recharge to '+@MSSCODE					
+								Insert into Company_Account (CID,trDate,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus,InputSource) 
+													values (1,@transDate,'MSP',@MSS,@ATID,'MSP',@PartyID,@Head,@Particulars,@Amount,0,@trStatus,'ByForm')									
+							
+							end
+							else
+							begin
+								select @MSSCODE=Brcode ,@MSS=ParentId from branch_master where brid=@PartyID
+								set @Particulars='Payment for Account Recharge to '+@MSSCODE					
+								Insert into Company_Account (CID,trDate,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus,InputSource) 
+												values (1,@transDate,'MSP',1,@ATID,'MSP',@payBYID,@Head,@Particulars,@Amount,0,@trStatus,'ByForm')	
+							end				
+							set @intresult = @ATID
+						End
+						else
+						begin
+							set @intresult =-2
+						end
+					if(@@error<>0)
+					begin
+						set @intresult = 0
+						rollback transaction
+					end
+				End
+				else if((@TransType='Recharge' or @TransType='Payment') and @Account='CNF' )
+				Begin
+					select @trcount=count(*) from Account_Transaction_Details where PartyID=@PartyID and dateaDD(mi,2,transDate)>=@orderDate2 
+					if(@trcount=0)
+						begin	
+							select @MSSCODE=Brcode ,@MSS=ParentId,@OnlineStore=OnlineStore from branch_master where brid=@PartyID  
+							-- Insertion In transaction table
+							Insert Into Account_Transaction_Details 
+							(	CID,aid ,Account,TransType,PartyID,Amount,transDate,PaymentMode,BankName,Refno,Refdate,CardType,CardNo,CvvNo,Descriptions,TransBy,VerifiedBy,TransIP,transStatus)
+							Values (1,@partyid ,@Account,@TransType,@MSS,@Amount,@transDate,@PaymentMode,@BankName,@Refno,@Refdate,@CardType,@CardNo,@CvvNo,@Descriptions,@TransBy,@TransBy,@TransIP,@transStatus)
+							select @ATID=IDENT_CURRENT('Account_Transaction_Details')
+							-- Insertion in Company_Account for Warehouse
+							select @Brcode=Brcode from branch_master where brid=@PartyID
+							set @Particulars='Received by '+@brcode
+							
+							Insert into Company_Account (CID,trDate,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus,InPutSource) 
+													values (1,@transDate,'COM-WH',@Partyid,@ATID,'COM-WH',1,'Receive',@Particulars,0,@Amount,@trStatus,'ByForm')
+							-- Insertion in Company_Account for PartyID	
+							set @Particulars='Payment for Account Recharge to COM-WH'		
+							Insert into Company_Account (CID,trDate,Ledger,PartyID,TransID,Account,AID,Head,Particulars,Credit,debit,trStatus,InPutSource)  
+													values (1,@transDate,@Account,1,@ATID,@Account,@PartyID,@Head,@Particulars,@Amount,0,@trStatus,'ByForm') 
+							set @intresult = @ATID
+						End
+						else
+						begin
+							set @intresult =-2
+						end
+					if(@@error<>0)
+					begin
+						set @intresult = 0
+						rollback transaction
+					end
+				End
+				
+			end
+			if(@ATID>0)
+			Begin
+				Update Company_Account set trStatus=@trStatus  where TransID=@ATID and trStatus=0 and InputSource='ByForm'--and  PartYID=@PartyID and Head=@Head and partyID=@partyID
+				Update Company_Account set trStatus=@trStatus  where TransID=@ATID and trStatus=0 and InputSource='ByForm'--and  Ledger='Com' and Head=@Head and AID=@partyID
+				Update Account_Transaction_Details set transStatus=@transStatus where ATID=@ATID
+				set @intresult = @ATID
+			End
+commit transaction
+---------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_achievementBonus]    Script Date: 9/11/2019 10:26:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [dbo].[sp_achievementBonus] @maxPayID as int
+as
+	Declare @totalQualified as int, @mRegNo as bigint, @LPV as money, @RPV as money, @paidpv as money, @freshPair as int
+	Declare @temp as money, @NOJ as int, @totalFund as money, @achRate as money
+	
+	--********** Make Qualify -- 100 pair
+	Update member_payout set achBonusQualify=1 where achBonusQualify=0 and payid=@maxPayID and regno in(select regno from member_payout where achBonusQualify=0 group by regno having (sum(paidpv)/100)>=100)
+	Update member_performance set achBonusQualify=1 where achBonusQualify=0 and regno in(select regno from member_payout where payid=@maxPayID and achBonusQualify>0)
+	Update member_payout set achBonusQualify=1 where achBonusQualify=0 and payid=@maxPayID and regno in(select regno from member_performance where achBonusQualify=1)
+	--******* Make fresh Pair
+	DECLARE getfinal CURSOR  FOR  select regno, (LPV+LPVR) as LPV, (RPV+RPVR) as RPV from member_Payout where  Payid=@maxPayid and achBonusQualify=1 order by regno
+	OPEN getfinal FETCH NEXT FROM getfinal INTO @mRegNo, @LPV, @RPV
+    WHILE @@FETCH_STATUS = 0    
+    BEGIN    
+		
+		IF (@LPV >= 100 AND @RPV >= 100)                                
+		 BEGIN                        
+			IF(@LPV >= @RPV)                         
+			 Begin
+				set @temp=0
+				Set @temp=floor(@RPV/100)
+				SET @paidpv = @temp * 100
+			 End	                                   
+			ELSE  
+			 Begin	
+				set @temp=0
+				Set @temp=floor(@LPV/100)
+				SET @paidpv = @temp * 100
+			 End	
+		 END 
+		set @freshPair=0 
+		set @freshPair=@paidpv / 100
+		if(@freshPair>0)
+			Update member_Payout set freshPair=@freshPair where regno=@mRegNo and payid=@maxPayID
+					 
+	 FETCH NEXT FROM getfinal INTO @mRegNo, @LPV, @RPV
+    END           
+	CLOSE getfinal          
+	DEALLOCATE getfinal    
+	set @totalQualified=0
+	select @totalQualified=count(regno) from member_Payout where  Payid=@maxPayid and achBonusQualify=1 and freshPair>=10
+	set @totalQualified=isnull(@totalQualified,0)
+	
+	if(@totalQualified=0)
+		set @totalQualified=1
+	
+	set @NOJ=0
+	select @NOJ=count(*) from member_master where confpayno=@maxPayID 
+	set @NOJ=isnull(@NOJ,1)
+	if(@NOJ<=0)
+		set @NOJ=1
+		
+	set @totalFund=(@NOJ * 100)
+	set @achRate=(@totalFund/@totalQualified)
+	
+	Update member_Payout set ACVMNTBONUS=@achRate, totalIncome=(totalIncome+@achRate) where payid=@maxPayID and  achBonusQualify=1 and freshPair>=10
+	Update payout set achBonusFund=@totalFund, achBonusRate=@achRate, paidMembersAchievement=@totalQualified where payid=@maxPayID
+	
+	-------------
+	USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[Sp_AllOrderList]    Script Date: 9/11/2019 10:28:45 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[Sp_AllOrderList]    
+@regno varchar(100) = NULL ,     
+@username varchar(100) = NULL ,    
+@name varchar(100) = NULL ,    
+@orderdate_F varchar(100) = NULL ,    
+@orderdate_T varchar(100) = NULL ,    
+@orderno varchar(100) = NULL ,    
+@paymentdate_F varchar(100) = NULL ,    
+@paymentdate_T varchar(100) = NULL ,    
+@paymode varchar(100) = NULL ,    
+@totalamount_S varchar(100) = NULL ,    
+@totalamount_E varchar(100) = NULL ,    
+@paymentstatus varchar(100) = NULL ,    
+@ordertype varchar(100) = NULL   ,  
+@orderstatus varchar(100) = NULL     ,
+@invoiceno varchar(100) = NULL     
+As    
+Begin    
+  If( @regno is not null and Len(@regno )= 0 )                                                          
+    Set @regno = null            
+      If( @username is not null and Len(@username )= 0 )                                                          
+    Set @username = null            
+      If( @name is not null and Len(@name )= 0 )                                                          
+    Set @name = null            
+      If( @orderdate_F is not null and Len(@orderdate_F )= 0 )                                                          
+    Set @orderdate_F = null        
+       If( @orderdate_T is not null and Len(@orderdate_T )= 0 )                                                          
+    Set @orderdate_T = null           
+      If( @orderno is not null and Len(@orderno )= 0 )                                                          
+    Set @orderno = null         
+          If( @paymentdate_F is not null and Len(@paymentdate_F )= 0 )                                                          
+    Set @paymentdate_F = null        
+     If( @paymentdate_T is not null and Len(@paymentdate_T )= 0 )                                                          
+    Set @paymentdate_T = null          
+      If( @paymode is not null and Len(@paymode )= 0 )                                                          
+    Set @paymode = null            
+      If( @totalamount_S is not null and Len(@totalamount_S )= 0 )                                                          
+    Set @totalamount_S = null      
+         If( @totalamount_E is not null and Len(@totalamount_E )= 0 )                                                          
+    Set @totalamount_E = null             
+      If( @paymentstatus is not null and Len(@paymentstatus )= 0 )                                                          
+    Set @paymentstatus = null            
+      If( @ordertype is not null and Len(@ordertype )= 0 )                                                          
+    Set @ordertype = null        
+   If( @orderstatus is not null and Len(@orderstatus )= 0 )                                                          
+    Set @orderstatus = null        
+      If( @invoiceno is not null and Len(@invoiceno )= 0 )                                                          
+    Set @invoiceno = null     
+      
+        
+        
+Select mm.regno , mm.loginid as 'Username', mm.fname +' '+ isnull(mm.lname,'') as 'Name'  ,   po.status ,  
+ po.orderdate , po.orderno  , po.paymentDate , po.paymentMode , po.TotalAmount , po.paymentstatus , po.status  ,po.Order_type ,    
+ 'ActiveClass' = (CASE WHEN po.paymentstatus=1 THEN 'success' WHEN po.paymentstatus = 0 THEN 'warning'  WHEN po.paymentstatus = 2 THEN 'important' END),    
+ 'PaymentStatus' = (CASE WHEN po.paymentstatus=1 THEN 'Confirmed' WHEN po.paymentstatus = 0 THEN 'Pending'  WHEN po.paymentstatus = 2 THEN 'Reject' END),    
+ 'OrderStatus' = (CASE WHEN po.status =1 THEN 'Confirmed' WHEN po.status  = 0 THEN 'Pending'  WHEN po.status  = 2 THEN 'Reject' END),    
+ 'OrdreActiveClass' = (CASE WHEN po.status=1 THEN 'success' WHEN po.status = 0 THEN 'warning'  WHEN po.status = 2 THEN 'important' END),    
+ 'ProductType' = (CASE WHEN po.Order_type='R' THEN 'Repurchase' WHEN po.Order_type = 'A' THEN 'Autoship' END)     ,
+  isnull(po.invno, '') as 'InvoiceNo'
+ from Product_order po  inner join Member_master mm on mm.regno= po.regno  where     
+    (@regno is null or  po.regno  = @regno) and    
+   (@username is null or  mm.loginid =@username) and     
+   (@name is null or  mm.fname = @name) and     
+   (@orderdate_F is null or Convert(Date,po.orderdate,111) >= cast(@orderdate_F as datetime)) and     
+   (@orderdate_T is null or Convert(Date,po.orderdate,111) <= cast(@orderdate_T as datetime)) and          
+   (@orderno is null or  po.orderno = @orderno) and     
+   (@paymentdate_F is null or Convert(Date,po.paymentDate,111) >= cast(@paymentdate_F as datetime)) and     
+   (@paymentdate_T is null or Convert(Date,po.paymentDate,111) <= cast(@paymentdate_T as datetime)) and     
+   (@paymode is null or   po.paymentMode  = @paymode) and     
+   (@totalamount_S is null or  po.TotalAmount >= cast(@totalamount_S as money)) and     
+   (@totalamount_E is null or  po.TotalAmount <= cast(@totalamount_E aS MONEY)) and     
+   (@paymentstatus is null or  po.paymentstatus = @paymentstatus) and     
+   (@ordertype is null or  po.order_type =@ordertype)  and  
+   (@orderstatus is null or  po.status =@orderstatus)    and
+    (@invoiceno is null or  po.invno =@invoiceno)    
+  
+   order by po.orderdate desc    
+     
+End 
+-_____________________
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_BPP_ORT]    Script Date: 9/11/2019 10:35:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--created by Gaurav Tripathi      
+--created on 24-mar-2014      
+--purpose:sp_BinaryPaidPairRealTime      
+ALTER proc [dbo].[sp_BPP_ORT] @mRegNo as bigint,@maxpayid as integer       
+as      
+begin try      
+	Declare @paidPair as int,@PVlimit as float,@flushPV as float,@ret as int,@noOfPV as float               
+	Declare @leftRemain as int,@rightRemain as int,@child1 as int,@child2 as int,@FirstPairRate as Money,@FirstIncome as Money                
+	Declare @kitPV as int,@flushPair as int,@checkRegNo as int,@bLevel as int,@slabpaidPV as  float                
+	Declare @remainPV as float,@slabPV as float,@PVIncome as money,@totalPaidPV Money,@TotalPair as int                
+	Declare @leftRemainPV as Float,@rightRemainPV as Float,@PaidPV as float,@fstPv as int,@Firstattemp as int                
+	Declare @pairRate as money,@PVRate as money,@pairLimit as int,@tPa as Int,@tPv as float,@MaxPaidPair as int,@TotalPaidPair as int          
+	--condition first Check Member is Confirmed or Not      
+	select @checkregno=confPayNo,@kitPV=kitPV from member_master where regno=@Mregno and confPayNo>0       
+	set @checkregno=isnull(@checkregno,0)                
+	if @checkRegNo<=0            
+		return      
+	select @PVlimit=Isnull(limits,0) from settings where caption='PVcapping' and active=1              
+	select @pairLimit=Isnull(limits,0) from settings where caption='binaryPairCapping' and active=1               
+	Select @pairRate=Isnull(limits,0) from settings where caption='binaryPairRate100%' and active=1                
+	Select @PVRate=Isnull(limits,0) from settings where caption='binaryPVRate100%' and active=1               
+	Select @MaxPaidPair=Isnull(limits,0) from settings where caption='MaxPaidPair' and active=1                   
+	Select @FirstPairRate=Isnull(limits,0) from settings where caption='binaryFirstPairRate' and active=1        
+	set @checkRegno=0                
+	set @leftRemain =0                
+	set @rightRemain =0                
+	set @paidPair=0                
+	set @flushPair=0                
+	Set @leftRemainPV=0                
+	Set @rightRemainPV=0                
+	Set @PaidPV=0                
+	set @flushPV=0                
+	SET @fstPv = 0                
+	Set @slabpaidPV=0                
+	Set @totalPaidPV=0                
+	Set @TotalPair=0               
+	Set @Firstattemp=0        
+	set @FirstIncome=0       
+    --Condition second Check Parentregno has two child or not and get details of child       
+    select @checkregno=count(*) from member_master where parentregnoB=@Mregno                
+	set @checkregno=isnull(@checkregno,0)               
+    if (@checkregno > 1)                
+    begin                 
+		select @child1=min(regNo) from member_master where parentregnoB=@Mregno and parentSideB='L'                 
+		select @child2=min(regNo) from member_master where parentregnoB=@Mregno and parentSideB='R'                 
+		select @leftRemain=remainingMembers, @leftRemainPV=remainingPV from member_downline where regno=@Mregno and childRegNo=@child1                 
+		select @rightRemain=remainingMembers,@rightRemainPV=remainingPV from member_downline where regno=@Mregno and childRegNo=@child2      
+		SELECT @bLevel = blevel FROM member_master WHERE regno = @mRegNo               
+        SET @bLevel = Isnull(@blevel,0)        
+		set @bLevel = 1    
+        If(@bLevel=1)                              
+        Begin                  
+			If(@leftRemain>0 And @rightRemain>0)                  
+            Begin                   
+				if(@leftRemain>=@rightRemain)                    
+					set @PaidPair= (@rightRemain)                  
+                else                 
+					set @PaidPair= (@leftRemain)                  
+			End                  
+            IF (@leftremainpv > 0 AND @rightremainpv > 0)                                  
+            BEGIN                          
+				IF(@leftremainpv >= @rightremainpv)                           
+					set @paidpv = @rightremainpv                                     
+				ELSE                          
+					set @paidPv = @leftRemainpv                                  
+			END                  
+            set @leftRemain = @leftRemain-@paidPair                         
+            set @rightRemain = @rightRemain-@paidPair                   
+            set @paidPair = @paidPair                     
+            set @leftRemainPV=@leftRemainPV-@paidPV                        
+            set @rightRemainPV=@rightRemainPV-@paidPV                  
+            Set @paidPv=@paidPv                 
+		End      
+		--Fourth Condition check limit of Capping from settings      
+        IF ((@paidPair > 0 And @paidPV > 0) or @fstPv>0 )                         
+        BEGIN                 
+			select @totalPair=paidPair from member_payout where regno=@mRegNo and payid=@maxPayID       
+			Set @totalPaidPV=Isnull(@totalPaidPV,0)         
+			Set @totalPair=@totalPair+@paidPair                          
+			if @totalPair>@Pairlimit                 
+			Begin                           
+				set @flushPair=@paidPair                          
+				set @paidPair=0                          
+				Set @PVIncome=0                  
+			End                  
+			select @totalPaidPV=paidPV from member_payout where regno=@mRegNo and payid=@maxPayID                  
+			Set @totalPaidPV=Isnull(@totalPaidPV,0)                  
+			Set @totalPaidPV=@totalPaidPV+@paidPV                  
+			if @totalPaidPV>@PVlimit                         
+			Begin                           
+				set @flushPV=@paidPV                           
+				set @paidPV=0                          
+				set @PVIncome=0              
+			End                  
+			Else                   
+				Set @PVIncome= 0 --(@paidPV*@PVRate)              
+           
+		End       
+		SET @slabPaidPV = 0                         
+		SELECT @noOfPV = paidpv FROM member_performance WHERE regno = @mregNo                          
+		SET @noOfPV = Isnull(@noOfPV,0)                          
+		SET @remainPV = @paidPV      
+		if(@paidPair> 0 or @flushPair>0 or @fstPv>0)              
+		Begin                  
+			Set @tPa=@PaidPair+@flushPair                  
+			Set @tPv=@paidPV+@flushPV      
+			update member_payout set paidpair = (paidpair+@paidPair),flushPair=(flushPair+@flushPair),paidPV = (paidPV + @paidPV), slabPV=(slabPV+@slabPaidPV),flushPV=(flushPV+@flushPV),PVIncome=(PVIncome+@PVIncome),totalIncome=(totalIncome+@PVIncome),paid = 1 where regno=@Mregno and payid=@maxPayid                           
+			update member_performance set paidpair = (paidpair+@paidPair),flushPair=(flushPair+@flushPair),paidPV = (paidPV + @paidPV), slabPV=(slabPV+@slabPaidPV),flushPV=(flushPV+@flushPV),PVIncome=(PVIncome+@PVIncome),totalIncome=(totalIncome+@PVIncome) where regno=@Mregno      
+			set @PVIncome=isnull(@PVIncome,0)
+			update member_downline set remainingMembers=(@leftRemain), remainingPV=@leftRemainPV,NoofMembersCurrent=NoofMembersCurrent-@tPa,totalPVCurrent=totalPVCurrent-@tPv where regno=@Mregno and childregno=@Child1                          
+			update member_downline set remainingMembers=(@rightRemain), remainingPV=@rightRemainPV,NoofMembersCurrent=NoofMembersCurrent-@tPa,totalPVCurrent=totalPVCurrent-@tPv where regno=@Mregno and childregno=@Child2                         
+			update member_master set blevel=1 where regno=@mRegNo                       
+		End                                     
+	END                   
+	set @ret = 0      
+END TRY          
+BEGIN CATCH          
+	set @ret=1          
+END CATCH  
+-------------------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_calculate_points]    Script Date: 9/11/2019 10:36:38 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[sp_calculate_points]
+@maxpayid as int
+as
+begin
+	Declare @mRegNo as bigint, @PVPGS as money, @PPV as money
+	Declare @L1B as money, @L2B as money, @L3B as money, @L4B as money, @L5B as money, @L6B as money
+	Declare @L7B as money, @L8B as money, @L9B as money, @checkRegNo as int, @tempPVPGS as money
+	Declare @L1 as varchar(500), @L2 as varchar(500), @desigID as int
+	Declare @L0Rate as money, @L1Rate as money, @L2Rate as money, @L3Rate as money, @L4Rate as money
+	Declare @L5Rate as money, @L6Rate as money, @L7Rate as money, @L8Rate as money
+	Declare @L0Point as money, @L1Point as money, @L2Point as money, @L3Point as money, @L4Point as money
+	Declare @L5Point as money, @L6Point as money, @L7Point as money, @L8Point as money
+	Declare @confPayNo as int, @desigIntroID as int
+	Declare @levels as int, @qualifiedDirect as int
+	
+	Declare @regNo as bigint, @introRegNo as bigint, @eligible as int
+	
+	DECLARE InsertTransaction CURSOR  FOR SELECT P.regno, PBV, (PBV+PGS) as 'PVPGS', desigID, qualifiedDirect from member_payout P, member_master M where m.regno=P.regno and p.payid=@maxpayid  and (PBV+PGS)>0 and M.lvlid>=7 and p.qualifiedDirect>0 and m.confpayno>0 order by p.regno desc
+	OPEN InsertTransaction            
+	FETCH NEXT FROM InsertTransaction INTO @mRegNo, @PPV, @PVPGS, @desigID, @qualifiedDirect     
+	WHILE @@FETCH_STATUS = 0           
+	BEGIN
+		set @L1B=0; Set @L2B=0; Set @L3B=0; Set @L4B=0; 
+		Set @L5B=0; Set @L6B=0; Set @L7B=0; set @L8B=0; Set @L9B=0;
+		
+		Set @L0Rate=0; Set @L1Rate=0; Set @L2Rate=0; Set @L3Rate=0; Set @L4Rate=0;
+		Set @L5Rate=0; Set @L6Rate=0; Set @L7Rate=0; Set @L8Rate=0;
+		
+		Set @L0Point=0; Set @L1Point=0; Set @L2Point=0; Set @L3Point=0; Set @L4Point=0;
+		Set @L5Point=0; Set @L6Point=0; Set @L7Point=0; Set @L8Point=0;
+		
+		Set @tempPVPGS=0;
+		set @regNo=@mRegNo
+		set @checkRegNo=0
+		select @checkRegNo=count(*) from director_income_Details where regno=@mRegNo and payid=@maxPayID
+		set @checkRegNo=isnull(@checkRegNo,0)
+		if(@checkRegNo<=0)
+			insert into director_income_Details(regno, payid) values(@mRegNo, @maxPayID)
+		
+		--************* calculate point
+		if(@qualifiedDirect>0)
+		 Begin
+			select @L0Point=L0PVPGS from director_income_Details where regno=@mRegNo and payid=@maxPayID
+			set @L0Point=isnull(@L0Point,0)
+			set @L0Point=@L0Point+@PVPGS
+			select @L0Rate=L0 from slabrates where levels=@desigID
+			set @L0Point=(@L0Point*@L0Rate)/100		
+			Update director_income_Details set L0PVPGS=(L0PVPGS+@PVPGS), L0Points=@L0Point where regno=@mRegNo and payid=@maxPayID
+		 End	
+		
+		set @levels=0
+		set @L1=cast(@mRegNo as varchar)
+		While(@regNo>2 and @levels<=8)
+		 Begin
+			Set @introregno=0; Set @eligible=0; set @confPayNo=0;
+			Select 	@introregno=introregno from member_master where regno=@regNo
+			select @eligible=qualifiedDirect, @tempPVPGS=(PBV+PGS), @desigID=desigID from member_payout where regno=@introregno and payid=@maxPayID
+			select @confPayNo=confPayNo from member_master where regno=@introregno
+			set @eligible=isnull(@eligible,0)
+				
+			If(@eligible>0)
+			 Begin
+				set @levels=@levels+1
+				If(@L2B=0 and @desigID>=7)
+				 BEGIN
+					set @L2B=1;
+					set @checkRegNo=0
+					select @checkRegNo=count(*) from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @checkRegNo=isnull(@checkRegNo,0)
+					if(@checkRegNo<=0)
+						insert into director_income_Details(regno, payid) values(@introregno, @maxPayID)
+					select @L2=L1Members from director_income_Details	where regno=@introregno and payid=@maxPayID
+					set @L2=isnull(@L2,'')
+					if(@L2<>'')
+						set @L1 = @L2+','+@L1
+						
+					--************* calculate point
+					select @L0Point=L1PVPGS from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @L0Point=isnull(@L0Point,0)
+					set @L0Point=@L0Point+@PVPGS
+					select @L0Rate=L1 from slabrates where levels=@desigID
+					set @L0Point=(@L0Point*@L0Rate)/100	
+						
+					if(@L0Rate>0)	
+						Update director_income_Details set L1PVPGS=(L1PVPGS+@PVPGS), L1Members=@L1, L1Points=@L0Point where regno=@introregno and payid=@maxPayID					
+					
+				 End			
+				else if(@L3B=0 and @desigID>=8)
+				 BEGIN
+					set @L3B=1;
+					set @checkRegNo=0
+					select @checkRegNo=count(*) from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @checkRegNo=isnull(@checkRegNo,0)
+					if(@checkRegNo<=0)
+						insert into director_income_Details(regno, payid) values(@introregno, @maxPayID)
+						
+					select @L2=L2Members from director_income_Details	where regno=@introregno and payid=@maxPayID
+					set @L2=isnull(@L2,'')
+					if(@L2<>'')
+						set @L1 = @L2+','+@L1	
+						
+					--************* calculate point
+					select @L0Point=L2PVPGS from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @L0Point=isnull(@L0Point,0)
+					set @L0Point=@L0Point+@PVPGS
+					select @L0Rate=L2 from slabrates where levels=@desigID
+					set @L0Point=(@L0Point*@L0Rate)/100		
+					
+					if(@L0Rate>0)					
+						Update director_income_Details set L2PVPGS=(L2PVPGS+@PVPGS), L2Members=@L1, L2Points=@L0Point where regno=@introregno and payid=@maxPayID					
+					
+				 End
+				else if(@L4B=0 and @desigID>=9)
+				 BEGIN
+					set @L4B=1;
+					set @checkRegNo=0
+					select @checkRegNo=count(*) from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @checkRegNo=isnull(@checkRegNo,0)
+					if(@checkRegNo<=0)
+						insert into director_income_Details(regno, payid) values(@introregno, @maxPayID)
+						
+					select @L2=L3Members from director_income_Details	where regno=@introregno and payid=@maxPayID
+					set @L2=isnull(@L2,'')
+					if(@L2<>'')
+						set @L1 = @L2+','+@L1	
+						
+					--************* calculate point
+					select @L0Point=L3PVPGS from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @L0Point=isnull(@L0Point,0)
+					set @L0Point=@L0Point+@PVPGS
+					select @L0Rate=L3 from slabrates where levels=@desigID
+					set @L0Point=(@L0Point*@L0Rate)/100		
+					
+					if(@L0Rate>0)
+						Update director_income_Details set L3PVPGS=(L3PVPGS+@PVPGS), L3Members=@L1, L3Points=@L0Point where regno=@introregno and payid=@maxPayID
+					
+				 End
+				else if(@L5B=0 and @desigID>=10)
+				 BEGIN
+					set @L5B=1;
+					set @checkRegNo=0
+					select @checkRegNo=count(*) from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @checkRegNo=isnull(@checkRegNo,0)
+					if(@checkRegNo<=0)
+						insert into director_income_Details(regno, payid) values(@introregno, @maxPayID)
+					
+					select @L2=L4Members from director_income_Details	where regno=@introregno and payid=@maxPayID
+					set @L2=isnull(@L2,'')
+					if(@L2<>'')
+						set @L1 = @L2+','+@L1	
+						
+					--************* calculate point
+					select @L0Point=L4PVPGS from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @L0Point=isnull(@L0Point,0)
+					set @L0Point=@L0Point+@PVPGS
+					select @L0Rate=L4 from slabrates where levels=@desigID
+					set @L0Point=(@L0Point*@L0Rate)/100		
+					
+					if(@L0Rate>0)	
+						Update director_income_Details set L4PVPGS=(L4PVPGS+@PVPGS), L4Members=@L1, L4Points=@L0Point where regno=@introregno and payid=@maxPayID
+					
+				 End				 
+				else if(@L6B=0 and @desigID>=11)
+				 BEGIN
+					set @L6B=1;
+					set @checkRegNo=0
+					select @checkRegNo=count(*) from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @checkRegNo=isnull(@checkRegNo,0)
+					if(@checkRegNo<=0)
+						insert into director_income_Details(regno, payid) values(@introregno, @maxPayID)
+						
+					select @L2=L5Members from director_income_Details	where regno=@introregno and payid=@maxPayID
+					set @L2=isnull(@L2,'')
+					if(@L2<>'')
+						set @L1 = @L2+','+@L1	
+						
+					--************* calculate point
+					select @L0Point=L5PVPGS from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @L0Point=isnull(@L0Point,0)
+					set @L0Point=@L0Point+@PVPGS
+					select @L0Rate=L5 from slabrates where levels=@desigID
+					set @L0Point=(@L0Point*@L0Rate)/100			
+					
+					if(@L0Rate>0)	
+						Update director_income_Details set L5PVPGS=(L5PVPGS+@PVPGS), L5Members=@L1, L5Points=@L0Point where regno=@introregno and payid=@maxPayID
+					
+				 End 
+				else if(@L7B=0 and @desigID>=12)
+				 BEGIN
+					set @L7B=1;
+					set @checkRegNo=0
+					select @checkRegNo=count(*) from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @checkRegNo=isnull(@checkRegNo,0)
+					if(@checkRegNo<=0)
+						insert into director_income_Details(regno, payid) values(@introregno, @maxPayID)
+						
+					select @L2=L6Members from director_income_Details	where regno=@introregno and payid=@maxPayID
+					set @L2=isnull(@L2,'')
+					if(@L2<>'')
+						set @L1 = @L2+','+@L1	
+						
+					--************* calculate point
+					select @L0Point=L6PVPGS from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @L0Point=isnull(@L0Point,0)
+					set @L0Point=@L0Point+@PVPGS
+					select @L0Rate=L6 from slabrates where levels=@desigID
+					set @L0Point=(@L0Point*@L0Rate)/100		
+					if(@L0Rate>0)
+						Update director_income_Details set L6PVPGS=(L6PVPGS+@PVPGS), L6Members=@L1, L6Points=@L0Point where regno=@introregno and payid=@maxPayID
+					
+				 End 
+				else if(@L8B=0 and @desigID>=13)
+				 BEGIN
+					set @L8B=1;
+					set @checkRegNo=0
+					select @checkRegNo=count(*) from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @checkRegNo=isnull(@checkRegNo,0)
+					if(@checkRegNo<=0)
+						insert into director_income_Details(regno, payid) values(@introregno, @maxPayID)
+						
+					select @L2=L7Members from director_income_Details	where regno=@introregno and payid=@maxPayID
+					set @L2=isnull(@L2,'')
+					if(@L2<>'')
+						set @L1 = @L2+','+@L1	
+						
+					--************* calculate point
+					select @L0Point=L7PVPGS from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @L0Point=isnull(@L0Point,0)
+					set @L0Point=@L0Point+@PVPGS
+					select @L0Rate=L7 from slabrates where levels=@desigID
+					set @L0Point=(@L0Point*@L0Rate)/100		
+					
+					if(@L0Rate>0)	
+						Update director_income_Details set L7PVPGS=(L7PVPGS+@PVPGS), L7Members=@L1, L7Points=@L0Point where regno=@introregno and payid=@maxPayID
+					
+				 End 
+				else if(@L9B=0 and @desigID>=14)
+				 BEGIN
+					set @L9B=1;
+					set @checkRegNo=0
+					select @checkRegNo=count(*) from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @checkRegNo=isnull(@checkRegNo,0)
+					if(@checkRegNo<=0)
+						insert into director_income_Details(regno, payid) values(@introregno, @maxPayID)
+						
+					select @L2=L8Members from director_income_Details	where regno=@introregno and payid=@maxPayID
+					set @L2=isnull(@L2,'')
+					if(@L2<>'')
+						set @L1 = @L2+','+@L1	
+						
+					--************* calculate point
+					select @L0Point=L8PVPGS from director_income_Details where regno=@introregno and payid=@maxPayID
+					set @L0Point=isnull(@L0Point,0)
+					set @L0Point=@L0Point+@PVPGS
+					select @L0Rate=L8 from slabrates where levels=@desigID
+					set @L0Point=(@L0Point*@L0Rate)/100		
+					if(@L0Rate>0)
+						Update director_income_Details set L8PVPGS=(L8PVPGS+@PVPGS), L8Members=@L1, L8Points=@L0Point where regno=@introregno and payid=@maxPayID
+					
+				 End  
+			 End
+			/* Else
+			 BEGIN
+				if(@confPayNo>0)
+				 Begin
+					set @PVPGS=@PVPGS+@tempPVPGS
+					If(@L1='')
+						set @L1=cast(@introregno as varchar)
+					Else
+						set @L1=@L1+','+cast(@introregno as varchar)
+				 End		
+			 End	
+			 */
+			set @regNo=@introregno
+		 End
+	FETCH NEXT FROM InsertTransaction INTO  @mRegNo, @PPV, @PVPGS, @desigID, @qualifiedDirect
+	 END            
+	CLOSE InsertTransaction           
+	DEALLOCATE InsertTransaction
+	
+	
+end
+________________
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_cartmanage]    Script Date: 9/11/2019 10:37:47 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER  Procedure [dbo].[sp_cartmanage]                
+@pid bigint ,                 
+@Qty int ,                
+@CookiesID bigint = 0,                
+@Regno bigint = 0,                
+@Emailid varchar(max) = '',                
+@IP varchar(500) ='',                
+@intResult int out   ,              
+@intCookiesID bigint  out  ,        
+@type varchar(50) = ''   ,    
+@subid int = 0
+AS                
+begin                
+ Declare @temp_cookid bigint = 0 , @CUID BIGINT = 0               
+ Declare @dp money , @bv money , @mrp money , @directdiscount money         
+ Declare @offer_Price money = 0;        
+ Declare @offer_Rate money =  0;        
+ Declare @Afteroffer_Price money = 0 ;  
+ Set @intResult = 0 ;              
+ Set @intCookiesID = 0 ;              
+ IF(@Regno <> 0)               
+   begin                
+   Select @temp_cookid = CookiesID from Cart_User where Regno=@Regno                
+   end                
+ Else                
+  begin     ---- B           
+    if (@CookiesID <= 0)                
+      begin  -- C               
+     Select @CookiesID = isnull(max(CookiesID),1000) from Cart_User                
+     Set @CookiesID = @CookiesID + 1;              
+     Set @intCookiesID = @CookiesID ;              
+     Insert into Cart_User (CookiesID , Emailid , IP) values (@CookiesID,@Emailid,@IP)                
+      End   --C           
+     Select @CUID = CUID from Cart_User WHERE CookiesID= @CookiesID                
+     update Cart_user set expiryDate= dateadd(MM,1,getutcdate()) where cuid=@CUID         
+     IF(upper(@type) = 'REMOVE')        
+    begin        
+     IF EXISTS (SELECT 1 FROM Cart_product WHERE PID=@pid  AND CUID= @CUID AND Combo_pid=0)         
+     Delete from Cart_product where PID=@pid  AND CUID= @CUID AND Combo_pid=0       
+     IF Exists  (Select 1 from Product_master  where pid=@pid  and usedascombo > 0 )        
+  Begin    
+     Delete from Cart_product  where CUID= @CUID AND  PID in         
+     (Select pid from Combo_Details  where coid in ( Select coid from Combo_Details where Pid=@pid  and IsActive=1) and IsActive=1 )    
+   Delete from Cart_product  where CUID= @CUID AND  PID in   (Select pid from combo_details where coid=( Select coid from combo_master where Combopid=@pid) ) AND Combo_pid=@pid   
+  End    
+   IF Exists  (Select 1 from Product_master where  pid = @pid and Comboid > 0 )        
+     Delete from Cart_product  where CUID= @CUID AND  PID in  (    
+   Select pid from Product_master where  pid = @pid and Comboid > 0    
+   Union All    
+   Select pid from Combo_Details where coid  in (Select comboid from Product_master where  pid = @pid  )    
+  )    
+     Set @intResult = 5 ;        
+     Return;        
+    end        
+     IF Not EXISTS (sELECT 1 FROM Cart_product WHERE PID=@pid  AND CUID= @CUID AND Combo_pid=@subid)                
+    begin --- D               
+    if(@subid>0 AND @pid!=@subid)
+	Begin      
+     insert into Cart_product (cuid,pid  , Qty ,pName ,dp,bv,mrp,OfferPrice, totalAmt,IMGURL,Offer_rate,InStock,ShipCharge,Combo_pid)     
+	 
+     select @CUID, pm.pid  , @Qty ,pm.pName ,CD.dp,(ISNULL(CD.ME,0)*100/80),CD.MRP,@offer_Price,  cd.dp*@Qty ,  
+	 (Select top(1) imgurl from Productimage_master where pid=@pid and defaultimg=1)  ,@offer_Rate        
+     ,0 , 0 ,@subid     
+     from product_master pm join combo_details CD on CD.pid=PM.Pid where pm.pid=@pid  and CD.COID=(select coid from combo_master where combopid=@Subid)           
+    End 
+	Else
+	Begin
+	 IF Not EXISTS (sELECT 1 FROM Cart_product WHERE PID=@pid  AND CUID= @CUID AND Combo_pid=0)                
+    begin --- D     
+     insert into Cart_product (cuid,pid  , Qty ,pName ,dp,bv,mrp,OfferPrice, totalAmt,IMGURL,Offer_rate,InStock,ShipCharge,Combo_pid)       
+     select @CUID, pid  , @Qty ,pName ,dp,ISNULL(bv,0),MRP,@offer_Price, dp*@Qty ,  (Select top(1) imgurl from Productimage_master where pid=@pid and defaultimg=1),
+	 @offer_Rate,case when usedascombo>0 then 0 else 100 end , 0,0      
+     from product_master where pid=@pid  
+	 End
+	End
+     update Cart_User set NoofProduct =  (Select count(1) from Cart_Product where cuid=@CUID) where        
+     cookiesID=@CookiesID        
+     Set @intResult = 1 ;            
+    end  -- D             
+   Else              
+    begin   --- E           
+    declare @availableqty as int
+	select @availableqty = 100--[dbo].[GETQTY](@pID ,'Quantity')	
+      IF EXISTS (sELECT 1 FROM Cart_product WHERE PID=@pid AND Qty <> @Qty AND CUID= @CUID) 
+      begin --- F           
+      if (@availableqty <  @Qty)
+		begin                                                        
+		     set @Qty=@availableqty
+	     end
+        Set @offer_Price = (select dp from product_master where PID=@pid    )   
+        Set @offer_Rate =0-- dbo.GetPriceDetails('OfferRate',@Qty,@pid,0,@subid)        
+        Set @Afteroffer_Price = (select dp from product_master where PID=@pid )      
+        Set @mrp = (select mrp from product_master where PID=@pid )		
+       Update Cart_product Set dp =@Afteroffer_Price ,mrp =@mrp , OfferPrice=@offer_Price,        
+       totalAmt= @Qty * @Afteroffer_Price , Qty = @Qty ,Offer_rate = @offer_Rate, InStock= 10,  ShipCharge = 100      
+       where pid=@pid and cuid=@cuid   AND Combo_pid=0      
+       Set @intResult = 1 ;            
+       return;        
+      end  -- F          
+      ELSE         
+         Begin        
+       Set @intResult = 2 ;                
+       return ;              
+      End         
+    End  -- E        
+  --Set @intResult = 1 ;                   
+ end   -- B              
+End 
+------------------------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_chartstatus]    Script Date: 9/11/2019 10:38:43 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+ 
+
+ALTER Procedure [dbo].[sp_chartstatus]          
+
+@regno as bigint          
+
+AS        
+
+Begin        
+
+Declare @total as int , @Pos as int , @Neg as int , @ActivePer as Decimal , @DeactivePer as Decimal         
+
+IF OBJECT_ID('tempdb..#temp_chartstatus') IS NOT NULL            
+
+DROP TABLE #temp_chartstatus        
+
+        
+
+        
+
+  Create Table #temp_chartstatus (id int ,Caption varchar(100) , Per Decimal , ctr  int , total int )        
+
+  --- 1. Order        
+
+  Select @Neg = Count(Status) from Product_order where status=0 and regno=@regno        
+
+  Select @Pos = Count(Status) from Product_order where status=1 and regno=@regno        
+
+  Select @total = Count(Status) from Product_order where regno=@regno        
+
+  if (@Pos <> 0 )      
+
+  Set @ActivePer = @Pos * 100/ @total        
+
+  else Set  @ActivePer = 0      
+
+  if (@Neg <> 0 )      
+
+  Set @DeactivePer = @Neg * 100/ @total        
+
+   else Set  @DeactivePer = 0      
+
+  insert into #temp_chartstatus values (1,'Confirm Product Order',@ActivePer , @Pos ,@total ) , (2,'Pending Product Order',@DeactivePer , @Neg ,@total )        
+
+   --- 2 .Denomination Requested       
+
+   Declare @total_Doc int = 0 , @strat int  = 1 , @partname nvarchar(500) = '' , @perRate money =  0  
+
+Select @total_Doc = Count(*) from KYC_part_master where PayoutRelease=1 and isActive=1    
+
+While(@strat <= @total_Doc )  
+
+Begin  
+
+ Declare @temp_val nvarchar(50)  = ''  
+
+ Select  @temp_val = partname+','  from   
+
+ (  
+
+ Select partname ,partid  , row_number() over(order by partid asc)  from KYC_part_master where PayoutRelease=1 and isActive=1   
+
+ ) t(partname,partid,Row)  
+
+ where t.Row=@strat  
+
+ Set @strat = @strat + 1  
+
+ Set  @partname = @partname +'  '+@temp_val  
+
+End   
+
+Set @perRate  =  100/ @total_Doc   
+
+Select @Pos = count(1) from member_kyc where  regno=@regno  and  kycpartid   in (Select partid   from KYC_part_master where PayoutRelease=1 and isActive=1 )  
+
+  --Select @Neg = Count(reqstatus) from Denomination_Request where reqstatus=0 and regno=@regno        
+
+ -- Select @Pos = Count(reqstatus) from Denomination_Request where reqstatus=1 and regno=@regno        
+
+  --Select @total = Count(reqstatus) from Denomination_Request where regno=@regno        
+
+ if (@Pos <> 0 )      
+
+  Set @ActivePer = @Pos * 100/ @total_Doc         
+
+  else Set  @ActivePer = 0      
+
+  if (@Neg <> 0 )      
+
+  Set @DeactivePer = @Neg * 100/ @total        
+
+   else Set  @DeactivePer = 0      
+
+  insert into #temp_chartstatus values (3,@partname,@ActivePer,@Pos , @total_Doc) , (4,'Pending Denomination Order',@DeactivePer, @Neg , @total)        
+
+    
+
+    
+
+    
+
+    --- 3 .Confirmed Member        
+
+  Select @Neg = Count(regno) from member_master where Confpayno=0 and introregno=@regno        
+
+  Select @Pos = Count(regno) from member_master where Confpayno>0 and introregno=@regno        
+
+  Select @total = Count(regno) from member_master where introregno=@regno        
+
+ if (@Pos <> 0 )      
+
+  Set @ActivePer = @Pos * 100/ @total        
+
+  else Set  @ActivePer = 0      
+
+  if (@Neg <> 0 )      
+
+  Set @DeactivePer = @Neg * 100/ @total        
+
+   else Set  @DeactivePer = 0      
+
+  insert into #temp_chartstatus values (5 ,'Confirm Member',@ActivePer,@Pos , @total) , (6,'Unconfirmed Member',@DeactivePer, @Neg , @total)        
+
+           
+
+      --- 4 .ReEntry        
+
+  --Select @Pos = (ReEntryBV % 20000) from member_performance where  regno=@regno        
+
+ if (@Pos <> 0 )      
+
+  Set @ActivePer =   @Pos * 100/ 20000     
+
+  else Set  @ActivePer = 0      
+
+         
+
+  insert into #temp_chartstatus values (7,'Reentry BV',@ActivePer,@Pos ,20000)          
+
+        
+
+    --- 3 .KYC Epin         
+
+  Select @Neg = Count(Epinid) from epin_master where sepinid in ( Select sepinid from SoldEpin where refregno=@regno) and kid=1 and eActive=1 and regno>0        
+
+  Select @Pos = Count(Epinid) from epin_master where sepinid in ( Select sepinid from SoldEpin where refregno=@regno) and kid=1 and eActive=1 and regno=0        
+
+  Select @total = Count(Epinid) from epin_master where sepinid in ( Select sepinid from SoldEpin where refregno=@regno) and kid=1 and eActive=1          
+
+ if (@Pos <> 0 )      
+
+  Set @ActivePer = @Pos * 100/ @total        
+
+  else Set  @ActivePer = 0      
+
+  if (@Neg <> 0 )      
+
+  Set @DeactivePer = @Neg * 100/ @total        
+
+   else Set  @DeactivePer = 0      
+
+  insert into #temp_chartstatus values (8,'Unused KYC',@ActivePer,@Pos ,@total) , (9,'Used KYC',@DeactivePer,@Neg ,@total)        
+
+          
+
+   Select * from #temp_chartstatus        
+
+           
+
+End 
+-------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_chartstatus_member]    Script Date: 9/11/2019 10:41:00 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ 
+ALTER Procedure [dbo].[sp_chartstatus_member]          
+@regno as bigint          
+AS        
+Begin        
+Declare @total as int , @Pos as int , @Neg as int , @ActivePer as Decimal , @DeactivePer as Decimal         
+IF OBJECT_ID('tempdb..#temp_chartstatus') IS NOT NULL            
+DROP TABLE #temp_chartstatus        
+        
+        
+  Create Table #temp_chartstatus (id int ,Caption varchar(100) , Per Decimal , ctr  int , total int ,KYCstatusid1 varchar(100),PAnstatusid varchar(100),ADDstatusid varchar(100),identitystatusid varchar(100),BAnkstatusid varchar(100),KYCpart varchar(100),PAnpart  varchar(100) ,addpart  varchar(100),
+  idenPart  varchar(100),BAnkpart  varchar(100),BAnstatusname  varchar(100) ,identitystatusname  varchar(100) ,ADDstatusname  varchar(100) ,PAnstatusname  varchar(100),KYCstatusname  varchar(100))        
+ --- 2 .Denomination Requested       
+   Declare @total_Doc int = 0 , @strat int  = 1 , @partname nvarchar(500) = '' , @perRate money =  0  
+Select @total_Doc = Count(*) from KYC_part_master where   isActive=1    
+While(@strat <= @total_Doc )  
+Begin  
+ Declare @temp_val nvarchar(50)  = ''  
+ Select  @temp_val = partname+','  from   
+ (  
+ Select partname ,partid  , row_number() over(order by partid asc)  from KYC_part_master where   isActive=1   
+ ) t(partname,partid,Row)  
+ where t.Row=@strat  
+ Set @strat = @strat + 1  
+ Set  @partname = @partname +'  '+@temp_val  
+End   
+Set @perRate  =  100/ @total_Doc   
+declare @KYCstatusid1 as varchar(100) , @KYCpart as varchar(100) ,@PAnstatusid as varchar(100)  , @PAnpart as varchar(100) ,@ADDstatusid as varchar(100)   , @addpart as varchar(100) , @identitystatusid as varchar(100)   , @idenPart as varchar(100) ,@BAnkstatusid as varchar(100) 
+  , @BAnkpart as varchar(100)  ,@BAnstatusname as varchar(100),@identitystatusname as varchar(100),@ADDstatusname as varchar(100),@PAnstatusname as varchar(100),@KYCstatusname as varchar(100)
+Select @Pos = count(1) from member_kyc where  regno=@regno  and  kycpartid   in (Select partid   from KYC_part_master where   isActive=1 )    and statusid<>1
+ 
+Select @KYCstatusid1= case when PayoutRelease=1 then 'Yes' else 'No' end , @KYCpart=partname ,@KYCstatusname=case when  mk.statusid in (1,2) then 'Pending'else mk.statusname end from member_kyc mk inner join  KYC_part_master kpm on mk.kycpartid=kpm.partid where  regno=@regno  and  kycpartid =1
+Select  @PAnstatusid=case when PayoutRelease=1 then 'Yes' else 'No' end  , @PAnpart=partname,@PAnstatusname=case when  mk.statusid in (1,2) then 'Pending'else mk.statusname end from member_kyc mk inner join  KYC_part_master kpm on mk.kycpartid=kpm.partid where  regno=@regno  and  kycpartid =2
+Select  @ADDstatusid=case when PayoutRelease=1 then 'Yes' else 'No' end  , @addpart=partname,@ADDstatusname=case when  mk.statusid in (1,2) then 'Pending'else mk.statusname end from member_kyc mk inner join  KYC_part_master kpm on mk.kycpartid=kpm.partid where  regno=@regno and  kycpartid =3
+Select  @identitystatusid=case when PayoutRelease=1 then 'Yes' else 'No' end  , @idenPart=partname,@identitystatusname=case when  mk.statusid in (1,2) then 'Pending'else mk.statusname end from member_kyc mk inner join  KYC_part_master kpm on mk.kycpartid=kpm.partid where  regno=@regno  and  kycpartid =4
+Select  @BAnkstatusid=case when PayoutRelease=1 then 'Yes' else 'No' end  , @BAnkpart=partname,@BAnstatusname=case when  mk.statusid in (1,2) then 'Pending'else mk.statusname end from member_kyc mk inner join  KYC_part_master kpm on mk.kycpartid=kpm.partid where  regno=@regno  and  kycpartid =5
+ 
+ if (@Pos <> 0 )      
+  Set @ActivePer = @Pos * 100/ @total_Doc         
+  else Set  @ActivePer = 0      
+  if (@Neg <> 0 )      
+  Set @DeactivePer = @Neg * 100/ @total        
+   else Set  @DeactivePer = 0      
+  insert into #temp_chartstatus values (3,@partname,@ActivePer,@Pos , @total_Doc,@KYCstatusid1,@PAnstatusid,@ADDstatusid,@identitystatusid,@BAnkstatusid,@KYCpart,@PAnpart,@addpart,
+  @idenPart,@BAnkpart,@BAnstatusname,@identitystatusname,@ADDstatusname,@PAnstatusname,@KYCstatusname)         
+    
+    
+    
+ 
+  
+          
+   Select * from #temp_chartstatus        
+           
+End
+---------------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_checktdsapplicable]    Script Date: 9/11/2019 10:42:12 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--Create By: Gaurav tripathi With help of sanjeev sir
+--Created on: 12-dec-2015
+--Purpose: Tax Calculation On Runtime payout wise
+ALTER procedure [dbo].[sp_checktdsapplicable]
+@mregno as bigint=0,
+@mpayid as int=0
+as
+begin
+	declare @counter as int,@kycstatus as int,@mempan as varchar(10),@tdsRate as money,@TDSrateDouble as money,@tdsCharge as money,@grossamount as money
+	declare @totalacumamount as money,@tdsstatus as int,@tdshead varchar(10),@checklock as int, @TDSslabAmount as money
+	declare @startFyPayID as int,@endfyPayID as int,@tdsremark as varchar(1000),@actualTDSDeductionamt as money,@Rejectoldtds as int
+	declare @TDSStart as money,@TDSpreviousAsALC as money,@TDSasALC as money,@CheckTdsDeduct as int
+	select @tdsRate=limits from settings where caption='tdsRate' and active=1 --In percentage            
+	set @tdsRate=isnull(@tdsRate,0)
+	--select @TDSrateDouble=limits from settings where caption='tdsRatewithoutpan' and active=1 --In percentage              
+	set @TDSrateDouble=@tdsRate*2  --isnull(@TDSrateDouble,0)
+	select @grossamount=totalincome from member_payout where regno=@mregno and payid=@mpayid	
+	set @grossamount=isnull(@grossamount,0)  
+	set @totalacumamount=0
+	set @TDSslabAmount=5000
+	set @TDSStart=@TDSslabAmount-((@TDSslabAmount*@tdsRate)/100)
+	set @endfyPayID=0
+	set @tdsstatus=0
+	set @startFyPayID=0
+	set @Rejectoldtds=0
+	set @TDSasALC=0
+	set @tdshead=''
+	set @tdsCharge=0-------
+	set @checklock=0
+	exec sp_returnFyYearPayid '',@startFyPayID out,@endfyPayID out
+	select @totalacumamount = isnull(Sum(totalIncome),0) from member_Payout where totalincome>0 and regno=@Mregno and Payid >= @startFyPayID and payid<=@mpayid---First Financial Year          
+	set @totalacumamount=isnull(@totalacumamount,0)
+	select @mempan=isnull(mempan,'') from member_master where regno=@Mregno	
+	set @counter=0
+	select @counter=Count(*) from Member_Kyc where regno=@Mregno and kycPartID=2
+	if(@counter>0)
+	begin
+		select @kycstatus=isnull(statusid,0) from Member_Kyc where regno=@Mregno and kycPartID=2
+	end
+	else
+		set @kycstatus=0
+	if(@grossamount>0)
+	begin	
+		if(@totalacumamount>=@TDSStart)	--income greater than slab then start TDS deduction
+		begin
+			if(@kycstatus=7 or @kycstatus<4 )-----Pancard verified with A/F or  PanCard unverified
+			begin
+				set @tdsRate=@TDSrateDouble
+				if(@kycstatus=7)
+					set @tdsremark='TDS Deduction @ '+cast(@tdsRate as varchar)
+				else
+					set @tdsremark='Adjustable Lock Account'
+				set @tdsstatus=0 
+			end
+			else
+			begin
+				set @tdsremark='TDS Deduction @ '+cast(@tdsRate as varchar)		
+				set @tdsstatus=1
+			end
+			if(@kycstatus>=4)
+			begin
+				set @TDSpreviousAsALC=0		
+				select @TDSpreviousAsALC=isnull(sum(debit),0) from member_account where trstatus=0 and transType in('TDS') and crdb='D' and regno=@mregno and  Payid >= @startFyPayID and payid<=@mpayid
+				set @TDSpreviousAsALC=isnull(@TDSpreviousAsALC,0) 
+				if @TDSpreviousAsALC>0
+					set @checklock=1
+				if (@totalacumamount>=@TDSslabAmount)
+				begin	
+					if (@checklock=1) 
+					begin
+						set @tdshead='TDS'
+						set @tdsCharge=@totalacumamount*(@tdsRate/100)
+						set @grossamount=@totalacumamount
+						Update member_account set trstatus=3 where trstatus=0 and transType in('TDS','ALC','TDSWPAN') and crdb='D' and regno=@mregno and Payid >= @startFyPayID and payid<=@mpayid
+						update member_payout set tdsamount=0,tdsrate=0 where regno=@mregno and Payid >= @startFyPayID and payid<=@mpayid
+					end
+					else 
+					begin
+						set @CheckTdsDeduct=0-----
+						select @CheckTdsDeduct=count(*) from member_account where regno=@mregno and transtype='TDS' and trstatus=1-----
+						if(@CheckTdsDeduct=0)-----
+						begin
+							set @tdshead='TDS'
+							set @tdsremark='TDS Deduction @ '+cast(@tdsRate as varchar)
+							set @tdsCharge=@totalacumamount*(@tdsRate/100)
+							set @grossamount=@totalacumamount
+						end
+						else
+						begin
+							set @tdshead='TDS'
+							set @tdsremark='TDS Deduction @ '+cast(@tdsRate as varchar)
+							set @tdsCharge=@grossamount*(@tdsRate/100)
+						end
+					end
+				end
+				else
+				begin 
+					set @tdsCharge=@totalacumamount*(@tdsRate/100)
+					set @TDSasALC=@tdsCharge-@TDSpreviousAsALC
+					if(@grossamount<@TDSasALC)
+						set @tdsCharge=@grossamount
+					else
+						set @tdsCharge=@TDSasALC
+					set @tdshead='TDS'
+					set @tdsremark='Adjustable Lock Account'
+					set @tdsstatus=0
+				end
+			end
+			else
+            begin
+				set @CheckTdsDeduct=0-----
+				select @CheckTdsDeduct=count(*) from member_account where regno=@mregno and transtype='TDS' and trstatus=0-----
+				if(@CheckTdsDeduct=0)-----
+				begin
+					set @tdsCharge=@totalacumamount*(@tdsRate/100)
+					set @grossamount=@totalacumamount
+				end
+				else
+					set @tdsCharge=@grossamount*(@tdsRate/100)
+				set @tdshead='TDS'
+				set @tdsremark='Adjustable Lock Account'
+				set @tdsstatus=0
+			end	
+			if(@tdsCharge>0)
+			begin
+				if(@tdsstatus=1)
+				begin
+					set @checklock=0
+					select @checklock=count(*) from member_account where transtype in('TDS','ALC') and trstatus=3
+					if(@checklock>0)
+					begin
+						declare @regnot bigint,@payidt as int,@totalincomet as money
+						set @regnot=0; set @payidt=0 ; set @totalincomet=0
+						Declare  transferTDS cursor for select regno,payid,totalincome from member_payout where regno=@mRegNo order by payid 
+						open transferTDS              
+						fetch next from transferTDS into @regnot, @payidt, @totalincomet
+						WHILE @@FETCH_STATUS = 0              
+						BEGIN
+							Update member_account set trstatus=5 where trstatus=3 and transType in('TDS','ALC','TDSWPAN') and crdb='D' and regno=@regnot and Payid =@payidt
+							INSERT INTO member_account(payid,regno, transdate, credit, debit, crdb, transtype,remark, trStatus, tdsRate, tdsAmount, trAmount)  
+							VALUES (@payidt, @regnot, getdate(), 0, (@totalincomet*@tdsRate)/100, 'D', @tdshead, @tdsremark, @tdsstatus, @tdsRate, (@totalincomet*@tdsRate)/100, @totalincomet)
+							update member_payout set tdsamount=(@totalincomet*@tdsRate)/100,tdsrate=@tdsRate where payid=@payidt and regno=@regnot
+							fetch next from transferTDS into @regnot, @payidt, @totalincomet
+						end          
+						CLOSE transferTDS         
+						deallocate transferTDS
+					end
+				end
+				else
+				begin	
+					INSERT INTO member_account(payid,regno, transdate, credit, debit, crdb, transtype,remark, trStatus, tdsRate, tdsAmount, trAmount)  
+					VALUES (@mpayid, @mRegNo, getdate(), 0, @tdsCharge, 'D', @tdshead, @tdsremark, @tdsstatus, @tdsRate, @tdsCharge, @grossamount)
+					update member_payout set tdsamount=@tdsCharge,tdsrate=@tdsRate where payid=@mpayid and regno=@mRegNo
+				end	
+			end
+		end
+	end	
+end
+-----------------
+USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_cMIS]    Script Date: 9/11/2019 10:42:47 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--*************** Created by	:	Devendra Kumar Singh
+--*************** Dated			:	12-April-2017
+--Name:-sp_calculateMIS
+--Called by trigger onInsertPayout
+--********************** Update Payout table for MIS reports  *************************Start
+ALTER proc [dbo].[sp_cMIS] @maxPayID as int
+As
+	Declare @totalPaidCount as int, @totalPaidBI as int, @totalPaidLI as int, @totalPaidDI as int, @totalPaidRI1 as int 
+	Declare @levelIncome as money, @Directbonus as money, @matchingBonus as money, @leadershipIncome as money
+	Declare @residualIncome as money, @royalitybonus2 as money
+	Declare @BinaryBuffer as money, @SavedBinaryBuffer as money, @leaderShipBuffer as money, @levelBuffer as money, @DBBuffer as money, @residualBuffer as money
+	Declare @royalty2Buffer as money, @royalty1Buffer as money, @TCollectedAmount as money, @TDistridutionAmount as money
+	Declare @grossAmount as money, @grossAmountPaid as money, @monthlySales as money, @paidMembersRB as int
+	Declare @totAmount as money, @kitValue as money, @NOJ as bigint
+	Declare @ActivationBV as money, @activationAmount as money, @RepurchaseBV as money, @repurchaseAmount as money
+	Declare @PaidPV as money, @flushPV as money
+	Declare @actBuffer as money, @repuBuffer as money, @totalBuffer as money
+	Declare @netPayble as money, @boardReBuffer as money
+	Declare @tdsRate as money, @tdsAmount as money, @hRate as money, @hAmount as money
+	Declare @tdsRateWP as money, @tdsAmountWP as money, @ALA as money
+	Declare @kitBV as money, @totalActive as int, @monthlyBV as money
+	Declare @paidMembers as int, @activeMembers as int
+	Declare @repurchase int, @fromPay as int, @RepurchaseBVT as money, @repurchaseAmountT as money
+	Declare @RewardgroupA int,@RewardgroupB int
+	
+	Set @RewardgroupA=0;
+	Set @RewardgroupB=0;
+	
+	set @repurchase=0
+	set @fromPay=0
+	
+	select @repurchase=monthlyClosing from payout where payid=@maxPayID
+	set @repurchase=isnull(@repurchase,0)
+	if(@repurchase>0)
+	 	select top 1 @fromPay=payid from payout where payid<@maxPayID and monthlyClosing>0 order by payid desc
+	set @fromPay=isnull(@fromPay,0)
+	set @fromPay=@fromPay+1
+	
+	select @grossAmountPaid=sum(payableTotal) from member_payout where payid=@maxPayID and regno>1
+	set @grossAmountPaid=isnull(@grossAmountPaid,0)	
+	
+	select @totalPaidCount=count(*) from member_payout where payid=@maxPayID and payableTotal>0 and regno>1
+	select @totalPaidBI=count(*) from member_payout where payid=@maxPayID and pvincome>0 and regno>1
+	select @totalPaidLI=count(*) from member_payout where payid=@maxPayID and levelIncome>0 and regno>1 
+	select @totalPaidDI=count(*) from member_payout where payid=@maxPayID and directIncome>0 and regno>1 and   directTrStatus=1
+	select @totalPaidRI1=count(*) from member_payout where payid=@maxPayID and residualIncome>0 and regno>1 and residualTrStatus=1
+	select @RewardgroupA=count(*) from member_Master where regPayno=@maxPayID and rewardGroup='A'   and regno>1 
+	select @RewardgroupB=count(*) from member_Master where regPayno=@maxPayID  and rewardGroup='B' and regno>1 
+			
+	set @totalPaidCount=isnull(@totalPaidCount,0)
+	set @totalPaidBI=isnull(@totalPaidBI,0)
+	set @totalPaidDI=isnull(@totalPaidDI,0)
+	set @totalPaidLI=isnull(@totalPaidLI,0)	
+	set @totalPaidRI1=isnull(@totalPaidRI1,0)  
+	set @RewardgroupA=isnull(@RewardgroupA,0)
+	set @RewardgroupB=isnull(@RewardgroupB,0)
+	--*************** Members Count
+	select @NOJ=count(*) from member_master where regPayno=@maxPayID and regno>2
+	set @NOJ=isnull(@NOJ,0)
+	
+	select @totalActive=count(*) from member_master where ConfPayNo=@maxPayID and regno>2
+	set @totalActive=isnull(@totalActive,0)	
+	
+	--************ Incomes  
+	
+	Select @PaidPV=sum(paidPV), @flushPV=sum(flushPV), @Directbonus=sum(directIncome),  @matchingBonus=sum(pvincome), @residualIncome=sum(residualIncome), @residualIncome=sum(residualIncome)  from member_payout where payid=@maxPayId
+	--Select    from member_payout where payid=@maxPayId and directTrStatus=1
+	--Select    from member_payout where payid=@maxPayId and residualTrStatus=1
+	--Select @TDistridutionAmount=isnull(sum(TotalAmount),0) from member_payout where payid=@maxPayID
+	select @DBBuffer=Sum(directIncome) from kit_master K, recharge_transaction R where r.rkid=k.kid and r.rpayid=@maxPayid
+	
+	
+	Set @PaidPV=isnull(@PaidPV,0)
+	set @flushPV=isnull(@flushPV,0)
+	set @Directbonus=isnull(@Directbonus,0)
+	set @matchingBonus=isnull(@matchingBonus,0)
+	Set @residualIncome=isnull(@residualIncome,0) 
+	
+	--*************** BV Collected 
+	Select @ActivationBV=sum(totalBV), @activationAmount=sum(totalAmount) from product_order where apayid=@maxPayID and bvtype='A' and status not in(0,2)	
+	Select @RepurchaseBV=sum(totalBV), @monthlySales=sum(totalAmount) from product_order where apayid=@maxPayID and bvType='R' and status not in(0,2)		
+	Select @TCollectedAmount=sum(rkprice), @BinaryBuffer=sum(bufferAmount)  from recharge_transaction where rkid>1 and rpayid=@maxPayID
+	set @BinaryBuffer=isnull(@BinaryBuffer,0)
+	
+	
+	
+	select @SavedBinaryBuffer=savedBinaryBuffer from payout where payid=@maxPayid-1
+	set @SavedBinaryBuffer=isnull(@SavedBinaryBuffer,0)
+	if(@maxPayid=2)
+		set @SavedBinaryBuffer=0
+	
+	set @residualBuffer=(@matchingBonus*10)/100
+	set @SavedBinaryBuffer = ((@SavedBinaryBuffer+@BinaryBuffer) - @matchingBonus)
+	
+	
+	Set @ActivationBV=isnull(@ActivationBV,0)
+	Set @activationAmount=isnull(@activationAmount,0)	
+	Set @RepurchaseBV=isnull(@RepurchaseBV,0)
+	Set @monthlySales=isnull(@monthlySales,0)	
+	set @RepurchaseBVT=@RepurchaseBV; Set @repurchaseAmountT=@monthlySales;
+	If(@repurchase>0)
+	 Begin
+		
+		Select @RepurchaseBV=sum(totalBV), @monthlySales=sum(totalAmount) from product_order where payid>=@fromPay and bvType='R' and status not in(0,2)		
+		
+	 End
+		
+	Set @LevelBuffer=(@RepurchaseBV*40)/100
+	Set @royalty1Buffer=(@RepurchaseBV*3)/100
+	Set @royalty2Buffer=(@RepurchaseBV*4)/100
+	Set @leaderShipBuffer= (@RepurchaseBV*8)/100
+	
+	Set @totalBuffer=(@LevelBuffer+@royalty1Buffer+@royalty2Buffer+@leaderShipBuffer+@BinaryBuffer)
+	
+	Select @tdsRate=limits from settings where caption='tdsRate'
+	Select @hRate=limits from settings where caption='handlingRate'
+	Select @tdsRateWP=limits from settings where caption='tdsRatewithoutpan'	
+	
+	
+	select @tdsAmount=sum(debit) from member_account where transType='TDS' and trStatus=1 and payid=@maxPayid
+	select @tdsAmountWP=sum(debit) from member_account where transType='TDSWPAN' and trStatus=1 and payid=@maxPayid
+	select @hAmount=sum(debit) from member_account where transType='handlingCharge' and trStatus=1 and payid=@maxPayid
+	select @ALA=sum(debit) from member_account where transType='TDS' and trStatus=0 and payid=@maxPayid
+	
+	Set @tdsAmount=isnull(@tdsAmount,0)
+	set @tdsAmountWP=isnull(@tdsAmountWP,0) 
+	Set @hAmount=isnull(@hAmount,0)
+	set @ALA=isnull(@ALA,0)
+	set @netPayble=(@grossAmountPaid - (@tdsAmount+@hAmount))
+	
+	
+	Update payout set payoutTotal = @grossAmountPaid, payAmountPaid=@netPayble,	totalJoining=@NOJ, 
+	activationAmount=@activationAmount, activationBV=@ActivationBV, 
+	repurchaseAmount=@monthlySales, repurchaseBV=@RepurchaseBV,
+	totalActiveMember=@totalActive, noOfMembersPaid=@totalPaidCount, 
+	paidMembersBinary=@totalPaidBI, PVIncome=@matchingBonus,activationBinaryBufffer=@BinaryBuffer,	
+	SavedBinaryBuffer=@SavedBinaryBuffer,
+	directBuffer =@DBBuffer , directincome=@Directbonus, paidMembersDirect=@totalPaidDI,
+	residualBuffer=@residualBuffer, residualIncome=@residualIncome, paidMembersResidual=@totalPaidRI1, 
+	RewardgroupA=@RewardgroupA,
+	RewardgroupB=@RewardgroupB,	
+	paidPV=@PaidPV, flushPV=@flushPV,
+	tdsRate=@tdsRate, tdsamt=@tdsAmount, SchargeRate=@hRate, sChargeAmt=@hAmount, 	
+	LevelBuffer=@LevelBuffer,   RepurchaseBVT=@RepurchaseBVT, repurchaseAmountT=@repurchaseAmountT
+	where payid=@maxPayID
+	
+--**********************************************************************************
+	---------------------------------
+	USE [alps_EnjoyLife]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_downLineTree]    Script Date: 9/11/2019 10:44:48 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[sp_downLineTree] @regno numeric,  @downSpill varchar(8000) output   
+AS    
+BEGIN   
+ Declare @mRegNo as numeric, @child0 as numeric, @child1 as numeric, @child2 as numeric, @child3 as numeric, @child4 as numeric, @child5 as numeric, @child6 as numeric, @child7 as numeric, @child8 as numeric, @child9 as numeric, @child10 as numeric,
+ @child11 as numeric, @child12 as numeric, @child13 as numeric, @child14 as numeric  
+ set @child0=@regNo; set @child1=0; set @child2=0; set @child3=0; set @child4=0; set @child5=0; set @child6=0; set @child7=0; set @child8=0; set @child9=0; set @child10=0; set @child11=0; set @child12=0; set @child13=0; set @child14=0  
+   
+ if @child0>0  
+  begin   
+  Select @mRegNo=regno from member_master where parentregnoB=@child0 and parentSideB='L'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child1= @mRegNo     
+  set @mRegNo=Null  
+    
+  Select @mRegNo=regno from member_master where parentregnoB=@child0 and parentSideB='R'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child2= @mRegNo     
+  set @mRegNo=Null     
+  end   
+ if @child1>0  
+  begin   
+  Select @mRegNo=regno from member_master where parentregnoB=@child1 and parentSideB='L'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child3= @mRegNo     
+  set @mRegNo=Null     
+  Select @mRegNo=regno from member_master where parentregnoB=@child1 and parentSideB='R'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child4= @mRegNo       
+  set @mRegNo=Null   
+  end  
+ if @child2>0  
+  begin   
+  Select @mRegNo=regno from member_master where parentregnoB=@child2 and parentSideB='L'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child5= @mRegNo      
+  set @mRegNo=Null    
+  Select @mRegNo=regno from member_master where parentregnoB=@child2 and parentSideB='R'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child6= @mRegNo        
+  set @mRegNo=Null  
+  end  
+ if @child3>0  
+  begin   
+  Select @mRegNo=regno from member_master where parentregnoB=@child3 and parentSideB='L'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child7= @mRegNo       
+  set @mRegNo=Null   
+  Select @mRegNo=regno from member_master where parentregnoB=@child3 and parentSideB='R'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child8= @mRegNo        
+  set @mRegNo=Null  
+  end   
+ if @child4>0  
+  begin   
+  Select @mRegNo=regno from member_master where parentregnoB=@child4 and parentSideB='L'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child9= @mRegNo        
+  set @mRegNo=Null  
+  Select @mRegNo=regno from member_master where parentregnoB=@child4 and parentSideB='R'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child10= @mRegNo        
+  set @mRegNo=Null  
+  end  
+ if @child5>0  
+  begin   
+  Select @mRegNo=regno from member_master where parentregnoB=@child5 and parentSideB='L'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child11= @mRegNo       
+  set @mRegNo=Null   
+  Select @mRegNo=regno from member_master where parentregnoB=@child5 and parentSideB='R'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child12= @mRegNo       
+  set @mRegNo=Null   
+  end  
+ if @child6>0  
+  begin   
+  Select @mRegNo=regno from member_master where parentregnoB=@child6 and parentSideB='L'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child13= @mRegNo       
+  set @mRegNo=Null   
+  Select @mRegNo=regno from member_master where parentregnoB=@child6 and parentSideB='R'  
+  set @mRegNo=isnull(@mRegNo,0)  
+  set @child14= @mRegNo       
+  set @mRegNo=Null   
+  end  
+   
+ set @downSpill= '/' + cast(@child0 as varchar) +'/'+ cast(@child1 as varchar) +'/'+ cast(@child2 as varchar) +'/'+ cast(@child3 as varchar) + '/'+ cast(@child4 as varchar) + '/'+ cast(@child5 as varchar) + '/'+ cast(@child6 as varchar) + '/'
+ + cast(@child7 as varchar) + '/'+ cast(@child8 as varchar) +'/'+ cast(@child9 as varchar) +'/'+ cast(@child10 as varchar) + '/'+ cast(@child11 as varchar) + '/'+ cast(@child12 as varchar) + '/'+ cast(@child13 as varchar) + '/'+ cast(@child14 as varchar)  
+END
+
+------------------------
+

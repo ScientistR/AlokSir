@@ -1,0 +1,304 @@
+Vertical Menu
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Text;
+using System.Data.SqlClient;
+using System.Data;
+using System.Web.Caching;
+using System.Data.SqlClient;
+ 
+public partial class BOA_UserControl_Verticalmenu : System.Web.UI.UserControl
+{
+    DataUtility objDUT = new DataUtility();
+    string arrow = string.Empty;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Page.IsPostBack == false)
+        {
+            try
+            {
+               // if (Session["menuContent"] != null)
+            //    {
+            //        vertical_menu.InnerHtml = Session["menuContent"].ToString();
+            //    }
+                if (HttpContext.Current.Request.UrlReferrer.Segments[3].ToString() == "login.aspx")
+                {
+                    GetMenudata();
+                }
+                else
+                {
+                    vertical_menu.InnerHtml = Session["menuContent"].ToString();
+                }
+               
+            }
+            catch (Exception Excep)
+            {
+                GetMenudata();
+            }
+        }
+    }
+
+    protected void GetMenudata()
+    {
+        StringBuilder objstr = new StringBuilder();
+        List<MenuParant> objpmenu = new List<MenuParant>();
+        List<MenuChild> objcmenu = new List<MenuChild>();
+        objpmenu = GetParantMenu();
+        objcmenu = GetChildMenu();
+        objstr.Append("<ul class=\"sidebar-menu\">");
+        foreach (MenuParant _pitem in objpmenu)
+        {
+            var check_child = objcmenu.Where(m => m.PairantId == _pitem.Id).ToList();
+            arrow =  check_child.Count > 0 ? "arrow" : "";
+            objstr.Append("<li  class='has-sub'><a href='" + _pitem.Url + "' class=''> <span class='icon-box'> <i class='" + _pitem.Icon + "'></i></span>" + _pitem.MenuName + "<span class='" + arrow + "'></span></a>");
+            var childitem = objcmenu.Where(m => m.PairantId == _pitem.Id).ToList();
+            if (childitem.Count > 0)
+            {
+                objstr.Append("<ul class='sub'>");
+                foreach (var _citem in childitem)
+                {
+                    objstr.Append("<li><a href='" + _citem.ChildUrl + "'>" + _citem.ChildName + "</a></li>");
+                }
+                objstr.Append("</ul>");
+            }
+            objstr.Append("</li>");
+        }
+        objstr.Append("</ul>");
+        Session["menuContent"] = objstr.ToString();
+        vertical_menu.InnerHtml = objstr.ToString();
+
+    }
+    public List<MenuParant> GetParantMenu()
+    {
+        List<MenuParant> _parentmenulist = new List<MenuParant>();
+        DataTable _objdt = new DataTable();
+        try
+        {
+            /*  
+             * "When Sql Cache Dependencies Enable Successfully then Use it"
+            if (Cache["Parent_tblmenulist"] != null)
+            {
+                _objdt = (DataTable)Cache["Parent_tblmenulist"];
+               
+            }
+            else
+            { */
+    // string querystring = " Select tb.id, tb.title , isnull(tb.url,'javascript:;') as 'Url' ,tb.icon  from tblUserModule tum left outer join tblmenu tb on tum.moduleid = tb.id Where  tb.isactive=1 and tb.Isdeleted=0 and tum.isactive=1 and tum.Isdeleted=0 and  tb.parentid is null and tum.userid='" + Session["ADID"].ToString() + "'  order by tb.displayorder asc";
+
+
+            string querystring = " Select tb.id, tb.title , isnull(tb.url,'javascript:;') as 'Url' ,tb.icon  from tblUserModule tum left outer join tblmenu tb on tum.moduleid = tb.id Where  tb.isactive=1 and tb.Isdeleted=0 and tum.isactive=1 and tum.Isdeleted=0 and  tb.parentid is null and tum.userid='" + Session["ADID"].ToString() + "'  order by tb.displayorder asc";
+              
+
+
+            _objdt = objDUT.GetDataTable(querystring);
+                /* SqlCacheDependency accept Database name which database name defines with in SqlCacheDependency Database and 
+                 * second parameter  Contain Table which table Enabled  SqlCacheDependency 
+                
+               // SqlCacheDependency dependency = new SqlCacheDependency("alps_awesome", "tblmenu");
+               // Cache.Insert("Parent_tblmenulist", _objdt, dependency);*/
+             //}
+            if (_objdt.Rows.Count > 0)
+            {
+                for (int ctr = 0; ctr < _objdt.Rows.Count; ctr++)
+                {
+                    MenuParant _parentmenu = new MenuParant();
+                    _parentmenu.Id = Int32.Parse(_objdt.Rows[ctr]["ID"].ToString());
+                    _parentmenu.MenuName = _objdt.Rows[ctr]["title"].ToString();
+                    _parentmenu.Url = _objdt.Rows[ctr]["url"].ToString();
+                    _parentmenu.Icon = _objdt.Rows[ctr]["Icon"].ToString();
+                    _parentmenulist.Add(_parentmenu);
+                }
+            }
+        }
+        catch (Exception excep){
+            Cache.Remove("Parent_tblmenulist");
+            _objdt.Dispose();
+        }
+         
+        return _parentmenulist;
+    }
+    public List<MenuChild> GetChildMenu()
+    {
+        List<MenuChild> _childmenulist = new List<MenuChild>();
+        DataTable _objdt = new DataTable();
+        try
+        {
+              /*  
+             * "When Sql Cache Dependencies Enable Successfully then Use it"
+            if (Cache["Child_tblmenulist"] != null)
+            {
+                _objdt = (DataTable)Cache["Child_tblmenulist"];
+              
+            }
+            else
+            { */
+          // string querystring = "Select tb.parentid,tb.title,tb.url from tblUserModule tum left outer join tblmenu tb on tum.moduleid = tb.id Where tb.parentid is not  null and   tb.isactive=1 and tb.Isdeleted=0 and tum.isactive=1 and tum.Isdeleted=0 and tum.userid='" + Session["ADID"].ToString() + "'  order by tb.displayorder  asc";
+            string querystring = "Select tb.parentid,tb.title,tb.url from tblUserModule tum left outer join tblmenu tb on tum.moduleid = tb.id Where tb.parentid is not  null and   tb.isactive=1 and tb.Isdeleted=0 and tum.isactive=1 and tum.Isdeleted=0 and tum.userid='" + Session["ADID"].ToString() + "'  order by tb.displayorder  asc"; 
+            _objdt = objDUT.GetDataTable(querystring);
+                
+            
+           // SqlCacheDependency accept Database name which database name defines with in SqlCacheDependency Database and 
+           //       second parameter  Contain Table which table Enabled  SqlCacheDependency 
+           // 
+           //     SqlCacheDependency dependency = new SqlCacheDependency("alps_awesome", "tblmenu");
+           //     Cache.Insert("Child_tblmenulist", _objdt, dependency); 
+           //
+
+
+                // }
+            if (_objdt.Rows.Count > 0)
+            {
+                for (int ctr = 0; ctr < _objdt.Rows.Count; ctr++)
+                {
+                    MenuChild _childmenu = new MenuChild();
+                    _childmenu.PairantId = Int32.Parse(_objdt.Rows[ctr]["parentid"].ToString());
+                    _childmenu.ChildName = _objdt.Rows[ctr]["title"].ToString();
+                    _childmenu.ChildUrl = _objdt.Rows[ctr]["url"].ToString();
+                    _childmenulist.Add(_childmenu);
+
+                }
+            }
+        }
+        catch (Exception excep) {
+            Cache.Remove("Child_tblmenulist");
+            _objdt.Dispose();
+        }
+       
+        return _childmenulist;
+    }
+}
+------------------
+using System;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+using System.Net;
+using System.IO;
+
+/// <summary>
+/// Summary description for SMS
+/// </summary>
+public class SMS
+{
+    DataUtility objDUT = new DataUtility();
+    public SMS()
+    {
+        //
+        // TODO: Add constructor logic here
+        //
+    }
+
+
+    public string SendSMS(string mobileNO, string txtmsg)
+    {
+
+        try
+        {
+            objDUT.ExecuteSql("insert into SMS_Record (Mobile,Text) values ('" + mobileNO + "','" + txtmsg + "')");
+            string uid = "sonsy";
+            string pwd = "Sonsy123";
+            string gsmsenderid = "sonsyn";
+            string cdmasenderid = ""; //txtcdmasenderid.Text.Trim();
+            string mob = mobileNO.Trim();
+            string msg = txtmsg.Trim();
+            string strRequest = "user=" + uid + "&pass=" + pwd + "&sender=" + gsmsenderid + "&phone=" + mob + "&text=" + msg + "&priority=ndnd";
+            string url = "http://sms.alpssoftech.us/api/sendmsg.php?";
+            string Result_FromSMS = "";
+            StreamWriter myWriter = null;
+            HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create(url + strRequest);
+            objRequest.Method = "POST";
+            objRequest.ContentLength = strRequest.Length;
+            objRequest.ContentType = "application/x-www-form-urlencoded";
+            myWriter = new StreamWriter(objRequest.GetRequestStream());
+            //objDUT.ExecuteSql("update SMS_Record set Status=1 where Mobile='" + mobileNO + "'");
+            // myWriter.Write(strRequest);
+            myWriter.Close();
+            HttpWebResponse objResponse = (HttpWebResponse)objRequest.GetResponse();
+            using (StreamReader sr = new StreamReader(objResponse.GetResponseStream()))
+            {
+                Result_FromSMS = sr.ReadToEnd();
+                sr.Close();
+            }
+            return Result_FromSMS;
+            // Response.Write(Result_FromSMS);
+        }
+        catch (System.Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+    public string SendSMSOrder(string mobileNO, string txtmsg)
+    {
+
+        try
+        {
+            //objDUT.ExecuteSql("insert into SMS_Record (Mobile,Text) values ('" + mobileNO + "','" + txtmsg + "')");
+            string uid = "sonsy";
+            string pwd = "Sonsy123";
+            string gsmsenderid = "sonsyn";
+            string cdmasenderid = ""; //txtcdmasenderid.Text.Trim();
+            string mob = mobileNO.Trim();
+            string msg = txtmsg.Trim();
+            string strRequest = "user=" + uid + "&pass=" + pwd + "&sender=" + gsmsenderid + "&phone=" + mob + "&text=" + msg + "&priority=ndnd";
+            string url = "http://sms.alpssoftech.us/api/sendmsg.php?";
+            string Result_FromSMS = "";
+            StreamWriter myWriter = null;
+            HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create(url + strRequest);
+            objRequest.Method = "POST";
+            objRequest.ContentLength = strRequest.Length;
+            objRequest.ContentType = "application/x-www-form-urlencoded";
+            myWriter = new StreamWriter(objRequest.GetRequestStream());
+            //objDUT.ExecuteSql("update SMS_Record set Status=1 where Mobile='" + mobileNO + "'");
+            // myWriter.Write(strRequest);
+            myWriter.Close();
+            HttpWebResponse objResponse = (HttpWebResponse)objRequest.GetResponse();
+            using (StreamReader sr = new StreamReader(objResponse.GetResponseStream()))
+            {
+                Result_FromSMS = sr.ReadToEnd();
+                sr.Close();
+            }
+            return Result_FromSMS;
+            // Response.Write(Result_FromSMS);
+        }
+        catch (System.Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+}
+
+_______________
+ [WebMethod]
+    public string SendvoucherPINMobile(string MobileNo, string KYCPIN)
+    {
+        string result = "";
+        if (MobileNo != "")
+        {
+            try
+            {
+
+                string msg = " Your Activation Pin No. is : " + KYCPIN + "  Thanks and regards Sonsy Team. ";
+                SMS sms = new SMS();
+                sms.SendSMS(MobileNo, msg);
+                objDUT.ExecuteSql("update voucher_master set mobileno=" + MobileNo + " where vouchernumber='" + KYCPIN + "' ");
+                result = "true";
+            }
+            catch
+            {
+                result = "false";
+            }
+
+        }
+
+----------------------

@@ -1,0 +1,224 @@
+  jQuery(document).ready(function () {
+            getState();
+            select();
+            GetShopDetails();
+            
+            $("#btn_update").hide();
+            $("#btnlistvoucher").show();
+            $("#divEntry").hide();
+        });
+        function select() {
+            $("#ddldisti").append('<option value="option6">---select Distrcit---</option>');
+            $('#ddldisti').attr("disabled", "disabled");
+            $("#ddlCity").append('<option value="option6">---select City----</option>');
+            $('#ddlCity').attr("disabled", "disabled");
+
+        }
+
+        function getState() {
+            $.ajax({
+                type: "POST",
+                url: "getdata.asmx/Getstate",
+                data: "{CID:'0'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BindState,
+                error: function (xhr, status, error) {
+                    alert(xhr.statusText);
+                }
+            });
+        }
+        function BindState(Result) {
+            var table = '<option  value="0" >  Select State  </option>';
+            var jsonData = Result.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                table += '<option value=' + jsonData[iCount].SID + '>' + jsonData[iCount].Statename + '</option>';
+            }
+            $('#ddlstate').html(table);
+           
+        }
+
+        function getDist(SID) {
+            
+            $.ajax({
+                type: "POST",
+                url: "getdata.asmx/getdistrictList",
+                data: "{CountryId:'" + SID +"'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BindDist,
+                error: function (xhr, status, error) {
+                    alert(xhr.statusText);
+                }
+            });
+        }
+        function BindDist(Result) {
+            var table = '<option  value="0" >  Select District  </option>';
+            var jsonData = Result.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                table += '<option value=' + jsonData[iCount].distID + '>' + jsonData[iCount].DistName + '</option>';
+            }
+            $('#ddldisti').html(table);
+            $('#ddldisti').val(disti);
+          
+
+        }
+
+        function getCity(distID) {
+            $.ajax({
+                type: "POST",
+                url: "getdata.asmx/GetCityList",
+                data: "{DistID:'" + distID + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BindCity,
+                error: function (xhr, status, error) {
+                    alert(xhr.statusText);
+                }
+            });
+        }
+        function BindCity(Result) {
+            var table = '<option  value="0" >  Select City  </option>';
+            var jsonData = Result.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                table += '<option value=' + jsonData[iCount].CTID + '>' + jsonData[iCount].cityName + '</option>';
+            }
+            $('#ddlCity').html(table);
+           // $('#ddlCity').val(cityID);//cityi
+            $('#ddlCity').val(cityi);//
+
+
+        }
+        function IndexChageDestric(value)
+        {
+            $('#ddldisti').removeAttr("disabled");
+            getDist(value);
+        }
+
+        function IndexChangeCity(value)
+        {
+            $('#ddlCity').removeAttr("disabled");
+            getCity(value);
+        }
+
+-----------------
+   <select id="ddlstate" class="span8" data-placement="right" data-original-title="Select State" onchange="IndexChageDestric(this.value)">
+               
+
+                                                        <select id="ddldisti" class="span8" data-placement="right" data-original-title="Select District" onchange="IndexChangeCity(this.value)"></select>
+                                                        
+----------------------
+[WebMethod]
+    public List<ManageState> Getstate(int CID)
+    {
+        List<ManageState> stateList = new List<ManageState>();
+        try
+        {
+            if (CID <= 0)
+            {
+                sdr = objDUT.GetDataReader(@"select  C.CountryName,S.Sid,S.CID, S.StateName,s.sActive,Active=(case when s.sActive=1 then 'Active'else 'De-Active' End) From State S,Country C  where S.CID=C.CID order by S.stateName ");
+            }
+            else
+            {
+                sdr = objDUT.GetDataReader(@"select  C.CountryName,S.Sid,S.CID, S.StateName,s.sActive,Active=(case when s.sActive=1 then 'Active'else 'De-Active' End) From State S,Country C  where S.CID=C.CID and S.SID='" + CID + "' order by S.stateName");
+            }
+            while (sdr.Read())
+            {
+                ManageState state = new ManageState();
+                state.countryname = sdr["CountryName"].ToString();
+                state.Statename = sdr["StateName"].ToString();
+                state.CID = Convert.ToInt32(sdr["CID"].ToString());
+                state.SID = Convert.ToInt32(sdr["Sid"].ToString());
+                int status = Convert.ToInt32(Convert.ToBoolean(sdr["sActive"].ToString()));
+                state.Active = status == 1 ? "Acitve" : "Deactive";
+                state.Activeclass = status == 1 ? "success" : "warning";
+                state.statusIcon = status == 1 ? "icon-remove" : "icon-ok";
+                state.statusText = status == 1 ? "Deactivate" : "Activate";
+                stateList.Add(state);
+            } sdr.Close();
+            sdr.Dispose();
+        }
+        catch (Exception ex)
+        {
+        }
+        return stateList;
+    }
+
+ [WebMethod]
+    public List<ManageDistrict> GetDist(int CID)
+    {
+        List<ManageDistrict> DistList = new List<ManageDistrict>();
+        try
+        {
+            if (CID <= 0)
+            {
+                sdr = objDUT.GetDataReader(@"select  S.CID,S.Sid, S.StateName,D.distID,D.DistName,D.Active,Active=(case when D.Active=1 then 'Active'else 'De-Active' End) From State S,District D  where D.SID=S.SID and S.CID='96' order by D.DistName ");
+            }
+            else
+            {
+                sdr = objDUT.GetDataReader(@"select  S.CID,S.Sid,S.StateName,D.distID,D.DistName, D.Active,Active=(case when D.Active=1 then 'Active'else 'De-Active' End) From State S,District D  where D.SID=S.SID and D.distID='" + CID + "' and S.CID='96' order by D.DistName ");
+            }
+            while (sdr.Read())
+            {
+                ManageDistrict dist = new ManageDistrict();
+                dist.CID = Convert.ToInt32(sdr["CID"].ToString());
+                dist.SID = Convert.ToInt32(sdr["Sid"].ToString());
+                dist.distID = Convert.ToInt32(sdr["distID"].ToString());
+                dist.Statename = sdr["StateName"].ToString();
+                dist.DistName = sdr["DistName"].ToString();
+                int status = Convert.ToInt32(Convert.ToBoolean(sdr["Active"].ToString()));
+                dist.Active = status == 1 ? "Acitve" : "Deactive";
+                dist.Activeclass = status == 1 ? "success" : "warning";
+                dist.statusIcon = status == 1 ? "icon-remove" : "icon-ok";
+                dist.statusText = status == 1 ? "Deactivate" : "Activate";
+                DistList.Add(dist);
+            } sdr.Close();
+            sdr.Dispose();
+        }
+        catch (Exception ex)
+        {
+        }
+        return DistList;
+    }
+
+ [WebMethod]
+    public List<ManageCity> Getcity(int CID)
+    {
+        List<ManageCity> CityList = new List<ManageCity>();
+        try
+        {
+            if (CID <= 0)
+            {
+                sdr = objDUT.GetDataReader(@"select    s.cid,s.sid,d.distid,d.DistName,c.ctid,c.cityName,c.Active,Active=(case when D.Active=1 then 'Active'else 'De-Active' End) ,  c.Pincode  from state s ,DISTRICT d , CITY c where d.sid=s.sid and c.distid=d.distid ");
+            }
+            else
+            {
+                sdr = objDUT.GetDataReader(@"select   s.cid,s.sid,d.distid,d.DistName,c.ctid,c.cityName,c.Active,Active=(case when D.Active=1 then 'Active'else 'De-Active' End) ,  c.Pincode  from state s ,DISTRICT d , CITY c where d.sid=s.sid and c.distid=d.distid and c.ctid='" + CID + "'");
+            }
+            while (sdr.Read())
+            {
+                ManageCity dist = new ManageCity();
+                dist.CID = Convert.ToInt32(sdr["CID"].ToString());
+                dist.SID = Convert.ToInt32(sdr["SID"].ToString());
+                dist.distID = Convert.ToInt32(sdr["distID"].ToString());
+                dist.CTID = Convert.ToInt32(sdr["CTID"].ToString());
+                dist.DistName = sdr["DistName"].ToString();
+                dist.cityName = sdr["cityName"].ToString();
+                dist.pincode = sdr["Pincode"].ToString();
+                int status = Convert.ToInt32(Convert.ToBoolean(sdr["Active"].ToString()));
+                dist.Active = status == 1 ? "Acitve" : "Deactive";
+                dist.Activeclass = status == 1 ? "success" : "warning";
+                dist.statusIcon = status == 1 ? "icon-remove" : "icon-ok";
+                dist.statusText = status == 1 ? "Deactivate" : "Activate";
+                CityList.Add(dist);
+            }
+            sdr.Close();
+            sdr.Dispose();
+        }
+        catch (Exception ex)
+        {
+        }
+        return CityList;
+    }
+                                         </select>
+-----------------

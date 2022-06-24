@@ -1,0 +1,120 @@
+[WebMethod]
+    public static List<BankIFSCDetails> getifsccode(string IFSCcode)
+  
+  {
+        SqlDataReader sdr = null;
+      
+  string st = null;
+       
+ List<BankIFSCDetails> Get_IFSC_ValueList = new List<BankIFSCDetails>();
+    
+ BankIFSCDetails Get_IFSC_Value = new BankIFSCDetails();
+        
+Get_IFSC_Value.CITY = "";
+       
+ Get_IFSC_Value.BRANCH = "";
+        
+Get_IFSC_Value.BANK = "";
+        
+string[] P;
+        
+string[] P2;
+        string[] P3;
+
+       
+        try
+        {
+            string APIAuthentication = "https://ifsc.razorpay.com/" + IFSCcode.Trim().ToLower() + "";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(APIAuthentication);
+            request.Credentials = CredentialCache.DefaultCredentials;
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            WebResponse response = request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(dataStream);
+            string data = reader.ReadToEnd();
+            dynamic stuff = Newtonsoft.Json.JsonConvert.DeserializeObject(data);
+            data = stuff.ToString();
+            if (data != "")
+            {
+
+
+                //data = data.Replace("]", "");
+                //data = data.Replace("[", "");
+                data = data.Replace("{", "");
+                data = data.Replace("}", "");
+                data = data.Replace("\"", "");
+                data = data.Replace("\r\n", "");
+                //data = data.Replace(" ", "");
+                string[] s = data.Split(',');
+
+                P2 = s[3].Split(':');
+                P3 = s[8].Split(':');
+                for (int i = 0; i < s.Length; i++)
+                {
+                    P = s[i].Split(':');
+                    if (P[0].Trim() == "Bank" || P[0].Trim() == "BANK")
+                    {
+                        Get_IFSC_Value.BANK = P[1].ToString();
+                    }
+                    if (P[0].Trim() == "Branch" || P[0].Trim() == "BRANCH")
+                    {
+                        Get_IFSC_Value.BRANCH = P[1].ToString();
+                    }
+                }
+
+            }
+          
+            Get_IFSC_ValueList.Add(Get_IFSC_Value);
+
+        }
+        catch (Exception ex)
+        {
+            Get_IFSC_ValueList.Add(Get_IFSC_Value);
+            //LogException.WriteToLog(ex);
+           
+        }
+
+        return Get_IFSC_ValueList;
+
+    }
+
+
+
+-------------------------------
+function checkifsccodedetail() {
+         debugger;
+         var ifsccode = $("#<%= txtifsccode.ClientID%>").val();
+        // $("#<%= txtifsccode.ClientID%>").val(ifsccode.toUpperCase());         
+       
+               $.ajax({
+                   type: "POST",
+                   url: "JoinMember_Details.aspx/getifsccode",
+                   data: "{IFSCcode:'" + ifsccode + "'}",
+                   contentType: "application/json; charset=utf-8",
+                   dataType: "json",
+                   success: bindifsccode,
+                   error: function (xhr, status, error) {                      
+                       $("#<%=txtbankname.ClientID %>").val(' ');
+                       $("#<%=txtbranch.ClientID %>").val(' ');  
+                   }
+               });
+           }
+
+        function bindifsccode(msg) {
+
+            var jsonData = msg.d;
+            if (jsonData.length > 0)
+            {
+                $("#<%=txtbankname.ClientID %>").val(jsonData[0].BANK);
+                $("#<%=txtbranch.ClientID %>").val(jsonData[0].BRANCH);  
+            }
+            else
+                
+            {
+                $("#<%=txtbankname.ClientID %>").val(' ');
+                $("#<%=txtbranch.ClientID %>").val(' ');  
+            }
+           
+           
+        }

@@ -1,0 +1,2151 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.Services;
+using System.Data.SqlClient;
+using AjaxControlToolkit;
+using System.Data;
+using System.Data.SqlClient;
+using System.Collections.Specialized;
+using System.IO;
+
+public partial class BOA_deposit_accnt : System.Web.UI.Page
+{
+    DataUtility objDUT = new DataUtility();
+  
+    protected void Page_Load(object sender, EventArgs e)
+    {
+       
+        if (!Page.IsPostBack)
+        {
+            try
+            {
+                Bind_Country();
+                ddlcountry.SelectedValue = Convert.ToInt32(objDUT.GetScalar("Select cid from Member_Master  where regno='" + Session["MaxReg"] + "'")).ToString();
+                Bind_State(ddlcountry.SelectedValue.ToString());
+                ddlstate.SelectedValue = Convert.ToInt32(objDUT.GetScalar("Select sid from Member_Master  where regno='" + Session["MaxReg"] + "'")).ToString();
+                Bind_District(ddlstate.SelectedValue);
+                ddlDsistrict.SelectedValue = Convert.ToInt32(objDUT.GetScalar("Select district from Member_Master  where regno='" + Session["MaxReg"] + "'")).ToString();
+//                Bind_City(ddlDsistrict.SelectedValue);
+//                ddlcity.SelectedValue = Convert.ToInt32(objDUT.GetScalar("Select ctid from Member_Master  where regno='" + Session["MaxReg"] + "'")).ToString();
+  //              CascadingDropDown3.SelectedValue = Convert.ToInt32(objDUT.GetScalar("Select Secret_Qid from Member_Login  where regno='" + Session["MaxReg"] + "'")).ToString();
+            }
+            catch
+            {
+
+            }
+        }
+    }
+	protected void Page_PreRender(object sender, EventArgs e)
+    {
+		//	ddlDsistrict.SelectedValue = Convert.ToInt32(objDUT.GetScalar("Select district from Member_Master  where regno='" + Session["MaxReg"] + "'")).ToString();
+			
+          //  CascadingDropDown2.SelectedValue = Convert.ToInt32(objDUT.GetScalar("Select ctid from Member_Master  where regno='" + Session["MaxReg"] + "'")).ToString();
+	}
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlcountryServices(string knownCategoryValues, string category)
+    {
+        DataUtility objDut = new DataUtility();
+        DataTable countrydt = new DataTable();
+        string strcountry = "select * from country Where cactive=1";
+        countrydt = objDut.GetDataTable(strcountry);
+        List<CascadingDropDownNameValue> country = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in countrydt.Rows)
+        {
+            string CountryID = dr["cid"].ToString();
+            string CountryName = dr["CountryName"].ToString();
+            country.Add(new CascadingDropDownNameValue(CountryName, CountryID));
+        }
+        return country.ToArray();
+    }
+
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlState2(string knownCategoryValues, string category)
+    {
+        int countryid;
+        DataUtility objDut = new DataUtility();
+        DataTable Statedt = new DataTable();
+
+        StringDictionary countrydetails = CascadingDropDown.ParseKnownCategoryValuesString(knownCategoryValues);
+        countryid = Convert.ToInt32(countrydetails["Country"]);
+        string strSqlState = "select * from State where cid='" + countryid + "' and sActive=1 order by statename";
+        Statedt = objDut.GetDataTable(strSqlState);
+        List<CascadingDropDownNameValue> state = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Statedt.Rows)
+        {
+            string StateID = dr["Sid"].ToString();
+            string StateName = dr["Statename"].ToString();
+            state.Add(new CascadingDropDownNameValue(StateName, StateID));
+        }
+        return state.ToArray();
+    }
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlDistrict(string knownCategoryValues, string category)
+    {
+        int stateid;
+        StringDictionary statedetails = CascadingDropDown.ParseKnownCategoryValuesString(knownCategoryValues);
+        stateid = Convert.ToInt32(statedetails["State"]);
+        DataUtility objDut = new DataUtility();
+        DataTable Citydt = new DataTable();
+        Citydt = objDut.GetDataTable(" select Distid,Distname from District where Distname<>'Others' and sid=" + stateid + " and Active=1 order by Distname");
+        List<CascadingDropDownNameValue> city = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Citydt.Rows)
+        {
+            string Cityid = dr["Distid"].ToString();
+            string Cityname = dr["Distname"].ToString();
+            city.Add(new CascadingDropDownNameValue(Cityname, Cityid));
+        }
+        return city.ToArray();
+
+    }
+
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlCity2(string knownCategoryValues, string category)
+    {
+        int stateid;
+        StringDictionary citydetails = CascadingDropDown.ParseKnownCategoryValuesString(knownCategoryValues);
+        stateid = Convert.ToInt32(citydetails["District"]);
+        DataUtility objDut = new DataUtility();
+        DataTable Citydt = new DataTable();
+        Citydt = objDut.GetDataTable("select ctid,cityname from city where cityname<>'Others' and DISTID=" + stateid + " and Active=1 order by cityname");
+        List<CascadingDropDownNameValue> city = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Citydt.Rows)
+        {
+            string Cityid = dr["CTID"].ToString();
+            string Cityname = dr["Cityname"].ToString();
+            city.Add(new CascadingDropDownNameValue(Cityname, Cityid));
+        }
+        return city.ToArray();
+
+    }
+
+    [WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static CascadingDropDownNameValue[] ddlquestionServices(string knownCategoryValues, string category)
+    {
+        DataUtility objDut = new DataUtility();
+        DataTable Questiondt = new DataTable();
+        string strQuestion = "Select * from Security_Question Where Qactive=1";
+        Questiondt = objDut.GetDataTable(strQuestion);
+        List<CascadingDropDownNameValue> question = new List<CascadingDropDownNameValue>();
+        foreach (DataRow dr in Questiondt.Rows)
+        {
+            string QuestionID = dr["Qid"].ToString();
+            string QuestionValues = dr["Question"].ToString();
+            question.Add(new CascadingDropDownNameValue(QuestionValues, QuestionID));
+        }
+        return question.ToArray();
+    }
+
+    DataTable _datatable = null;
+    public void Bind_Country()
+    {
+        _datatable = objDUT.GetDataTable("select cid, Countryname  from country Where cactive=1 order by CountryName asc");
+        ddlcountry.DataSource = _datatable;
+        ddlcountry.DataTextField = "Countryname";
+        ddlcountry.DataValueField = "CID";
+        ddlcountry.DataBind();
+        ddlcountry.Items.Insert(0, new ListItem("--Select Country--", "0"));
+        ddlstate.Items.Insert(0, new ListItem("--Select State--", "0"));
+        ddlDsistrict.Items.Insert(0, new ListItem("--Select District--", "0"));
+    //    ddlcity.Items.Insert(0, new ListItem("--Select City--", "0"));
+    }
+    public void Bind_State(string countryid)
+    {
+        _datatable = objDUT.GetDataTable("Select  SID , CID , StateName  from State  where sActive=1 and  Cid='" + countryid + "' order by Statename asc");
+        ddlstate.DataSource = _datatable;
+        ddlstate.DataTextField = "StateName";
+        ddlstate.DataValueField = "SID";
+        ddlstate.DataBind();
+
+        //ddlDsistrict.Items.Clear();
+        ddlDsistrict.Items.Insert(0, new ListItem("--Select District--", "0"));
+        //ddlcity.Items.Clear();
+      //  ddlcity.Items.Insert(0, new ListItem("--Select City--", "0"));
+    }
+
+    public void Bind_District(string Stateid)
+    {
+        _datatable = objDUT.GetDataTable("Select Distid , DistName , Cid , Sid from District  where Sid='" + Stateid + "' and Active=1 order by DistName asc");
+        ddlDsistrict.DataSource = _datatable;
+        ddlDsistrict.DataTextField = "DistName";
+        ddlDsistrict.DataValueField = "Distid";
+        ddlDsistrict.DataBind();
+
+        //ddlcity.Items.Clear();
+        //ddlcity.Items.Insert(0, new ListItem("--Select City--", "0"));
+    }
+
+    //public void Bind_City(string DistID)
+    //{
+    //    _datatable = objDUT.GetDataTable("Select Ctid , Cid , sid , Distid, Cityname , pincode from City where  DistID='" + DistID + "' and Active=1 order by CityName asc");
+    //    ddlcity.DataSource = _datatable;
+    //    ddlcity.DataTextField = "Cityname";
+    //    ddlcity.DataValueField = "Ctid";
+    //    ddlcity.DataBind();
+
+    //}
+
+    protected void Country_DropDownList(object sender, EventArgs e)
+    {
+        if (ddlcountry.SelectedValue == "0")
+        {
+
+        }
+        else
+        {
+            Bind_State(ddlcountry.SelectedValue.ToString());
+        }
+    }
+    protected void District_DropDownList(object sender, EventArgs e)
+    {
+        //if (ddlDsistrict.SelectedValue == "0")
+        //{
+        //    ddlcity.Items.Clear();
+        //    ddlcity.Items.Insert(0, new ListItem("--Select City--", "0"));
+        //}
+        //else
+        //{
+        //    Bind_City(ddlDsistrict.SelectedValue.ToString());
+        //}
+    }
+    protected void State_DropDownList(object sender, EventArgs e)
+    {
+        if (ddlstate.SelectedValue == "0")
+        {
+            ddlDsistrict.Items.Clear();
+            ddlDsistrict.Items.Insert(0, new ListItem("--Select District--", "0"));
+           // ddlcity.Items.Clear();
+           // ddlcity.Items.Insert(0, new ListItem("--Select City--", "0"));
+        }
+        else
+        {
+            Bind_District(ddlstate.SelectedValue.ToString());
+        }
+    }
+
+}
+ 
+ *****************
+<%@ Page Title="" Language="C#" MasterPageFile="~/BOA/adminDynamic.master" AutoEventWireup="true" EnableEventValidation="false" CodeFile="ProfileEdit.aspx.cs" Inherits="BOA_deposit_accnt" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajax" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <link href="../assets/fancybox/source/jquery.fancybox.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../assets/gritter/css/jquery.gritter.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/uniform/css/uniform.default.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/chosen-bootstrap/chosen/chosen.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/bootstrap-datepicker/css/datepicker.css" />
+    <link rel="stylesheet" href="../assets/data-tables/DT_bootstrap.css" />
+    <script type="text/javascript" src="../assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap-daterangepicker/date.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+    <script>
+        //________________________________________________ Document ready _________________________________
+        var ViewstateUsername = '';
+        $(document).ready(function () {
+            ViewstateUsername = '<%= Session["MloginiD"]  %>';
+            getquestion(0);
+            GetMember_Profile(ViewstateUsername);
+        });
+
+        //_______________________________get Question and answer _______________________________
+
+        function getquestion(QID) {
+
+            $.ajax({
+                type: "POST",
+                url: "getdata.asmx/GetQuestionList",
+                //Pass the "Count" parameter, via JSON object.
+                data: "{QID:'" + QID + "' }",
+
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuildQuestionDropDownList,
+                error: function (xhr, status, error) {
+                }
+            });
+        }
+        function BuildQuestionDropDownList(result) {
+
+            var JoinCtr = 0;
+            var RechargeCtr = 0;
+            var table = '<option  value="0" >  Select Question  </option>';
+            var jsonData = result.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                table += '<option value=' + jsonData[iCount].qid + '>' + jsonData[iCount].question + '</option>';
+            }
+            $('#ddlquestion').html(table);
+        }
+        function GetMember_Profile(username) {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "../BOM/Getdata_member.asmx/ViewProfile_Member",
+                data: "{ username:'" + username + "' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BindMemberProfileDetailsSuccess,
+                error: function (xhr, status, error) {
+                    document.getElementById("btSubmit").disabled = true;
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> " + '<%=  MSG.Show("Invalid_DistributorID") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                }
+
+            });
+        }
+        var fullnameofmember = '';
+        function BindMemberProfileDetailsSuccess(Result) {
+            var jsonData = Result.d;
+
+
+            switch (jsonData[0].ResultStatus) {
+                case "1":
+
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> Welcome <strong> " + jsonData[0].title + " " + jsonData[0].fname + " " + jsonData[0].lname + "  </strong>, your username is <strong>  " + jsonData[0].loginid + "  </strong> .");
+                    $('#errorDiv').removeClass().addClass("alert alert-info");
+                    $('#errorDiv').show();
+                    break;
+                case "4":
+
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Invalid_Norecord") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    break;
+                case "5":
+
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Member_Deactivation") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    break;
+                case "3":
+
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Required_username") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    break;
+            }
+
+            $("#<%=txtfname.ClientID%>").val(jsonData[0].fname);
+            $('#ddlquestion').val(jsonData[0].firstS_Qid);
+            // *************   Personal Details 
+            $("#<%= ddltitle.ClientID%>").val(jsonData[0].title);
+            $("#<%= txtpan.ClientID%>").val(jsonData[0].pancard);
+            var pancard1 = $("#<%= txtpan.ClientID%>").val();
+         <%--/*   if (pancard1 == "") {
+
+            }
+            else {
+
+                $("#<%= txtpan.ClientID%>").attr('disabled', 'disabled');
+            //}--%>
+            $("#<%= txtfname.ClientID%>").val(jsonData[0].fname);
+            $("#<%= txtlname.ClientID%>").val(jsonData[0].lname);
+            $("#<%= txtfh.ClientID%>").val(jsonData[0].fat_husName);
+
+            if (jsonData[0].Gender == 0 || jsonData[0].Gender == "0") {
+                $("#<%= ddlgender.ClientID%>").val(0)
+            }
+            if (jsonData[0].Gender == 1 || jsonData[0].Gender == "1") {
+                $("#<%= ddlgender.ClientID%>").val(1)
+            }
+            if (jsonData[0].Gender == 2 || jsonData[0].Gender == "2") {
+                $("#<%= ddlgender.ClientID%>").val(2)
+            }
+
+
+            $("#<%= txtdob.ClientID%>").val(jsonData[0].dob);
+            $("#<%= txtmobilecode.ClientID%>").val("+91");
+            $("#<%= txtmobile.ClientID%>").val(jsonData[0].mobile);
+            $("#<%= txtemail.ClientID%>").val(jsonData[0].emailID);
+        $("#<%=txtlandline.ClientID%>").val(jsonData[0].phone);
+        $("#<%=txtoccupation.ClientID%>").val(jsonData[0].profession);
+            //*********************** Login Details
+            $("#<%= txtusername.ClientID%>").val(jsonData[0].loginid);
+            $('#ddlquestion').val(jsonData[0].firstS_Qid);
+            $("#<%= txtanswer.ClientID%>").val(jsonData[0].firstS_ANS);
+
+            //************************ Address Details
+            $("#<%= txtaddress.ClientID%>").val(jsonData[0].address);
+            $("#<%= txtlandmark.ClientID%>").val(jsonData[0].LandMark);
+            $("#<%= txtpincode.ClientID%>").val(jsonData[0].pincode);
+            $("#<%= ddlcity.ClientID%>").val(jsonData[0].oCity);
+
+            //********************** Bank Details
+                        $("#<%= txtbankname.ClientID%>").val(jsonData[0].coreBank);
+                        $("#<%= txtifsccode.ClientID%>").val(jsonData[0].IFSCCode);
+                        $("#<%= txtaccountno.ClientID%>").val(jsonData[0].accountNo);
+                        $("#<%= txtbankaddress.ClientID%>").val(jsonData[0].branchCode);
+                        $("#<%= txtnomnee.ClientID%>").val(jsonData[0].nomneename);
+                        $("#<%= txtrelations.ClientID%>").val(jsonData[0].nomneerelation);
+
+            //            $("#<%= ddltitle.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= txtfname.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= txtdob.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= txtmobile.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= txtlname.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= ddlgender.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= txtfh.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= txtemail.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= txtmobilecode.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= txtnomnee.ClientID%>").attr("disabled", "disabled");
+            //            $("#<%= txtrelations.ClientID%>").attr("disabled", "disabled");
+
+            //            if (jsonData[0].fat_husName == "") { $("#<%=txtfh.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtfh.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=ddlcountry.ClientID %>").removeAttr("disabled"); } else { $("#<%=ddlcountry.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=ddlDsistrict.ClientID %>").removeAttr("disabled"); } else { $("#<%=ddlDsistrict.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=ddlstate.ClientID %>").removeAttr("disabled"); } else { $("#<%=ddlstate.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=txtpincode.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtpincode.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=ddlcity.ClientID %>").removeAttr("disabled"); } else { $("#<%=ddlcity.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=txtaddress.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtaddress.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=txtlandmark.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtlandmark.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].emailID == "") { $("#<%=txtemail.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtemail.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].mobile == "") { $("#<%=txtmobile.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtmobile.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].fname == "") { $("#<%=txtfname.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtfname.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=txtbankname.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtbankname.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=txtbankaddress.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtbankaddress.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=txtifsccode.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtifsccode.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].bankcheck == "0") { $("#<%=txtaccountno.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtaccountno.ClientID %>").attr("disabled", "disabled") }
+            //if (jsonData[0].coreBank == "") { $("#<%=txtbankname.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtbankname.ClientID %>").attr("disabled", "disabled"); }
+            //if (jsonData[0].branchCode == "") { $("#<%=txtbankaddress.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtbankaddress.ClientID %>").attr("disabled", "disabled"); }
+            // if (jsonData[0].IFSCCode == "") { $("#<%=txtifsccode.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtifsccode.ClientID %>").attr("disabled", "disabled"); }
+            //if (jsonData[0].accountNo == "") { $("#<%=txtaccountno.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtaccountno.ClientID %>").attr("disabled", "disabled") }
+            //            if (jsonData[0].pancheck != "0") { $("#<%=txtpan.ClientID %>").attr("disabled", "disabled"); } else { $("#<%=txtpan.ClientID %>").removeAttr("disabled"); }
+            //            if (jsonData[0].nomneename == "") { $("#<%=txtnomnee.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtnomnee.ClientID %>").attr("disabled", "disabled"); }
+            //            if (jsonData[0].nomneerelation == "") { $("#<%=txtrelations.ClientID %>").removeAttr("disabled"); } else { $("#<%=txtrelations.ClientID %>").attr("disabled", "disabled"); }
+        }
+        //_______________________________________________ Cancel Button _____________________________
+
+        function Cancel() {
+            window.location.assign("Default.aspx");
+        }
+        //_______________________________________________ Save Button _____________________________
+
+        function SaveData() {
+            var errorText = '';
+            //  Personal Details Added
+            // Validation
+            var tilte = "";
+            var First_name = "";
+            var last_name = "";
+            var gender = "";
+            var genderID = "";
+            var gendername = "";
+            var dateofbirth = "";
+            var fatherhusband = "";
+            var country_Code_mobile = "";
+            var mobile_no = "";
+            var email_id = "";
+            var pancard = "";
+            var nomnames = "";
+            var relations = "";
+            var phone="";
+            var profession="";
+
+            tilte = $("#<%= ddltitle.ClientID%>").val();
+            First_name = $("#<%= txtfname.ClientID%>").val();
+            last_name = $("#<%= txtlname.ClientID%>").val();
+            fatherhusband = $("#<%= txtfh.ClientID%>").val();
+            var gndr = document.getElementById('<%= ddlgender.ClientID %>')
+            var genderID = gndr.options[gndr.selectedIndex].value;
+            var gendername = gndr.options[gndr.selectedIndex].text;
+            dateofbirth = $("#<%= txtdob.ClientID%>").val();
+            country_Code_mobile = $("#<%= txtmobilecode.ClientID%>").val();
+            mobile_no = $("#<%= txtmobile.ClientID%>").val();
+            email_id = $("#<%= txtemail.ClientID%>").val();
+            pancard = $("#<%= txtpan.ClientID%>").val();
+            nomnames = $("#<%= txtnomnee.ClientID%>").val();
+            relations = $("#<%= txtrelations.ClientID%>").val();
+            phone=$("#<%=txtlandline.ClientID%>").val();
+            profession=$("#<%=txtoccupation.ClientID%>").val();
+            // Address Details Added
+            var country = "";
+            var state = "";
+            var city = "";
+            var address = "";
+            var landmark = "";
+            var pincode = "";
+
+            var parm = document.getElementById('<%= ddlcountry.ClientID %>')
+            var Countryid = parm.options[parm.selectedIndex].value;
+            var CountryName = parm.options[parm.selectedIndex].text;
+
+            var parm2 = document.getElementById('<%= ddlstate.ClientID %>');
+            var stateid = parm2.options[parm2.selectedIndex].value;
+            var Statename = parm2.options[parm2.selectedIndex].text;
+
+            var parmD = document.getElementById('<%= ddlDsistrict.ClientID %>');
+            var distID = parmD.options[parmD.selectedIndex].value;
+            var distName = parmD.options[parmD.selectedIndex].text;
+
+            var parm3 = document.getElementById('<%= ddlcity.ClientID %>');
+            var CityID = '0'// parm3.options[parm3.selectedIndex].value;
+            var Cityname = $("#<%= ddlcity.ClientID%>").val();
+
+
+            address = $("#<%= txtaddress.ClientID%>").val();
+            landmark = $("#<%= txtlandmark.ClientID%>").val();
+            pincode = $("#<%= txtpincode.ClientID%>").val();
+            // Login Details Added
+            var username = "";
+            var password = "";
+            var transactioncode = "";
+            var QuestionID = "";
+            var QuestionName = "";
+            var Answer = "";
+            username = $("#<%= txtusername.ClientID%>").val();
+
+            var QuestionID = $('#ddlquestion').val();
+            // QuestionName = parm4.options[parm4.selectedIndex].text;
+
+            Answer = $("#<%= txtanswer.ClientID%>").val();
+            //   Bank Details Added
+            var Bankname = "";
+            var Branchcode = "";
+            var ifsccvode = "";
+            var accountnumber = "";
+            var bankaddress = "";
+            Bankname = $("#<%= txtbankname.ClientID%>").val();
+            Branchcode = "";
+            ifsccvode = $("#<%= txtifsccode.ClientID%>").val();
+            accountnumber = $("#<%= txtaccountno.ClientID%>").val();
+            bankaddress = $("#<%= txtbankaddress.ClientID%>").val();
+
+          
+
+            //___________________________ Validate
+            if (tilte == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Title") %>' + " <br>";
+            }
+            if (First_name == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_FName") %>' + "<br>";
+            }
+            if (last_name == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_LName") %>' + "<br>";
+            }
+            if (genderID == "") {
+                errorText = "" + '<%=  MSG.Show("Select_Gender") %>' + " <br>";
+            }
+            if (dateofbirth == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_DOB") %>' + "<br>";
+            }
+            if (country_Code_mobile == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_MobCode") %>' + "<br>";
+            }
+
+            if (mobile_no == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_MobNo") %>' + "<br>";
+            }
+            if (email_id == "") {
+                errorText = "" + '<%=  MSG.Show("Invalid_Email") %>' + "<br>";
+            }
+            if (Countryid == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Country") %>' + "<br>";
+            }
+            if (stateid == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_State") %>' + "<br>";
+            }
+
+            if (CityID == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_City") %>' + "<br>";
+            }
+            if (address == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Address") %>' + "<br>";
+            }
+          
+            if (pincode == "") {
+                errorText = "" + '<%=  MSG.Show("Valid_Pincode") %>' + "<br>";
+            }
+           
+
+
+            if (errorText != '') {
+
+                $('html, body').animate({ scrollTop: 0 }, '-10.2');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + errorText);
+                $('#errorDiv').removeClass().addClass("alert alert-error");
+                $('#errorDiv').show();
+                return false;
+            }
+            else {
+                $('#errorDiv').hide();
+            }
+            if ($("span").hasClass("input-error")) {
+
+
+
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').html(" <button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Remove_Error") %>' + "");
+                $('#errorDiv').removeClass().addClass("alert alert-error");
+                $('#errorDiv').show();
+                return false;
+            }
+
+
+
+            Update_Profile_Save(tilte, First_name, last_name, dateofbirth, genderID, mobile_no, email_id, stateid, Statename, CityID, Cityname, pincode, address, landmark, ViewstateUsername, QuestionID, Answer, Bankname, bankaddress, ifsccvode, accountnumber, Countryid, fatherhusband, distID, distName, pancard, nomnames, relations,phone,profession);
+
+
+        }
+
+        function Update_Profile_Save(tilte, First_name, last_name, dateofbirth, genderID, mobile_no, email_id, stateid, Statename, CityID, Cityname, pincode, address, landmark, ViewstateUsername, QuestionID, Answer, Bankname, bankaddress, ifsccvode, accountnumber, Countryid, fatherhusband, distID, distName, pancard, nomnames, relations,phone,profession)
+        {
+
+            $.ajax({
+                type: "POST",
+                url: "../BOM/Getdata_member.asmx/UpdateMemberProfile1",
+                data: "{regno:'',QueryType:'update' ,intResult:'0',title:'" + tilte + "',fname:'" + First_name + "',lname:'" + last_name + "',fatherName:'" + fatherhusband + "',dob:'" + dateofbirth + "',Gender:'" + genderID + "',mobile:'" + mobile_no + "',emailID:'" + email_id + "',sid:'" + stateid + "',oState:'" + Statename + "',Ctid:'" + CityID + "',oCity:'" + Cityname + "',pincode:'" + pincode + "',address:'" + address + "',LandMark:'" + landmark + "',LoginID:'" + ViewstateUsername + "',firstS_Qid:'" + QuestionID + "',firstS_ANS:'" + Answer + "',coreBank:'" + Bankname + "',bankaddress:'" + bankaddress + "',IFSCCode:'" + ifsccvode + "',accountNo:'" + accountnumber + "',CountryID:'" + Countryid + "',distid:'" + distID + "',distName:'" + distName + "',pancard:'" + pancard + "',nomname:'" + nomnames + "',relation:'" + relations + "',phone:'" + phone + "',profession:'" + profession + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: SavDetailsSuccess,
+                error: function (xhr, status, error) {
+
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Technical_Error") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                }
+
+            });
+        }
+        function SavDetailsSuccess(Result) {
+
+            var jsonData = Result.d;
+            switch (Result.d) {
+                case "0":
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Invalid_UpdateProfile") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    $('#InfoDiv').hide();
+                    break;
+                case "1":
+                    $("#btSubmit").attr("disabled", "disabled");
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Valid_UpdateProfile") %>' + "");
+                    $('#errorDiv').removeClass().addClass("alert alert-success");
+                    $('#errorDiv').show();
+
+                    $('#InfoDiv').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Valid_UpdateProfile") %>' + "");
+                    $('#InfoDiv').removeClass().addClass("alert alert-success");
+                    $('#InfoDiv').show();
+
+                    return false;
+                    break;
+            }
+
+
+
+        }
+    </script>
+    <script>
+        function ValidatePAN() {
+            /************/
+
+            pancardno = $("#<%= txtpan.ClientID%>").val();
+            if (pancardno.length > 0) {
+
+                if (pancardno == null) pancardno = window.event.srcElement;
+                if (pancardno.value != "") {
+
+                    var panPat = /^([a-zA-Z]{5})(\d{4})([a-zA-Z]{1})$/;
+                    var code = /([C,P,H,F,A,T,B,L,J,G])/;
+                    var code_chk = pancardno.substring(3, 4).toUpperCase();
+                    if (pancardno.length == 10) {
+                        if (pancardno.search(panPat) == -1) {
+                            $('#div1_pan').removeClass().addClass("control-group error");
+                            $('#span1_pan').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                            $('#i1_pan').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                            return false;
+                        }
+
+                        $('#div1_pan').removeClass().addClass("control-group success");
+                        $('#span1_pan').removeClass("input-warning tooltips input-error tooltips").addClass("input-success tooltips");
+                        $('#i1_pan').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+
+                       // CHECKPANCARD(pancardno);
+                        return false;
+                    }
+                }
+
+            }
+            else {
+                $('#div1_pan').removeClass().addClass("control-group warning");
+                $('#span1_pan').removeClass("input-success tooltips input-error tooltips").addClass("input-warning tooltips");
+                $('#i1_pan').removeClass("icon-exclamation-sign icon-ok");
+            }
+
+
+        }
+        function CHECKPANCARD(PANNO) {
+            var loginid = PANNO;
+            $.ajax({
+                type: "POST",
+                url: "../BOM/Getdata_member.asmx/CheckPancard",
+                data: "{ username:'" + loginid + "' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: Successfun2,
+                error: function (xhr, status, error) {
+                    alert(error);
+                }
+
+            });
+        }
+        function Successfun2(Result2) {
+            var jsonData = Result2.d;
+            switch (Result2.d) {
+                case "true":
+                    $('#div1_pan').removeClass().addClass("control-group error");
+                    $('#span1_pan').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                    $('#i1_pan').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                    return true;
+                    break;
+                case "false":
+                    $('#div1_pan').removeClass().addClass("control-group success");
+                    $('#span1_pan').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+                    $('#i1_pan').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+                    return false;
+                    break;
+            }
+
+        }
+        //__________________________________________________  Check First Name _________________________________
+        function fnameValidate() {
+
+            var fname = $("#<%=txtfname.ClientID%>").val();
+            var letters = /^[A-Za-z].+$/;
+            if (fname.length <= 1) {
+                $('#div_border_fname').removeClass().addClass("control-group warning");
+                $('#span_id_fname').removeClass("input-success tooltips input-error tooltips").addClass("input-warning tooltips");
+                $('#icon_id_fname').removeClass("icon-exclamation-sign icon-ok").addClass("icon-warning-sign");
+
+                return false;
+            }
+            if (fname.match(letters)) {
+                $('#div_border_fname').removeClass().addClass("control-group success");
+                $('#span_id_fname').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+                $('#icon_id_fname').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+                return false;
+            }
+            if (fname > 0 || fname == "" || fname.match(letters)) {
+                $('#div_border_fname').removeClass().addClass("control-group error");
+                $('#span_id_fname').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#icon_id_fname').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+
+                return false;
+            }
+            else {
+                $('#div_border_fname').removeClass().addClass("control-group error");
+                $('#span_id_fname').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#icon_id_fname').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                return false;
+            }
+
+        }
+
+        //__________________________________________________  Check Last Name _________________________________
+        function lnameValidate() {
+
+            var lname = $("#<%=txtlname.ClientID%>").val();
+            var letters = /^[A-Za-z]+$/;
+            if (lname.length <= 1) {
+                $('#div_border_lname').removeClass().addClass("control-group warning");
+                $('#span_id_lname').removeClass("input-success tooltips input-error tooltips").addClass("input-warning tooltips");
+                $('#icon_id_lname').removeClass("icon-exclamation-sign icon-ok").addClass("icon-warning-sign");
+
+                return false;
+            }
+            if (lname.match(letters)) {
+                $('#div_border_lname').removeClass().addClass("control-group success");
+                $('#span_id_lname').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+                $('#icon_id_lname').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+                return false;
+            }
+            if (lname > 0 || lname == "" || lname.match(letters)) {
+                $('#div_border_lname').removeClass().addClass("control-group error");
+                $('#span_id_lname').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#icon_id_lname').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+
+                return false;
+            }
+            else {
+                $('#div_border_lname').removeClass().addClass("control-group error");
+                $('#span_id_lname').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#icon_id_lname').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                return false;
+            }
+        }
+
+        //__________________________________________________  Check Father  / Husband Name _________________________________
+        function fhnameValidate() {
+
+            var fhlname = $("#<%=txtfh.ClientID%>").val();
+            var letters = /^[A-Za-z]+$/;
+
+        }
+        //__________________________________________________  Check Mobile No _________________________________
+        function moValidate() {
+
+            var mobilenumber = $("#<%=txtmobile.ClientID%>").val();
+            var letters = /^[0-9]+$/;
+            if (mobilenumber.length <= 6 || mobilenumber.length > 12) {
+                $('#div1_mo').removeClass().addClass("control-group warning");
+                $('#span1_mo').removeClass("input-success tooltips input-error tooltips").addClass("input-warning tooltips");
+                $('#i_fh').removeClass("icon-exclamation-sign icon-ok").addClass("icon-warning-sign");
+                return false;
+            }
+            if (mobilenumber.match(letters)) {
+                $('#div1_mo').removeClass().addClass("control-group success");
+                $('#span1_mo').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+                $('#i1_mo').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+                return false;
+            }
+
+            else {
+                $('#div1_mo').removeClass().addClass("control-group error");
+                $('#span1_mo').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#i1_mo').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                return false;
+            }
+        }
+        //__________________________________________________  Check Email No _________________________________
+        function EmailValidate() {
+
+            var Emailid = $("#<%=txtemail.ClientID%>").val();
+            var letters = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+            if (Emailid.match(letters)) {
+                $('#div1_email').removeClass().addClass("control-group success");
+                $('#span1_email').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+                $('#i1_email').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+                return false;
+            }
+            else {
+                $('#div1_email').removeClass().addClass("control-group error");
+                $('#span1_email').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#i1_email').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                return false;
+            }
+        }
+        //__________________________________________________  Check Address  _________________________________
+        function AddressValidate() {
+
+            var address = $("#<%=txtaddress.ClientID%>").val();
+
+
+            if (address.length <= 6 || address == "") {
+                $('#div1_address').removeClass().addClass("control-group error");
+                $('#span1_address').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#i1_address').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                return false;
+            }
+            else {
+
+                $('#div1_address').removeClass().addClass("control-group success");
+                $('#span1_address').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+                $('#i1_address').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+                return false;
+            }
+        }
+        //__________________________________________________  Check LandMark  _________________________________
+//        function LandMarkValidate() {
+
+//            var landmark = $("#<%=txtlandmark.ClientID%>").val();
+//            if (landmark.length <= 3 || landmark == "") {
+//                $('#div1_landmark').removeClass().addClass("control-group error");
+//                $('#span1_landmark').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+//                $('#i1_landmark').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+//                return false;
+//            }
+//            else {
+
+//                $('#div1_landmark').removeClass().addClass("control-group success");
+//                $('#span1_landmark').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+//                $('#i1_landmark').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+//                return false;
+//            }
+//        }
+        //__________________________________________________  Check PinCode  _________________________________
+        function PinValidate() {
+
+            var Pin = $("#<%=txtpincode.ClientID%>").val();
+            if (Pin.length <= 5 || Pin > 7) {
+                $('#div1_pin').removeClass().addClass("control-group success");
+                $('#span1_pin').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+                $('#i1_pin').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+                return false;
+            }
+            else {
+                $('#div1_pin').removeClass().addClass("control-group error");
+                $('#span1_pin').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#i1_pin').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                return false;
+            }
+        }
+        //__________________________________________________  Check  Password    _________________________________
+        function Password() {
+
+
+            pass = "";
+
+            if (pass == "") {
+                $('#div1_pass').removeClass().addClass("control-group error");
+                $('#span1_pass').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#i1_pass').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                return false;
+            }
+            if (pass.length <= 3) {
+                $('#div1_pass').removeClass().addClass("control-group warning");
+                $('#span1_pass').removeClass("input-success tooltips input-error tooltips").addClass("input-warning tooltips");
+                $('#i1_pass').removeClass("icon-exclamation-sign icon-ok").addClass("icon-warning-sign");
+            }
+            else {
+                $('#div1_pass').removeClass().addClass("control-group success");
+                $('#span1_pass').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+                $('#i1_pass').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+                return false;
+            }
+
+
+        }
+
+        //__________________________________________________  Check Repassword    _________________________________
+        function Repassword() {
+
+
+            re = "";
+            pass = "";
+            if (re == pass) {
+                $('#div1_re').removeClass().addClass("control-group success");
+                $('#span1_re').removeClass("input-error tooltips input-warning tooltips").addClass("input-success tooltips");
+                $('#i1_re').removeClass("icon-warning-sign icon-exclamation-sign").addClass("icon-ok");
+                return false;
+            }
+            if (re.length < 3) {
+                $('#div1_re').removeClass().addClass("control-group error");
+                $('#span1_re').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#i1_re').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                return false;
+            }
+            else {
+                $('#div1_re').removeClass().addClass("control-group error");
+                $('#span1_re').removeClass("input-warning tooltips input-success tooltips").addClass("input-error tooltips");
+                $('#i1_re').removeClass("icon-warning-sign icon-ok").addClass("icon-exclamation-sign");
+                return false;
+            }
+        }
+    </script>
+    <script>
+
+        //_____________________________ Link Click on Change Passsword
+
+        function link_changepassword2() {
+            document.getElementById("PasswordTransactionSubmit").disabled = false;
+            $('#ErrorDiv_Popup2').html("<button data-dismiss='alert' class='close'>×</button> Are You Sure Change Security Pin to this user '<strong>" + ViewstateUsername + "<strong>'  ?");
+            $('#ErrorDiv_Popup2').removeClass().addClass("alert alert-warning");
+            $('#ErrorDiv_Popup2').show();
+
+
+        }
+
+        //______________________________________ Submit Button Change Password
+
+
+        function changepassword2() {
+
+            if ($("span").hasClass("input-error")) {
+                $('#ErrorDiv_Popup2').html(" <button data-dismiss='alert' class='close'>×</button> " + '<%=  MSG.Show("Remove_Error") %>' + "");
+                $('#ErrorDiv_Popup2').removeClass().addClass("alert alert-error");
+                $('#ErrorDiv_Popup2').show();
+            }
+            else {
+                $('#ErrorDiv_Popup2').hide();
+                updatePassword2();
+            }
+
+        }
+        function updatePassword2(Loginid) {
+            var loginid = ViewstateUsername;
+            var oldpassword = $("#<%=txt_p_old2.ClientID%>").val();
+            var newPassword = $("#<%=txt_p_new2.ClientID%>").val();
+            $.ajax({
+                type: "POST",
+                url: "../BOA/getData.asmx/UpdateTransPasswordMember",
+                data: "{loginid:'" + loginid + "',oldpassword:'" + oldpassword + "' ,newpassword:'" + newPassword + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: updatepasswordSuccess2,
+                error: function (xhr, status, error) {
+                    $('#ErrorDiv_Popup2').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Technical_Error") %>' + "");
+                    $('#ErrorDiv_Popup2').removeClass().addClass("alert alert-error");
+                    $('#ErrorDiv_Popup2').show();
+                }
+
+            });
+
+        }
+
+        function updatepasswordSuccess2(ResultUpdatePassword2) {
+            var jsonData = ResultUpdatePassword2.d;
+            switch (ResultUpdatePassword2.d) {
+                case "false":
+                    $('#ErrorDiv_Popup2').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Invalid_Transchange") %>' + "");
+                    $('#ErrorDiv_Popup2').removeClass().addClass("alert alert-error");
+                    $('#ErrorDiv_Popup2').show();
+                    break;
+                case "true":
+                    document.getElementById("PasswordTransactionSubmit").disabled = true;
+                    $('#ErrorDiv_Popup2').html("<button data-dismiss='alert' class='close'>×</button> Congratulations, <strong" + ViewstateUsername + "</strong> Your have been Successfully Changed. !!");
+                    $('#ErrorDiv_Popup2').removeClass().addClass("alert alert-success");
+                    $('#ErrorDiv_Popup2').show();
+                    break;
+            }
+
+
+        }
+
+        function NewPassword2() {
+            pass = $("#<%=txt_p_new2.ClientID%>").val();
+            if (pass == "") {
+                $('#div1_new2').removeClass().addClass("control-group error");
+                $('#span1_new2').removeClass().addClass("input-error tooltips");
+                $('#i1_new2').removeClass().addClass("icon-exclamation-sign");
+                return false;
+            }
+            if (pass.length <= 3) {
+                $('#div1_new2').removeClass().addClass("control-group warning");
+                $('#span1_new2').removeClass().addClass("input-warning tooltips");
+                $('#i1_new2').removeClass().addClass("icon-warning-sign");
+                return false;
+            }
+            else {
+                $('#div1_new2').removeClass().addClass("control-group success");
+                $('#span1_new2').removeClass().addClass("input-success tooltips");
+                $('#i1_new2').removeClass().addClass("icon-ok");
+                return false;
+            }
+        }
+        //________________________________________________ Check Previoue Password _________________________________
+
+
+        function checkoldPassword2() {
+            var old_password2 = $("#<%=txt_p_old2.ClientID%>").val();
+            $.ajax({
+                type: "POST",
+                url: "../BOA/getData.asmx/CheckOldTransPassword",
+                data: "{ loginid:'" + ViewstateUsername + "',oldpassword:'" + old_password2 + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: checkoldPasswordSuccess2,
+                error: function (xhr, status, error) {
+
+                }
+
+            });
+        }
+        function checkoldPasswordSuccess2(Resultold2) {
+            var jsonData = Resultold2.d;
+            switch (Resultold2.d) {
+                case "true":
+                    $('#div1_old2').removeClass().addClass("control-group success");
+                    $('#span1_old2').removeClass().addClass("input-success tooltips");
+                    $('#i1_old2').removeClass().addClass("icon-ok");
+
+                    break;
+                case "false":
+                    $('#div1_old2').removeClass().addClass("control-group error");
+                    $('#span1_old2').removeClass().addClass("input-error tooltips");
+                    $('#i1_old2').removeClass().addClass("icon-exclamation-sign");
+
+                    break;
+            }
+
+        }
+        //________________________________________________ Check Repassword  Password _________________________________
+        function RepasswordP2() {
+            repa2 = $("#<%=txt_p_re2.ClientID%>").val();
+            pass2 = $("#<%=txt_p_new2.ClientID%>").val();
+            if (pass2 != repa2) {
+                $('#div1_repassword2').removeClass().addClass("control-group error");
+                $('#span1_repassword2').removeClass().addClass("input-error tooltips");
+                $('#i1_repassword2').removeClass().addClass("icon-exclamation-sign");
+                return false;
+            }
+            if (repa2.length <= 3) {
+                $('#div1_repassword2').removeClass().addClass("control-group warning");
+                $('#span1_repassword2').removeClass().addClass("input-warning tooltips");
+                $('#i1_repassword2').removeClass().addClass("icon-warning-sign");
+                return false;
+            }
+            else {
+                $('#div1_repassword2').removeClass().addClass("control-group success");
+                $('#span1_repassword2').removeClass().addClass("input-success tooltips");
+                $('#i1_repassword2').removeClass().addClass("icon-ok");
+                return false;
+            }
+        }
+
+    </script>
+    <script>
+
+        //_____________________________ Link Click on Change Passsword
+
+        function link_changepassword() {
+            
+            $('#ErrorDiv_Popup').html("");
+            $('#ErrorDiv_Popup').removeClass().addClass(" ");
+            $('#ErrorDiv_Popup').show();
+            $("#<%=txt_p_re.ClientID%>").val("");
+            $("#<%=txt_p_old.ClientID%>").val("");
+           $("#<%=txt_p_new.ClientID%>").val("");
+
+           
+        }
+        //______________Check Pancard_______________
+
+        //__________________________________________________ PAN No Validation_______________________________
+
+
+
+        //______________________________________ Submit Button Change Password
+
+
+        function changepassword() {
+
+            if ($("span").hasClass("input-error")) {
+                $('#ErrorDiv_Popup').html(" <button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Remove_Error") %>' + "");
+                $('#ErrorDiv_Popup').removeClass().addClass("alert alert-error");
+                $('#ErrorDiv_Popup').show();
+            }
+            else {
+                $('#ErrorDiv_Popup').hide();
+                updatePassword();
+            }
+
+        }
+        function updatePassword(Loginid) {
+            var loginid = ViewstateUsername;
+            var oldpassword = $("#<%=txt_p_old.ClientID%>").val();
+            var newPassword = $("#<%=txt_p_new.ClientID%>").val();
+            $.ajax({
+                type: "POST",
+                url: "../BOA/getData.asmx/UpdatePasswordMember",
+                data: "{loginid:'" + loginid + "',oldpassword:'" + oldpassword + "' ,newpassword:'" + newPassword + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: updatepasswordSuccess,
+                error: function (xhr, status, error) {
+                    $('#ErrorDiv_Popup').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Technical_Error") %>' + "");
+                    $('#ErrorDiv_Popup').removeClass().addClass("alert alert-error");
+                    $('#ErrorDiv_Popup').show();
+                }
+
+            });
+
+        }
+
+        function updatepasswordSuccess(ResultUpdatePassword) {
+            var jsonData = ResultUpdatePassword.d;
+            switch (ResultUpdatePassword.d) {
+                case "false":
+                    $('#ErrorDiv_Popup').html("<button data-dismiss='alert' class='close'>×</button>" + '<%=  MSG.Show("Invalid_changes") %>' + "");
+                    $('#ErrorDiv_Popup').removeClass().addClass("alert alert-error");
+                    $('#ErrorDiv_Popup').show();
+                    break;
+                case "true":
+                    document.getElementById("btSubmit").disabled = true;
+                    $('#ErrorDiv_Popup').html("<button data-dismiss='alert' class='close'>×</button> Congratulations, <strong" + ViewstateUsername + "</strong> Your have been Successfully Changed. !!");
+                    $('#ErrorDiv_Popup').removeClass().addClass("alert alert-success");
+                    $('#ErrorDiv_Popup').show();
+                    break;
+            }
+
+
+        }
+
+        function NewPassword() {
+            pass = $("#<%=txt_p_new.ClientID%>").val();
+            if (pass == "") {
+                $('#div1_new').removeClass().addClass("control-group error");
+                $('#span1_new').removeClass().addClass("input-error tooltips");
+                $('#i1_new').removeClass().addClass("icon-exclamation-sign");
+                return false;
+            }
+            if (pass.length <= 3) {
+                $('#div1_new').removeClass().addClass("control-group warning");
+                $('#span1_new').removeClass().addClass("input-warning tooltips");
+                $('#i1_new').removeClass().addClass("icon-warning-sign");
+                return false;
+            }
+            else {
+                $('#div1_new').removeClass().addClass("control-group success");
+                $('#span1_new').removeClass().addClass("input-success tooltips");
+                $('#i1_new').removeClass().addClass("icon-ok");
+                return false;
+            }
+        }
+        //________________________________________________ Check Previoue Password _________________________________
+
+
+        function checkoldPassword(old_password) {
+            var old_password = $("#<%=txt_p_old.ClientID%>").val();
+            $.ajax({
+                type: "POST",
+                url: "../BOA/getData.asmx/CheckOldPassword",
+                data: "{ loginid:'" + ViewstateUsername + "',oldpassword:'" + old_password + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: checkoldPasswordSuccess,
+                error: function (xhr, status, error) {
+
+                }
+
+            });
+        }
+        function checkoldPasswordSuccess(Resultold) {
+            var jsonData = Resultold.d;
+            switch (Resultold.d) {
+                case "true":
+                    $('#div1_old').removeClass().addClass("control-group success");
+                    $('#span1_old').removeClass().addClass("input-success tooltips");
+                    $('#i1_old').removeClass().addClass("icon-ok");
+
+                    break;
+                case "false":
+                    $('#div1_old').removeClass().addClass("control-group error");
+                    $('#span1_old').removeClass().addClass("input-error tooltips");
+                    $('#i1_old').removeClass().addClass("icon-exclamation-sign");
+
+                    break;
+            }
+
+        }
+        //________________________________________________ Check Repassword  Password _________________________________
+        function RepasswordP() {
+            repa = $("#<%=txt_p_re.ClientID%>").val();
+            pass = $("#<%=txt_p_new.ClientID%>").val();
+            if (pass != repa) {
+                $('#div1_repassword').removeClass().addClass("control-group error");
+                $('#span1_repassword').removeClass().addClass("input-error tooltips");
+                $('#i1_repassword').removeClass().addClass("icon-exclamation-sign");
+                return false;
+            }
+            if (repa.length <= 3) {
+                $('#div1_repassword').removeClass().addClass("control-group warning");
+                $('#span1_repassword').removeClass().addClass("input-warning tooltips");
+                $('#i1_repassword').removeClass().addClass("icon-warning-sign");
+                return false;
+            }
+            else {
+                $('#div1_repassword').removeClass().addClass("control-group success");
+                $('#span1_repassword').removeClass().addClass("input-success tooltips");
+                $('#i1_repassword').removeClass().addClass("icon-ok");
+                return false;
+            }
+        }
+
+    </script>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <div id="main-content">
+        <!-- BEGIN PAGE CONTAINER-->
+        <div class="container-fluid">
+            <!-- BEGIN PAGE HEADER-->
+            <div class="row-fluid">
+                <div class="span12">
+                    <ul class="breadcrumb">
+                        <li><a href="Default.aspx"><i class="icon-home"></i></a><span class="divider">&nbsp;</span></li>
+                        <li><a href="#">Profile Manager</a> <span class="divider">&nbsp;</span></li>
+                        <li><a href="sellEpin.aspx">Profile Edit</a><span class="divider-last">&nbsp;</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <h4>
+                                <i class=" icon-pencil"></i>Personal Details:</h4>
+                            <span class="tools"><a href="javascript:;" id="EvoucherDetails" class="icon-chevron-down"></a></span>
+                        </div>
+                        <div id="errorDiv">
+                        </div>
+                        <div id="errorT" runat="server">
+                        </div>
+                        <div id="div_EvoucherDetails" class="widget-body">
+                            <div class="form-horizontal">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Title</label>
+                                        <div class="controls">
+                                            <asp:DropDownList ID="ddltitle" runat="server" class="span10  tooltips" TabIndex="-1" data-placement="right" data-original-title="Select Title">
+                                                <asp:ListItem Value="Mr.">Mr.</asp:ListItem>
+                                                <asp:ListItem Value="Mrs.">Mrs.</asp:ListItem>
+                                                <asp:ListItem Value="Ms.">Ms.</asp:ListItem>
+                                                <asp:ListItem Value="Proff.">Proff.</asp:ListItem>
+                                                <asp:ListItem Value="Dr.">Dr.</asp:ListItem>
+                                                <asp:ListItem Value="M/s.">M/s.</asp:ListItem>
+                                                <asp:ListItem Value="Other">Other</asp:ListItem>
+                                            </asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="div_border_lname" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            Last Name</label>
+                                        <div class="controls input-icon">
+                                            <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtlname" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Enter Last Name"></asp:TextBox>
+                                            <span id="span_id_lname" data-original-title="please write a valid Last Name">
+                                                <!--Tooltip-->
+                                                <i id="icon_id_lname"></i>
+                                                <!--Icon-->
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Date of Birth</label>
+                                        <div class="controls">
+                                            <%--<asp:TextBox ID="txtdob" CssClass="span10 tooltips  m-ctrl-medium date-picker " data-mask="99/99/9999"
+                                                placeholder="MM/DD/YYYY" runat="server" data-placement="right" data-original-title="Enter DOB Ex- MM/DD/YYYY"></asp:TextBox>--%>
+                                            <asp:TextBox ID="txtdob" CssClass="span10 tooltips" data-mask="99/99/9999" placeholder="DD/MM/YYYY" runat="server" data-placement="right" data-original-title="Enter DOB Ex- DD/MM/YYYY"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div id="div1_mo" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            Mobile No.</label>
+                                        <div class="controls input-icon">
+                                            <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtmobilecode" CssClass="span3 tooltips" Text="+91 " runat="server"></asp:TextBox>
+                                            <asp:TextBox ID="txtmobile" data-mask="9999999999" onkeyup="moValidate();" CssClass="span7 tooltips" runat="server" data-placement="right" data-original-title="Enter Mobile No"></asp:TextBox>
+                                            <span id="span1_mo" data-original-title="please write a valid Mobile No.">
+                                                <!--Tooltip-->
+                                                <i id="i1_mo"></i>
+                                                <!--Icon-->
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">Landline No.</label>
+                                        <div class="controls input-icon">
+                                             <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtlandline" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Enter Landline No"></asp:TextBox>
+                                            <span id"span1_land" data-original-title="Please write a valid landline No."/>
+                                            
+                                            <!--tooltip-->
+                                            <i id="i1_land"></i>
+                                            <!--icon-->
+
+                                        </div>
+                                   </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Nominee Name</label>
+                                        <div class="controls">
+                                            <asp:TextBox ID="txtnomnee" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Nominee Name"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div id="div_border_fname" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            First Name.</label>
+                                        <div class="controls input-icon">
+                                            <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtfname" CssClass="span10 tooltips" runat="server" onkeyup="fnameValidate();" data-placement="right" data-original-title="Enter First Name"></asp:TextBox>
+                                            <span id="span_id_fname" data-original-title="please write a valid First Name">
+                                                <!--Tooltip-->
+                                                <i id="icon_id_fname"></i>
+                                                <!--Icon-->
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Select Gender</label>
+                                        <div class="controls">
+                                            <asp:DropDownList ID="ddlgender" runat="server" CssClass="span10 tooltips" data-placement="right" data-original-title="Select Gender">
+                                                <asp:ListItem Value="NULL">-- Select Gender --</asp:ListItem>
+                                                <asp:ListItem Value="1">Male</asp:ListItem>
+                                                <asp:ListItem Value="0">Female</asp:ListItem>
+                                                <asp:ListItem Value="2">Association</asp:ListItem>
+                                            </asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $("#<%=ddltitle.ClientID %>").change(function () {
+                                            var SelectVal = $('#<%= ddltitle.ClientID %>').val();
+                                            if (SelectVal == "M/s.") {
+                                                $('#<%= ddlgender.ClientID %>').val(2);
+                                                $('#<%= ddlgender.ClientID %>').attr("disabled", "disabled");
+                                                $('#fhnameCaption1').removeClass().addClass('control-label hidden');
+                                                $('#fhnameCaption2').removeClass().addClass('control-label');
+                                            }
+                                            else {
+                                                //   $('#<%= ddlgender.ClientID %>').val('NULL');
+                                                $('#<%= ddlgender.ClientID %>').removeAttr("disabled");
+                                                $('#fhnameCaption1').removeClass().addClass('control-label');
+                                                $('#fhnameCaption2').removeClass().addClass('control-label hidden');
+                                            }
+                                        });
+                                    </script>
+                                    <div id="div_border_fhname" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label" id="fhnameCaption1">
+                                            Father/Husband Name.</label>
+                                        <label class="control-label hidden" id="fhnameCaption2">
+                                            Contact Person</label>
+                                        <div class="controls input-icon">
+                                            <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtfh" CssClass="span10 tooltips" onkeyup="fhnameValidate();" runat="server" data-placement="right" data-original-title="Enter Ftaher or Husband Name"></asp:TextBox>
+                                            <span id="span_fh" data-original-title="please write a valid Father Husband Name">
+                                                <!--Tooltip-->
+                                                <i id="i_fh"></i>
+                                                <!--Icon-->
+                                        </div>
+                                    </div>
+                                    <div id="div1_email" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            Email ID</label>
+                                        <div class="input-icon left">
+                                            <div class="controls input-icon">
+                                                <!--Icon put within Textbox-->
+                                                <i class="icon-envelope"></i>
+                                                <input class="span10 tooltips " id="txtemail" onkeyup="EmailValidate();" type="text" placeholder="Email Address" runat="server">
+                                                <span id="span1_email" data-original-title="please write a valid Last Name">
+                                                    <!--Tooltip-->
+                                                    <i id="i1_email"></i>
+                                                    <!--Icon-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="div1" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label" id="Label1">
+                                            Relation</label>
+                                        <label class="control-label hidden" id="Label2">
+                                            Contact Person</label>
+                                        <div class="controls input-icon">
+                                            <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtrelations" CssClass="span10 tooltips" onkeyup="fhnameValidate();" runat="server" data-placement="right" data-original-title="Nominee Relation"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                      <div class="control-group">
+                                          <label class="control-label" id="lbloccupation">Occupation</label>
+                                          <div class="controls input-icon">
+                                              <asp:TextBox ID="txtoccupation" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Occupation"></asp:TextBox>
+
+                                          </div>
+                                      </div>
+                                </div>
+                                <br clear="all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Deposit In Account CONTENT -->
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <h4>
+                                <i class=" icon-money"></i>Account Details:</h4>
+                            <span class="tools"><a href="javascript:;" id="A1" class="icon-chevron-down"></a></span>
+                        </div>
+                        <div id="div_AccountDetails" class="widget-body">
+                            <div class="form-horizontal">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Select Country</label>
+                                        <div class="controls">
+                                            <asp:DropDownList ID="ddlcountry" runat="server" CssClass="span10 tooltips" data-placement="right" data-original-title="Select Country" AutoPostBack="True" OnSelectedIndexChanged="Country_DropDownList">
+                                            </asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Select District</label>
+                                        <div class="controls">
+                                            <asp:DropDownList ID="ddlDsistrict" runat="server" CssClass="span10 tooltips" data-placement="right" data-original-title="Select District" AutoPostBack="True" OnSelectedIndexChanged="District_DropDownList">
+                                            </asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div id="div1_address" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            Address</label>
+                                        <div class="controls input-icon">
+                                            <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtaddress" onkeyup="AddressValidate();" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Enter Address" Rows="2"></asp:TextBox>
+                                            <span id="span1_address" data-original-title="please write a valid Addrress">
+                                                <!--Tooltip-->
+                                                <i id="i1_address"></i>
+                                                <!--Icon-->
+                                        </div>
+                                    </div>
+                                    <div id="div1_pincode" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            Pin Code</label>
+                                        <div class="controls input-icon">
+                                            <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtpincode" data-mask="999999" onkeyup="PinValidate();" placeholder="Enter 6 digit" CssClass="span10   tooltips" runat="server" data-placement="right" data-original-title="Enter Pincode"></asp:TextBox>
+                                            <span id="span1_pin" data-original-title="please write a valid Pin">
+                                                <!--Tooltip-->
+                                                <i id="i1_pin"></i>
+                                                <!--Icon-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Select State</label>
+                                        <div class="controls">
+                                            <asp:DropDownList ID="ddlstate" runat="server" CssClass="span10 tooltips" data-placement="right" data-original-title="Select Sate" AutoPostBack="True" OnSelectedIndexChanged="State_DropDownList">
+                                            </asp:DropDownList>
+                                            <%--<ajax:CascadingDropDown ID="CascadingDropDown1" runat="server" ParentControlID="ddlcountry"
+                                                TargetControlID="ddlstate" PromptText="  Select State  " Category="State" LoadingText="Loading State...."
+                                                ServiceMethod="ddlState2">
+                                            </ajax:CascadingDropDown>--%>
+                                        </div>
+                                    </div>
+                                    <div id="div1_city" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            Select City</label>
+                                        <div class="controls input-icon">
+                                            <asp:TextBox ID="ddlcity" runat="server" CssClass="span10 tooltips" data-placement="right" data-original-title="Select City">
+                                            </asp:TextBox>
+                                            <%--<ajax:CascadingDropDown ID="CascadingDropDown2" runat="server" TargetControlID="ddlcity"
+                                                ParentControlID="ddlDsistrict"  PromptText="  Select City  " Category="City" LoadingText="Loading City...."
+                                                ServiceMethod="ddlCity2">
+                                            </ajax:CascadingDropDown>--%>
+                                        </div>
+                                    </div>
+                                    <div id="div1_landmark" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            Landmark</label>
+                                        <div class="controls input-icon">
+                                            <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtlandmark" onkeyup="LandMarkValidate();" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Enter Landmark"></asp:TextBox>
+                                            <span id="span1_landmark" data-original-title="please write a valid LandMark">
+                                                <!--Tooltip-->
+                                                <i id="i1_landmark"></i>
+                                                <!--Icon-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <br clear="all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <h4>
+                                <i class="icon-user"></i>Login Details:</h4>
+                            <span class="tools"><a href="javascript:;" id="A2" class="icon-chevron-down"></a></span>
+                        </div>
+                        <div id="div_LoginDetails" class="widget-body">
+                            <div class="form-horizontal">
+                                <div class="span6">
+                                    <div id="div1_username" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            Username</label>
+                                        <div class="controls input-icon">
+                                            <!--Icon put within Textbox-->
+                                            <asp:TextBox ID="txtusername" onkeyup="NewCheckusernameaAvailbilty();" CssClass="span10   tooltips" runat="server" Enabled="false" data-placement="right" data-original-title="Enter username"></asp:TextBox>
+                                            <span id="span1_username" data-original-title="please write a valid Username">
+                                                <!--Tooltip-->
+                                                <i id="i1_username"></i>
+                                                <!--Icon-->
+                                        </div>
+                                    </div>
+                                    <div id="div1_pass" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            Password</label>
+                                        <div class="controls">
+                                            <a  role="button" onclick="link_changepassword()" data-toggle="modal" href="#myModal2" class="btn btn-link">Change Password</a>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            </label>
+                                        <div class="controls">
+                                            <select style="display:none" class="span8" id="ddlquestion">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                             Security Pin</label>
+                                        <div class="controls">
+                                            <a   role="button" data-toggle="modal" href="#myModal3" class="btn btn-link">Change Security Pin</a></div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            </label>
+                                        <div class="controls">
+                                            <asp:TextBox ID="txtanswer" Visible="false" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Enter Answer"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br clear="all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <h4>
+                                <i class=" icon-star"></i>Bank Details:</h4>
+                            <span class="tools"><a href="javascript:;" id="A3" class="icon-chevron-down"></a></span>
+                        </div>
+                        <div id="div_Bankdetails" class="widget-body">
+                            <div class="form-horizontal">
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Bank Name</label>
+                                        <div class="controls">
+                                            <asp:TextBox ID="txtbankname" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Enter Bank Name"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            IFSC Code</label>
+                                        <div class="controls">
+                                            <asp:TextBox ID="txtifsccode" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Enter IFSC Code"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div id="div1_pan" class="control-group">
+                                        <!--Border Color-->
+                                        <label class="control-label">
+                                            PAN No</label>
+                                        <div class="input-icon">
+                                            <div id="pan" class="controls input-icon">
+                                                <!--Icon put within Textbox-->
+                                                <asp:TextBox ID="txtpan" CssClass="span10 tooltips" runat="server" onkeyup="ValidatePAN();" data-placement="right" data-original-title="Enter Pancard No." Style="text-transform: uppercase;"></asp:TextBox>
+                                                <span id="span1_pan" data-original-title="please write a valid PAN No">
+                                                    <!--Tooltip-->
+                                                    <i id="i1_pan"></i>
+                                                    <!--Icon-->
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                        </label>
+                                        <div class="controls">
+                                            <button class="btn btn-success" type="button" id="btSubmit" onclick="javascrip:SaveData();">
+                                                <i class="icon-edit icon-white"></i>Update</button>
+                                            <button class="btn btn-danger" runat="server" type="button" onclick="Cancel();" id="btCancel">
+                                                <i class="icon-ban-circle icon-white"></i>Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Bank Address</label>
+                                        <div class="controls">
+                                            <asp:TextBox ID="txtbankaddress" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Enter Bank Address"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Account Number</label>
+                                        <div class="controls">
+                                            <asp:TextBox ID="txtaccountno" CssClass="span10 tooltips" runat="server" data-placement="right" data-original-title="Enter Account Number"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                        </label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <br clear="all">
+                            </div>
+                            <div id="InfoDiv">
+                            </div>
+                            <div id="myModal2" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                ×</button>
+                                            <h4 id="myModalLabel2">
+                                                Change Password</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="ErrorDiv_Popup">
+                                            </div>
+                                            <div class="form-horizontal">
+                                                <div id="div1_old" class="control-group" style="display:none;">
+                                                    <!--Border Color-->
+                                                    <label class="control-label">
+                                                        Previous Password.</label>
+                                                    <div class="controls input-icon">
+                                                        <!--Icon put within Textbox-->
+                                                        <asp:TextBox ID="txt_p_old" onkeyup="checkoldPassword();" TextMode="Password" CssClass="span6 tooltips" runat="server" data-placement="right" data-original-title="Enter Previous Password"></asp:TextBox>
+                                                        <span id="span1_old" data-original-title="please write a valid Previous Password">
+                                                            <!--Tooltip-->
+                                                            <i id="i1_old"></i>
+                                                            <!--Icon-->
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div id="div1_new" class="control-group">
+                                                    <!--Border Color-->
+                                                    <label class="control-label">
+                                                        New Password</label>
+                                                    <div class="controls input-icon">
+                                                        <!--Icon put within Textbox-->
+                                                        <asp:TextBox ID="txt_p_new" onkeyup="NewPassword();" CssClass="span6 tooltips" TextMode="Password" runat="server" data-placement="right" data-original-title="Enter New Password"></asp:TextBox>
+                                                        <span id="span1_new" data-original-title="please write a valid New Password">
+                                                            <!--Tooltip-->
+                                                            <i id="i1_new"></i>
+                                                            <!--Icon-->
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div id="div1_repassword" class="control-group">
+                                                    <!--Border Color-->
+                                                    <label class="control-label">
+                                                        Re-Password</label>
+                                                    <div class="controls input-icon">
+                                                        <!--Icon put within Textbox-->
+                                                        <asp:TextBox ID="txt_p_re" onkeyup="RepasswordP();" CssClass="span6 tooltips" TextMode="Password" runat="server" data-placement="right" data-original-title="Enter Re-Password"></asp:TextBox>
+                                                        <span id="span1_repassword" data-original-title="please write a valid Re-Password">
+                                                            <!--Tooltip-->
+                                                            <i id="i1_repassword"></i>
+                                                            <!--Icon-->
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-success" type="button" id="PasswordSubmit" onclick="javascrip:changepassword();">
+                                                <i class="icon-ok icon-white"></i>Change Password</button>
+                                            <button class="btn btn-danger" data-dismiss="modal" runat="server" type="button" id="Button2">
+                                                <i class="icon-ban-circle icon-white"></i>Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="myModal3" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                ×</button>
+                                            <h4 id="H1">
+                                               Change Security Pin</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="ErrorDiv_Popup2">
+                                            </div>
+                                            <div class="form-horizontal">
+                                                <div id="div1_old2" class="control-group" style="display:none;">
+                                                    <!--Border Color-->
+                                                    <label class="control-label">
+                                                        Previous Pin.</label>
+                                                    <div class="controls input-icon">
+                                                        <!--Icon put within Textbox-->
+                                                        <asp:TextBox ID="txt_p_old2" onkeyup="checkoldPassword2();" TextMode="Password" CssClass="span6 tooltips" runat="server" data-placement="right" data-original-title="Enter Previous Pin"></asp:TextBox>
+                                                        <span id="span1_old2" data-original-title="please write a valid Previous Pin">
+                                                            <!--Tooltip-->
+                                                            <i id="i1_old2"></i>
+                                                            <!--Icon-->
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div id="div1_new2" class="control-group">
+                                                    <!--Border Color-->
+                                                    <label class="control-label">
+                                                        New Pin</label>
+                                                    <div class="controls input-icon">
+                                                        <!--Icon put within Textbox-->
+                                                        <asp:TextBox ID="txt_p_new2" onkeyup="NewPassword2();" CssClass="span6 tooltips" TextMode="Password" runat="server" data-placement="right" data-original-title="Enter New Pin"></asp:TextBox>
+                                                        <span id="span1_new2" data-original-title="please write a valid New Pin">
+                                                            <!--Tooltip-->
+                                                            <i id="i1_new2"></i>
+                                                            <!--Icon-->
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div id="div1_repassword2" class="control-group">
+                                                    <!--Border Color-->
+                                                    <label class="control-label">
+                                                        Re-Pin</label>
+                                                    <div class="controls input-icon">
+                                                        <!--Icon put within Textbox-->
+                                                        <asp:TextBox ID="txt_p_re2" onkeyup="RepasswordP2();" CssClass="span6 tooltips" TextMode="Password" runat="server" data-placement="right" data-original-title="Enter Re-Pin"></asp:TextBox>
+                                                        <span id="span1_repassword2" data-original-title="please write a valid Re-Pin">
+                                                            <!--Tooltip-->
+                                                            <i id="i1_repassword2"></i>
+                                                            <!--Icon-->
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-success" type="button" id="PasswordTransactionSubmit" onclick="javascrip:changepassword2();">
+                                                <i class="icon-ok icon-white"></i>Change Pin</button>
+                                            <button class="btn btn-danger" data-dismiss="modal" runat="server" type="button" id="Button4">
+                                                <i class="icon-ban-circle icon-white"></i>Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </span></span></span></span></span></span></span></span>
+</asp:Content>
+***************
+[WebMethod]
+    public string UpdateMemberProfile1(string regno, string QueryType, string intResult, string title, string fname, string lname, string fatherName, string dob, string Gender, string mobile, string emailID, string sid, string oState, string Ctid, string oCity, string pincode, string address, string LandMark, string LoginID, string firstS_Qid, string firstS_ANS, string coreBank, string bankaddress, string IFSCCode, string accountNo, string CountryID, string distid, string distName, string pancard, string nomname, string relation,string phone,string profession)
+    {
+        string ResultStatus = "0";
+
+
+        //try
+        //{
+        regno = Convert.ToString(objDUT.GetScalar("Select regno from Member_master where loginid='" + LoginID + "'"));
+
+        SqlParameter[] param = new SqlParameter[33];
+        param[0] = new SqlParameter("@regno", SqlDbType.BigInt);
+        param[0].Value = regno;
+        param[1] = new SqlParameter("@QueryType", SqlDbType.VarChar, 50);
+        param[1].Value = "update";
+        param[2] = new SqlParameter("@intResult", SqlDbType.Int, 4);
+        param[2].Direction = ParameterDirection.Output;
+        param[3] = new SqlParameter("@title", SqlDbType.VarChar, 50);
+        param[3].Value = title;
+        param[4] = new SqlParameter("@fname", SqlDbType.VarChar, 50);
+        param[4].Value = fname;
+        param[5] = new SqlParameter("@lname", SqlDbType.VarChar, 100);
+        param[5].Value = lname;
+        param[6] = new SqlParameter("@dob", SqlDbType.VarChar, 50);
+        param[6].Value = dateformat(dob);
+        param[7] = new SqlParameter("@Gender", SqlDbType.Int);
+        param[7].Value = Gender;
+        param[8] = new SqlParameter("@mobile", SqlDbType.VarChar, 100);
+        param[8].Value = mobile;
+        param[9] = new SqlParameter("@emailID", SqlDbType.VarChar, 100);
+        param[9].Value = emailID;
+        param[10] = new SqlParameter("@sid", SqlDbType.Int);
+        param[10].Value = sid;
+        param[11] = new SqlParameter("@oState", SqlDbType.VarChar, 100);
+        param[11].Value = oState;
+        param[12] = new SqlParameter("@Ctid", SqlDbType.Int);
+        param[12].Value = Ctid;
+        param[13] = new SqlParameter("@oCity", SqlDbType.VarChar, 100);
+        param[13].Value = oCity;
+        param[14] = new SqlParameter("@pincode", SqlDbType.VarChar, 50);
+        param[14].Value = pincode;
+        param[15] = new SqlParameter("@address", SqlDbType.VarChar, 100);
+        param[15].Value = address;
+        param[16] = new SqlParameter("@LandMark", SqlDbType.VarChar, 100);
+        param[16].Value = LandMark;
+        param[17] = new SqlParameter("@LoginID", SqlDbType.VarChar, 100);
+        param[17].Value = LoginID;
+        param[18] = new SqlParameter("@firstS_Qid", SqlDbType.VarChar, 100);
+        param[18].Value = firstS_Qid;
+        param[19] = new SqlParameter("@firstS_ANS", SqlDbType.VarChar, 100);
+        param[19].Value = firstS_ANS;
+        param[20] = new SqlParameter("@coreBank", SqlDbType.VarChar, 100);
+        param[20].Value = coreBank;
+        param[21] = new SqlParameter("@branchCode", SqlDbType.VarChar, 100);
+        param[21].Value = bankaddress;
+        param[22] = new SqlParameter("@IFSCCode", SqlDbType.VarChar, 100);
+        param[22].Value = IFSCCode;
+        param[23] = new SqlParameter("@accountNo", SqlDbType.VarChar, 100);
+        param[23].Value = accountNo;
+        param[24] = new SqlParameter("@countryid", SqlDbType.Int, 4);
+        param[24].Value = CountryID;
+        param[25] = new SqlParameter("@fatherName", SqlDbType.VarChar, 100);
+        param[25].Value = fatherName;
+        param[26] = new SqlParameter("@distid", SqlDbType.Int, 4);
+        param[26].Value = distid;
+        param[27] = new SqlParameter("@odistrict", SqlDbType.VarChar, 100);
+        param[27].Value = distName;
+        param[28] = new SqlParameter("@pancard", SqlDbType.VarChar, 100);
+        param[28].Value = pancard;
+        param[29] = new SqlParameter("@nomname", SqlDbType.VarChar, 200);
+        param[29].Value = nomname;
+        param[30] = new SqlParameter("@relation", SqlDbType.VarChar, 200);
+        param[30].Value = relation;
+        param[31] = new SqlParameter("@phone", SqlDbType.VarChar, 30);
+        param[31].Value = phone;
+        param[32] = new SqlParameter("@profession", SqlDbType.VarChar, 100);
+        param[32].Value = profession;
+
+        int result = objDUT.ExecuteSqlSP(param, "sp_manageMemberProfile1");
+        if (result == 1)
+        {
+            ResultStatus = "1";
+        }
+        else if (result == 2)
+        {
+            ResultStatus = "2";
+        }
+        else
+        {
+            ResultStatus = "0";
+        }
+        //}
+        //catch (Exception excep)
+        //{
+        //    ResultStatus = "0";
+        //}
+        return ResultStatus;
+    }*******
+****************
+
+
+
+
+CREATE Procedure [sp_manageMemberProfile1]                                  
+
+--- Compulsory Parameters                                  
+
+@regno bigint ,                                  
+
+@QueryType  Varchar(100) = '',                                                      
+
+--- Update Details Parameters                                  
+
+@title Varchar(100) ='',                                  
+
+@fname Varchar(100) = '',                                  
+
+@lname Varchar(100) ='' ,                                  
+
+@dob datetime='01/01/1900',        
+
+@Gender int ='',                                  
+
+@mobile Varchar(20) ='', 
+
+@phone varchar(30)='',
+
+@profession varchar(100)='',                                 
+
+@emailID Varchar(100) ='',                                  
+
+@sid  int ='',                                  
+
+@oState Varchar(100) ='',                                  
+
+@distid int ='',                                  
+
+@odistrict Varchar(100) ='',                                  
+
+@Ctid int ='',                                  
+
+@oCity Varchar(100) ='',                                  
+
+@pincode int ='',                                  
+
+@address Varchar(200) ='',                                  
+
+@LandMark Varchar(100) ='',                                  
+
+@LoginID Varchar(100) ='',                                  
+
+@firstS_Qid Varchar(max) ='',                                  
+
+@firstS_ANS Varchar(max) ='',                                  
+
+@coreBank Varchar(1000) ='',                                  
+
+@branchCode Varchar(100) ='',                                  
+
+@IFSCCode Varchar(100) ='',                                  
+
+@accountNo Varchar(100) ='',                                
+
+@countryid int=96,                                
+
+@fatherName Varchar(100)='',                      
+
+@intResult int out ,              
+
+@pancard varchar(50)='',            
+
+@nomname varchar(200)='',            
+
+@relation varchar(200)=''      
+
+                              
+
+As                                  
+
+Begin                                  
+
+ -- Variable Initalize                                  
+
+                                   
+
+ SET NOCOUNT ON                                  
+
+ Set @intResult  = 0 ;                                  
+
+                                  
+
+ --    Update Profile In Member_Master                                  
+
+IF @QueryType = 'update'                                  
+
+ Begin                                  
+
+    set @address=REPLACE(@address,'''','')              
+
+ set @address=REPLACE(@address,'"','')              
+
+ set @LandMark=replace(@LandMark,'''','')                     
+
+                      
+
+                      
+
+   Begin Transaction                                   
+
+ If Exists(Select 1 from member_Master where regNo=@regno)                                  
+
+     Begin                                  
+
+                
+
+  select @Ctid=CTID from city where cityName=@oCity              
+
+  set @Ctid=isnull(@Ctid,0)              
+
+                
+
+  Update Member_Master Set title = @title, fname=@fname,lname=@lname , fat_husName=@fatherName, dob =@dob,      
+
+  Gender=@Gender, mobile=@mobile,phone=@phone,profession=@profession,emailID=@emailID ,sid=@sid,oState=@oState ,Ctid=@Ctid ,oCity=@oCity ,pincode=@pincode ,      
+
+  address=replace(@address,'''',''),LandMark=Replace(@LandMark,'''',''), coreBank=@coreBank,      
+
+  branch= replace(@branchCode,'''',''),IFSCCode=@IFSCCode,accountNo=@accountNo,cid=@countryid,      
+
+  district=@distid,distName=@odistrict,mempan=@pancard,nomname=@nomname,relation=@relation     
+
+   where Regno= @regno                                  
+
+  if(@@error <> 0)                                  
+
+   Begin                                  
+
+   Set @intResult = 0;                                  
+
+   Rollback Transaction                                  
+
+   Return                                  
+
+   End   
+
+        
+
+ if(@firstS_Qid='null')
+
+  set @firstS_Qid =0 ;
+
+ Update Member_login set Secret_QID=@firstS_Qid, Secret_ANS =@firstS_ANS where Regno = @regno                      
+
+  if(@@error <> 0)                                  
+
+   Begin                                  
+
+   Set @intResult = 0;                                  
+
+   Rollback Transaction                                  
+
+   Return                  
+
+   End                                  
+
+    End                                  
+
+   else                                  
+
+    Begin                                  
+
+  Set @intResult = 0;  -- Member Not Exists.                                  
+
+  Rollback Transaction                                   
+
+  Return                          
+
+  End                                  
+
+               
+
+ Set @intResult = 1;                                  
+
+ Commit Transaction                   
+
+                                    
+
+                                    
+
+ End                                  
+
+ --    Save Profile In Member_Master                                  
+
+ IF @QueryType = 'save'                                  
+
+  Begin                           
+
+  Begin Transaction                                   
+
+  Commit Transaction                                  
+
+  End                                  
+
+End 
+***************

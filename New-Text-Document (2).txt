@@ -1,0 +1,1487 @@
+  <asp:Repeater ID="Currency_MasterRep" runat="server" OnItemCommand="Currency_MasterRep_ItemCommand"
+                                    OnItemDataBound="Currency_MasterRep_ItemDataBound">
+                                    <ItemTemplate>
+                                        <li><a href='CurrencySessionManage.aspx?CMID=<%#  Eval("CMID") %>&CountryID=<%#  Eval("CID") %>'>
+                                            <span class="photo">
+                                                <img src='<%# Eval("Flag") %>' alt="flag" /></span>
+
+                                             <span class="subject">
+                                                    <span class="from"> <%# Eval("CurrencyName")%></span>
+
+                                                     <span class="time">
+                                                          <%# Eval("CurrencySymbol") %>
+                                                        <%# Eval("CurrencyRate", "{0:f}")%>
+                                                        <%# Eval("CurrencyCode")%>
+                                                    </span>
+
+                                              </span>
+                                            
+                                                <span class="message">
+                                                        <%# Eval("CountryName")%>
+                                                    </span></a></li>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+____________________________________
+
+            //var catid = $("#sel1").val();
+            ////if (catid == "0") {
+            ////    $('#errorDiv').show();
+            ////    $("#errorDiv").html("Select Partner Category Name");
+            ////    $('#errorDiv').removeClass().addClass("alert alert-danger");
+            ////    return false;
+            ////}
+
+            //if (!catid.match(DropDownListValidate(catid))) {
+            //    return false;
+            //}
+            //
+              //-------------Patrner name---------------------------------------//
+            <%--  var partnerName = $("#<%=txtParName.ClientID%>").val();
+            if (partnerName.match(inputCharacter(partnerName))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter Empty Fild");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }--%>
+
+          <%--  var partnerName = $("#<%=txtParName.ClientID%>").val();
+            if (!partnerName.match(inputcharacter(partnerName))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }--%>
+
+   var partnerName = $("#<%=txtParName.ClientID%>").val();
+
+            //if (partnerName.match(inputcharacter(partnerName))) {
+            // if (partnerName=="") {
+            var A = inputcharacter(partnerName)
+             if (partnerName.match(A)) {
+               $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+        
+            //---------------------------Mobile Validation-----------------//
+
+            <%--var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+           
+            if (!partnerMobile.match(inputcharacter(partnerMobile))) {
+                return false;
+            }
+            var Mobile = MobileNumberRange(partnerMobile);
+            if (!partnerMobile.match(Mobile)) {
+                     return false; 
+                }}
+         
+         //------------------------------Phone Validation-------------------------------------//
+           var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+        
+
+            if (!partnerPhone.match(inputcharacter(partnerPhone))) {
+                return false;
+            }
+
+           // var Phone = PhoneNumberRange(partnerPhone);
+            if (!partnerPhone.match(PhoneNumberRange(partnerPhone)))
+            {
+             return false;
+            }
+
+           
+         
+    //--------------------Email Validation------------//
+         var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+
+         if (!partnerEmail.match(inputcharacter(partnerEmail))) {
+             return false;
+         }
+ 
+         if (!partnerEmail.match(EmailValidation(partnerEmail))){
+             return false;
+         }
+
+        
+
+            //----------------------Website Validation-------------//
+
+         var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+         
+            if (!partnerWebsite.match(inputcharacter(partnerWebsite))) {
+             return false;
+         }
+
+            if (!partnerWebsite.match(WebsiteValidation(partnerWebsite))) {
+             return false;
+         }
+
+
+        //---------------------Contect Partner--------------------//
+             var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+            if (!partnerContactPerson.match(inputcharacter(partnerContactPerson))) {
+                    return false;
+                }
+
+        
+
+        //---------------------------Adress Validation-------------------------//
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (!partnerAddress.match(inputcharacter(partnerAddress))) {
+                return false;
+            }
+
+            if (!partnerAddress.match(AddressRange(partnerAddress))) {
+                return false;
+            }--%>
+
+
++435457685678
++7275109463444432
+
+	var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+
+            if (!partnerPhone.match(inputcharacter(partnerPhone))) {  
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            
+
+            if (!partnerPhone.match(isNotNubmer(partnerPhone))) {    
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Only Number In Phone");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+            if (!partnerPhone.match(phoneNumberRange(partnerPhone))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Phone  Number 8 to 12 Range With Country Code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            //--------------------Adress Validation------//
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (!partnerAddress.match(AddressRange(partnerAddress))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Phone  Number 8 to 12 Range With Country Code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+-----------------------------------------------------------------------
+ var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (!partnerAddress.match(AddressRange(partnerAddress))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Partner Address  10 to 50 Characters");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            if (!partnerAddress.match(inputcharacter(partnerAddress))) {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please Enter Address");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+-------------------------------------
+ var catid = $("#sel1").val();
+            if (catid == "0") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Select Partner Category Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+            
+
+            if (partnerName == "") {
+                $("#errorDiv").html("Please enter partner name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            
+           
+
+            //-----------------Mobile Valiadtion----------------------//
+            var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            if (partnerMobile == "") {
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            if (partnerPhone.length >= 8 && partnerPhone.length <= 12) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-success');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>__Vailid Number </strong> ");
+                return true;
+            }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter the Range 8 to 12 number");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+
+                //--------------------Email  Validation---------------------//
+
+                var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+                if (partnerEmail == "") {
+                    $("#errorDiv").html("Please enter partner email");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+
+
+                var partnerPhone = $("#<%=txtParMobile.ClientID%>").val();
+                if (partnerPhone == "") {
+                    $("#errorDiv").html("Please enter partner mobile no with country code");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+
+                var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+                if (partnerContactPerson == "") {
+                    $("#errorDiv").html("Please enter partner Contact Person");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+
+                var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+                if (partnerWebsite == "") {
+                    $("#errorDiv").html("Please enter partner  Website");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+
+
+                var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+                if (partnerAddress == "") {
+                    $("#errorDiv").html("Please enter partner Address");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+----------------------------
+<%-- var catid = $("#sel1").val();
+            if (catid == "0") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Select Partner Category Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+            
+
+            if (partnerName == "") {
+                $("#errorDiv").html("Please enter partner name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }--%>
+
+            
+           
+
+            //-----------------Mobile Valiadtion----------------------//
+            <%--var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            --%>//if (partnerMobile == "") {
+             <%--   $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            if (partnerPhone.length >= 8 && partnerPhone.length <= 12) {
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').show();
+                $('#errorDiv').removeClass().addClass('alert alert-success');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> <strong>__Vailid Number </strong> ");
+                return true;
+            }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter the Range 8 to 12 number");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+
+                //--------------------Email  Validation---------------------//
+
+                var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+                if (partnerEmail == "") {
+                    $("#errorDiv").html("Please enter partner email");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }
+--%>
+
+<%--                var partnerPhone = $("#<%=txtParMobile.ClientID%>").val();
+                if (partnerPhone == "") {
+                    $("#errorDiv").html("Please enter partner mobile no with country code");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }--%>
+
+               <%-- var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+                if (partnerContactPerson == "") {
+                    $("#errorDiv").html("Please enter partner Contact Person");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }--%>
+
+               // var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+                //if (partnerWebsite == "") {
+                //    $("#errorDiv").html("Please enter partner  Website");
+                //    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                //    return false;
+                //}
+
+
+                <%--var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+                if (partnerAddress == "") {
+                    $("#errorDiv").html("Please enter partner Address");
+                    $('#errorDiv').removeClass().addClass("alert alert-danger");
+                    return false;
+                }--%>
+
+
+-----------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.Services;
+using System.Data.SqlClient;
+
+public partial class BOA_deposit_accnt : System.Web.UI.Page
+{
+    Utility objUT = new Utility();
+    protected System.Web.UI.WebControls.TextBox txtSearch;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Request.QueryString.Count > 0)
+        {
+            if (Request.QueryString[0].ToString().ToUpper() == "DL")
+            {
+                page_title.Text = "Downline List";
+                small_page_title.Text = "View Downline List";
+                lbl_menuname.Text = "Downline List";
+                acnker1.HRef = "~/BOA/GetDistID.aspx?id=DL";
+                lbl_menuname1.Text = "MemberView";
+                acnker2.HRef = "~/BOA/Default.aspx";
+                lbl_boxheader.Text = "Downline List";
+            }
+            if (Request.QueryString[0].ToString().ToUpper() == "GL")
+            {
+                page_title.Text = "Matrix Tree";
+                small_page_title.Text = "View Matrix Tree";
+                lbl_menuname.Text = "Matrix Tree";
+                acnker1.HRef = "~/BOA/GetDistID.aspx?id=GL";
+                lbl_menuname1.Text = "Network Manager";
+                acnker2.HRef = "~/BOA/Default.aspx";
+                lbl_boxheader.Text = "Matrix Tree";
+            }
+            if (Request.QueryString[0].ToString().ToUpper() == "VB")
+            {
+                page_title.Text = "View Board";
+                small_page_title.Text = "View Board details of Member";
+                lbl_menuname.Text = "View Board";
+                acnker1.HRef = "~/BOA/GetDistID.aspx?id=VB";
+                lbl_menuname1.Text = "Board Details";
+                acnker2.HRef = "~/BOA/Default.aspx";
+                lbl_boxheader.Text = "View Board";
+            }
+            if (Request.QueryString[0].ToString().ToUpper() == "BH")
+            {
+                page_title.Text = "Board History";
+                small_page_title.Text = "View Board History of Member";
+                lbl_menuname.Text = "Board History";
+                acnker1.HRef = "~/BOA/GetDistID.aspx?id=BH";
+                lbl_menuname1.Text = "Board Details";
+                acnker2.HRef = "~/BOA/Default.aspx";
+                lbl_boxheader.Text = "Board History";
+            }
+
+            if (Request.QueryString[0].ToString().ToUpper() == "VP")
+            {
+                page_title.Text = "View Profile";
+                small_page_title.Text = "View Profile of Member";
+                lbl_menuname.Text = "View Profile";
+                acnker1.HRef = "~/BOA/GetDistID.aspx?id=VP";
+                lbl_menuname1.Text = "Member View";
+                acnker2.HRef = "~/BOA/Default.aspx";
+                lbl_boxheader.Text = "View Profile";
+            }
+            if (Request.QueryString[0].ToString().ToUpper() == "LD")
+            {
+                page_title.Text = "Level Details";
+                small_page_title.Text = "View Level Details";
+                lbl_menuname.Text = "Level Details";
+                acnker1.HRef = "~/BOA/GetDistID.aspx?id=LD";
+                lbl_menuname1.Text = "Member View";
+                acnker2.HRef = "~/BOA/Default.aspx";
+                lbl_boxheader.Text = "Level Details";
+
+            }
+            if (Request.QueryString[0].ToString().ToUpper() == "SP")
+            {
+                page_title.Text = "Sell Product";
+                small_page_title.Text = "Sell product to member";
+                lbl_menuname.Text = "Sell Product";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Product Manager";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=SP";
+                lbl_boxheader.Text = "Sell Product";
+
+            }
+
+            // Welcome Letter
+            if (Request.QueryString[0].ToString().ToUpper() == "WL")
+            {
+                page_title.Text = "Welcome Letter";
+                small_page_title.Text = "Download welcome letter";
+                lbl_menuname.Text = "Welcome Letter";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Profile Manager";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=WL";
+                lbl_boxheader.Text = "Welcome Letter";
+
+            }
+
+
+            // EdProfile
+            if (Request.QueryString[0].ToString().ToUpper() == "EP")
+            {
+                page_title.Text = "Edit Profile";
+                small_page_title.Text = "edit member profile";
+                lbl_menuname.Text = "Edit Profile";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Profile Manager";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=EP";
+                lbl_boxheader.Text = "Edit Profile";
+
+            }
+
+            // board Entry
+            if (Request.QueryString[0].ToString().ToUpper() == "BE")
+            {
+                page_title.Text = "Board Entry";
+                small_page_title.Text = "view board entry of Member";
+                lbl_menuname.Text = "Network Manager";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Board Entry";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=BE";
+                lbl_boxheader.Text = "Board Entry";
+
+            }
+            //Deposite Report
+            if (Request.QueryString[0].ToString().ToUpper() == "DPR")
+            {
+                page_title.Text = "Deposit Report";
+                small_page_title.Text = "View Deposit Report";
+                lbl_menuname.Text = "Deposit Report";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Member Wise";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=DPR";
+                lbl_boxheader.Text = "Deposit Report";
+
+            }
+            // Deduction Report
+            if (Request.QueryString[0].ToString().ToUpper() == "DDR")
+            {
+                page_title.Text = "Deduction Report";
+                small_page_title.Text = "view Deduction Report";
+                lbl_menuname.Text = "Deduction Report";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Member Wise";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=DDR";
+                lbl_boxheader.Text = "Deduction Report";
+
+            }
+            // Downline Purchase
+            if (Request.QueryString[0].ToString().ToUpper() == "DLP")
+            {
+                page_title.Text = "Downline Purchased";
+                small_page_title.Text = "view Downline Purchased";
+                lbl_menuname.Text = "Downline Purchased";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Network Manager";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=DLP";
+                lbl_boxheader.Text = "Downline Purchased";
+
+            }
+
+            // Member Wise TDS Report
+            if (Request.QueryString[0].ToString().ToUpper() == "MWTDS")
+            {
+                page_title.Text = "TDS Report";
+                small_page_title.Text = "View TDS report member wise";
+                lbl_menuname.Text = "Member Wise";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "TDS Report";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=MWTDS";
+                lbl_boxheader.Text = "TDS Report";
+
+            }
+
+            // Currency Wallet SummaryKYCFRM
+            if (Request.QueryString[0].ToString().ToUpper() == "CWS")
+            {
+                page_title.Text = "Currency Wallet Summary";
+                small_page_title.Text = "View Currency Wallet Summary Member Wise";
+                lbl_menuname.Text = "Currency Wallet";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Summary";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=CWS";
+                lbl_boxheader.Text = "Currency Wallet";
+
+            }
+
+            // KYCFRM summary
+            if (Request.QueryString[0].ToString().ToUpper() == "KYCFRM")
+            {
+                page_title.Text = "KYC Form";
+                small_page_title.Text = "View & Download KYC Form";
+                lbl_menuname.Text = "KYC Form";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Profile Manager";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=KYCFRM";
+                lbl_boxheader.Text = "KYC Form";
+
+            }
+            // Re-Entry Wallet Summary
+            if (Request.QueryString[0].ToString().ToUpper() == "REWSU")
+            {
+                page_title.Text = "Summary";
+                small_page_title.Text = "Reentry Wallet Summary of Member";
+                lbl_menuname.Text = "Summary";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Reentry Wallet";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=REWSU";
+                lbl_boxheader.Text = "Reentry Wallet Summary";  
+
+            }
+            // Re-Entry Wallet Statement
+            if (Request.QueryString[0].ToString().ToUpper() == "REWST")
+            {
+                page_title.Text = "Statements";
+                small_page_title.Text = "Reentry Wallet Statements of Member";
+                lbl_menuname.Text = "Statements";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Reentry Wallet";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=REWST";
+                lbl_boxheader.Text = "Reentry Wallet Statements";
+
+            }
+            // Re-Entry Wallet MIS  Summary
+            if (Request.QueryString[0].ToString().ToUpper() == "REWMS")
+            {
+                page_title.Text = "MIS Summary";
+                small_page_title.Text = "Reentry Wallet MIS Summary of Member";
+                lbl_menuname.Text = "MIS Summary";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Reentry Wallet";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=REWMS";
+                lbl_boxheader.Text = "Reentry Wallet MIS Summary";
+
+            }
+
+            // Sponsor list
+            if (Request.QueryString[0].ToString().ToUpper() == "SL")
+            {
+                page_title.Text = "Sponsor List";
+                small_page_title.Text = "View Member Sponsor List";
+                lbl_menuname.Text = "Sponsor List";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Network Manager";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=Sl";
+                lbl_boxheader.Text = "Sponsor List";
+            }
+
+            // Account Summary
+            if (Request.QueryString[0].ToString().ToUpper() == "AS")
+            {
+                page_title.Text = "Account Summary";
+                small_page_title.Text = "View Account Summary of Member";
+                lbl_menuname.Text = "Financial Manager";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Account Summary";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=AS";
+                lbl_boxheader.Text = "Account Summary";
+            }
+
+            // Currency Wallet Summary
+            if (Request.QueryString[0].ToString().ToUpper() == "CWSU")
+            {
+                page_title.Text = "Currency Wallet Summary";
+                small_page_title.Text = "View Currency Wallet Summary of Member";
+                lbl_menuname.Text = "Summary";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Currency Wallet";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=CWSU";
+                lbl_boxheader.Text = "Currency Wallet Summary";
+            }
+
+            // Currency Wallet Statements
+            if (Request.QueryString[0].ToString().ToUpper() == "CWST")
+            {
+                page_title.Text = "Currency Wallet Statement";
+                small_page_title.Text = "View Currency Wallet Statement of Member";
+                lbl_menuname.Text = "Statement";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Currency Wallet";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=CWST";
+                lbl_boxheader.Text = "Currency Wallet Statement";
+            }
+            // Vouchers Wallet Summary
+            if (Request.QueryString[0].ToString().ToUpper() == "VWSU")
+            {
+                page_title.Text = "Voucher Wallet Summary";
+                small_page_title.Text = "View Voucher Wallet Summary of Member";
+                lbl_menuname.Text = "Summary";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Voucher Wallet";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=VWSU";
+                lbl_boxheader.Text = "Voucher Wallet Summary";
+            }
+
+            // Vouchers Wallet Statements
+            if (Request.QueryString[0].ToString().ToUpper() == "VWST")
+            {
+                page_title.Text = "Voucher Wallet Statements";
+                small_page_title.Text = "View Voucher Wallet Statements of Member";
+                lbl_menuname.Text = "Summary";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Voucher Wallet";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=VWST";
+                lbl_boxheader.Text = "Voucher Wallet Statements";
+            }
+            // Payout Report member Wise
+            if (Request.QueryString[0].ToString().ToUpper() == "PRM")
+            {
+                page_title.Text = "Payout Report";
+                small_page_title.Text = "View payout report member wise";
+                lbl_menuname.Text = "Payout Report";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Member Wise";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=PRM";
+                lbl_boxheader.Text = "Payout Report Member Wise";
+            }
+            // Payout Deduction member Wise
+            if (Request.QueryString[0].ToString().ToUpper() == "PDM")
+            {
+                page_title.Text = "Payout Deduction";
+                small_page_title.Text = "View payout deduction report member wise";
+                lbl_menuname.Text = "Payout Deduction";
+                acnker1.HRef = "#";
+                lbl_menuname1.Text = "Member Wise";
+                acnker2.HRef = "~/BOA/GetDistID.aspx?id=PDM";
+                lbl_boxheader.Text = "Payout Deduction Report Member Wise";
+            }
+
+
+        }
+    }
+
+    protected void GetDistributorRegNo(object sender, EventArgs e)
+    {
+        string txtSearch2 = Request.Form["txtSearch"];
+        if(txtSearch2.Trim().Length <= 0 )
+        {
+            errorDiv.Attributes.Clear();
+            errorDiv.Attributes.Add("class", "alert alert-error");
+            errorDiv.InnerHtml = "<button data-dismiss='alert' class='close'>×</button>  <Strong> Required : </strong>  *  Please Enter  Username or DistributorID. !!! ";
+            return;
+        }
+        try
+        {
+            string strAssociateId = txtSearch2.Trim();
+            long regno = objUT.GetRegistrationNo(txtSearch2.Trim());
+            if (regno > 1)
+            {
+                Session["MaxReg1"] = regno;
+                Session["MaxReg"] = regno;
+                Session["MloginiD"] = txtSearch2.Trim();
+                if (Request.QueryString[0].ToString().ToUpper() == "VB")
+                {
+                    Response.Redirect("view_board.aspx");
+                }
+                if (Request.QueryString[0].ToString().ToUpper() == "DL")
+                {
+                    Response.Redirect("DownlineList.aspx");
+                   // Response.Redirect("Downline.aspx?type=DOWNLINE&ID=000000");
+                }
+                if (Request.QueryString[0].ToString().ToUpper() == "BH")
+                {
+                    Response.Redirect("Board_History.aspx");
+                }
+                if (Request.QueryString[0].ToString().ToUpper() == "GL")
+                {
+                    //Response.Redirect("Genealogy.aspx");
+                    Response.Redirect("TreeView.aspx");
+                }
+                if (Request.QueryString[0].ToString().ToUpper() == "VP")
+                {
+                    Response.Redirect("ProfileView.aspx?regno="+regno);
+                }
+                if (Request.QueryString[0].ToString().ToUpper() == "LD")
+                {
+                    Response.Redirect("earndetails.aspx");
+                }
+                if (Request.QueryString[0].ToString().ToUpper() == "SP")
+                {
+                    Response.Redirect("SellProduct.aspx");
+                }
+                // Welcome Letter  
+                if (Request.QueryString[0].ToString().ToUpper() == "WL")
+                {
+                    Response.Redirect("welcomeletter.aspx");
+                }
+                // Edit Profile  
+                if (Request.QueryString[0].ToString().ToUpper() == "EP")
+                {
+                    //  Response.Redirect("ProfileViewEdit.aspx");
+                    Response.Redirect("ProfileEdit.aspx");
+                }
+
+                // Board Entry  
+                if (Request.QueryString[0].ToString().ToUpper() == "BE")
+                {
+                    Response.Redirect("Boardentry.aspx");
+                }
+                // Deposite Report
+                if (Request.QueryString[0].ToString().ToUpper() == "DPR")
+                {
+                    Response.Redirect("depositreport.aspx");
+                }
+                // Deduction Report
+                if (Request.QueryString[0].ToString().ToUpper() == "DDR")
+                {
+                    Response.Redirect("deductionreport.aspx");
+                }
+                // Downline Purchase
+                if (Request.QueryString[0].ToString().ToUpper() == "DLP")
+                {
+                    Response.Redirect("DownLinePurchase_Detail.aspx");
+                }
+                // TDS Report Member Wise
+                if (Request.QueryString[0].ToString().ToUpper() == "MWTDS")
+                {
+                    Response.Redirect("TDSReportMemberWise.aspx");
+                }
+
+                //  Currency Wallet SummaryKYCFRM
+                if (Request.QueryString[0].ToString().ToUpper() == "CWS")
+                {
+                    Response.Redirect("CurrencyWalletSummary.aspx");
+                }
+
+                //  KYCFRM summary
+                if (Request.QueryString[0].ToString().ToUpper() == "KYCFRM")
+                {
+                    Response.Redirect("KYCForm.aspx");
+                }
+                //  Reentry Wallet Summary
+                if (Request.QueryString[0].ToString().ToUpper() == "REWSU")
+                {
+                    Response.Redirect("ReEntryWalletSummary.aspx");
+                }
+                //  Reentry Wallet Statements
+                if (Request.QueryString[0].ToString().ToUpper() == "REWST")
+                {
+                    Response.Redirect("ReEntryWalletStatements.aspx");
+                }
+                //  Reentry Wallet MIS Summary
+                if (Request.QueryString[0].ToString().ToUpper() == "REWMS")
+                {
+                    Response.Redirect("ReEntryWalletMISSummary.aspx");
+                }
+
+                //  Sponsor List
+                if (Request.QueryString[0].ToString().ToUpper() == "SL")
+                {
+                    Response.Redirect("SponsorList_New.aspx");
+                }
+                //  Account Summary
+                if (Request.QueryString[0].ToString().ToUpper() == "AS")
+                {
+                    Response.Redirect("AccountSummary.aspx");
+                }
+                
+               //  Currency Wallet Summary
+                if (Request.QueryString[0].ToString().ToUpper() == "CWSU")
+                {
+                    Response.Redirect("CurrencyWalletSummary.aspx");
+                }
+                //  Vouchers Wallet Summary
+                if (Request.QueryString[0].ToString().ToUpper() == "VWSU")
+                {
+                    Response.Redirect("VoucherWalletSummary.aspx");
+                }
+
+                //  Vouchers Wallet Statements
+                if (Request.QueryString[0].ToString().ToUpper() == "VWST")
+                {
+                    Response.Redirect("VoucherWalletStatements.aspx");
+                }
+                //  Payout Report member Wise
+                if (Request.QueryString[0].ToString().ToUpper() == "PRM")
+                {
+                    Response.Redirect("M_Payoutreport.aspx");
+                }
+                // Payout Deduction member Wise
+                if (Request.QueryString[0].ToString().ToUpper() == "PDM")
+                {
+                    Response.Redirect("Payoutdeduction_M.aspx");
+                }
+                // Currency wallet Statements
+                if (Request.QueryString[0].ToString().ToUpper() == "CWST")
+                {
+                    Response.Redirect("CurrencyWalletStatements.aspx");
+                }
+                
+            }
+            else
+            {
+                errorDiv.Attributes.Clear();
+                errorDiv.Attributes.Add("class", "alert alert-error");
+                errorDiv.InnerHtml = "<button data-dismiss='alert' class='close'>×</button>  <Strong> Error : </strong> * Sorry ,Wrong  Username or DistributorID. !!! ";
+            }
+        }
+        catch (Exception excep)
+        {
+            errorDiv.Attributes.Clear();
+            errorDiv.Attributes.Add("class", "alert alert-error");
+            errorDiv.InnerHtml = "<button data-dismiss='alert' class='close'>×</button>  <Strong> System Exception : </strong> There are some technical problem please try again.. !!! ";
+            return;
+        }
+    }
+}
+ 
+ ------
+<%@ Page Title="" Language="C#" MasterPageFile="~/BOA/adminDynamic.master" AutoEventWireup="true" CodeFile="GetDistID.aspx.cs" Inherits="BOA_deposit_accnt" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+
+   
+
+
+     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+   <%-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>  --%>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>  
+    <style>
+    .DisplayNone{
+  display:none;
+  
+}  
+    </style>
+    <script>
+        //________________________________________________ Document ready _________________________________
+
+        $(document).ready(function () {
+            SearchText();
+        
+        });
+
+        //________________________________________________ AutoComplete ready _________________________________
+
+        function SearchText() {
+            $(".autosuggest").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "getdata.asmx/GetAutoCompleteData",
+                        data: "{'username':'" + document.getElementById('txtSearch').value + "'}",
+                        dataType: "json",
+                        success: function (data) {
+                            response(data.d);
+                        },
+                        error: function (result) {
+                             
+                        }
+                    });
+                }
+            });
+        }
+        //________________________________________________ Button Click [Get  UserID  AutoComplete]  _________________________________
+
+        function GetMember_Details() {
+            var errorText = '';
+            username = document.getElementById('txtSearch').value;
+
+            if (username == "") {
+                errorText = " * Sorry , Enter the username. !!! <br>";
+            }
+            if (errorText != '') {
+                $('html, body').animate({ scrollTop: 0 }, '-10.2');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> "+errorText);
+                $('#errorDiv').addClass("alert alert-error");
+                $('#errorDiv').show();
+                $("#Div_memberDetails").addClass("DisplayNone");
+                $("#Div_AccountDetails").addClass("DisplayNone");
+                return false;
+            }
+            else {
+                $('#errorDiv').hide();
+                 GetEvoucherDetails(username);
+             }
+             
+        }
+            
+        
+  
+       
+      
+
+     //_______________________________________________ Cancel Button _____________________________
+
+     function Cancel() {
+         window.location.assign("Default.aspx");
+     }
+
+
+    </script>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+   
+ 
+
+     <!-- BEGIN PAGE -->  
+      <div id="main-content">
+         <!-- BEGIN PAGE CONTAINER-->
+         <div class="container-fluid">
+            <!-- BEGIN PAGE HEADER-->   
+            <div class="row-fluid">
+               <div class="span12">
+            
+                   <h3 class="page-title">
+                       <asp:Label ID="page_title" runat="server" Text="Label"></asp:Label>
+					<small>
+                        <asp:Label ID="small_page_title" runat="server" Text="Label"></asp:Label></small>
+                  </h3>
+                   <ul class="breadcrumb">
+                       <li>
+                           <a href="Default.aspx"><i class="icon-home"></i></a><span class="divider">&nbsp;</span>
+                       </li>
+                       <li><a id="acnker2" runat="server" >
+                           <asp:Label ID="lbl_menuname1" runat="server" Text=""></asp:Label></a><span class="divider">&nbsp;</span></li>
+                       <li><a id="acnker1" runat="server" >
+                           <asp:Label ID="lbl_menuname" runat="server" Text=""></asp:Label></a><span class="divider-last "  >&nbsp;</span></li>
+                         <li class="pull-right search-wrap">
+                                <form class="hidden-phone" action="MemberSearch.aspx" method="get">
+                                	<div class="search-input-area">
+                                        <input  id="Quick_member_Serch" class="search-query" type="text" placeholder="Quick Member Search">
+                                        <i class="icon-search"  id="btn_QuickMemberSearch" ></i>
+                                    </div>
+                                </form>
+                            </li>
+                   </ul>
+                   <!-- END PAGE TITLE & BREADCRUMB-->
+               </div>
+            </div>
+            <!-- END PAGE HEADER-->
+
+            <!--Enter Evoucher -->
+        
+             <div class="row-fluid">
+               <div class="span12">
+                  <div class="widget">
+                     <div class="widget-title">
+                        <h4><i class="icon-money"></i>
+                            <asp:Label ID="lbl_boxheader" runat="server" Text="Label"></asp:Label></h4>
+                        <span class="tools">
+                           <a href="javascript:;" class=icon-chevron-up" ></a>
+                        </span>
+                     </div>
+                      <div id="errorDiv" runat="server" > </div>
+             
+                     <div class="widget-body">
+          <%--              <form action="transfer_Evoucher.js">--%>
+                        <div class="form-horizontal" >
+                          
+                          <div class="control-group">
+                           
+                            <label class="control-label">User Name</label>
+                              <div class="controls">
+                                 <div class="input-append">
+                         <input type="text" id="txtSearch" name="txtSearch"   class="autosuggest span10  classic-search" autofocus="true" tabindex="1" /> 
+                                 <button class="btn" type="button" id="SchButton"  
+                                         onserverclick="GetDistributorRegNo"  runat="server" accesskey="13" 
+                                         tabindex="2" ><i class="icon-search"></i>
+                                 </button>
+                               </div> 
+                                                  
+                              </div>
+                                            
+                          </div>
+                        </div>
+                         
+                        <br clear="all">
+                          <p  align="center"  id="progressbar" >
+                           </p>
+                          <p align="center"  >
+                          
+                              
+                           </p>
+  				<%--		</form>--%>
+                     </div>
+                  </div>
+                  
+               </div>
+            </div>
+           
+            
+            <!-- END Enter Evoucher --> 
+
+          
+
+             <%--Success Div Begin--%>
+          
+           <%--  Success Div End--%>
+         </div>
+         <!-- END PAGE CONTAINER-->
+      </div>
+      <!-- END PAGE -->  
+        <!-- END FOOTER -->
+   <!-- BEGIN JAVASCRIPTS -->    
+   <!-- Load javascripts at bottom, this will reduce page load time -->
+   <script src="js/jquery-1.8.3.min.js"></script>
+   <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+   <script src="js/jquery.blockui.js"></script>
+   <!-- ie8 fixes -->
+   <!--[if lt IE 9]>
+   <script src="js/excanvas.js"></script>
+   <script src="js/respond.js"></script>
+   <![endif]-->
+   <script src="js/scripts.js"></script>
+     
+   <!-- END JAVASCRIPTS -->   
+</asp:Content>
+
+-----------------
+_____________
+ var error = 0;
+        if (!($('#checkboxid').is(':checked'))) {
+            error = 1
+            alert("Please Tick the Agree to Terms of Use");
+        }
+
+-=----------------
+
+  if($(this).is(":checked")){
+                alert("Checkbox is checked.");
+            }
+
+var isChecked = $('#chkSelect').is(':checked');
+        alert(isChecked);
+        if(isChecked)
+          $('p').html('Checkbox is checked: <b>True</b>');
+---------------------------
+
+ function CheckValidation(check)
+   {
+       if (check.is(':checked'))
+       {
+
+       }
+
+   }
+
+----------------------
+
+1
+var isChecked = $('#chkSelect').attr('checked')?true:false;
+
+
+var isChecked = $('#chkSelect').prop('checked');
+
+
+var isChecked = $('#chkSelect:checked').val()?true:false;
+
+
+var isChecked = $('#chkSelect').is(':checked');
+------------------------------------
+
+ function updateProduct()
+        {
+            
+            alert("hello")
+            var catid = $("#sel1").val();
+            if (catid == "0") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Select Partner Category Name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+       
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+            if (partnerName == "") {
+                $("#errorDiv").html("Please enter partner name");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            
+            //---------------------------Mobile Validation-----------------//
+
+            var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            if (partnerMobile == "") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+            //if (!partnerMobile == "") {
+            //    return MobileNumberRange(partnerMobile)
+            //    }
+
+            if (partnerMobile.length ==10) { }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter the 10 degite number");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+            //------------------------------Phone Validation-------------------------------------//
+            var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+            if (partnerPhone == "") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+            
+            }
+
+            //if (!partnerPhone=="")
+            //{
+            //    return PhoneNumberRange(partnerPhone);
+            //}
+             
+            if (partnerPhone.length >= 8 && partnerPhone.length <= 12) {
+               
+
+            }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter the Range 8 to 12 number");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+        
+
+         
+    //--------------------Email Validation------------//
+         var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+         if (partnerEmail == "") {
+
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter partner email");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+         var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+         var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+         if (!partnerEmail.match(filter)) {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter Email @gmail.com Format");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+   //----------------------Website Validation-------------//
+         var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+         if (partnerWebsite == "") {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter partner  Website");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+
+         var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+         var regexQuery = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+         if (!partnerWebsite.match(regexQuery)) {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter http:// Format");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+
+
+         var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+            if (partnerContactPerson == "") {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter partner Contact Person");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+         }
+
+        
+
+//---------------------------Adress Validation------------//
+         var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (partnerAddress == "") {
+             $('#errorDiv').show();
+             $("#errorDiv").html("Please enter partner Address");
+             $('#errorDiv').removeClass().addClass("alert alert-danger");
+             return false;
+            }
+         
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+
+            if (partnerAddress.length >= 10 && partnerAddress.length < 50) {
+
+            }
+            else {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter Maximummn 10 charecter");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+
+
+            }
+
+-------------------------------------
+ var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+            if (partnerMobile == "") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+
+            var Mobile = MobileNumberRange(partnerMobile);
+            if (!partnerMobile.match(Mobile)) {
+                     return false; 
+                }
+
+         
+            //------------------------------Phone Validation-------------------------------------//
+           var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+            if (partnerPhone == "") {
+                $('#errorDiv').show();
+                $("#errorDiv").html("Please enter partner mobile no with country code");
+                $('#errorDiv').removeClass().addClass("alert alert-danger");
+                return false;
+            }
+
+           // var Phone = PhoneNumberRange(partnerPhone);
+            if (!partnerPhone.match(PhoneNumberRange(partnerPhone)))
+            {
+             return false;
+            }
+
+
+
+
+
+-----------------------------------------
+       function updateProduct()
+        {
+            alert("hello");
+           
+
+            var catid = $("#sel1").val();
+            //if (catid == "0") {
+            //    $('#errorDiv').show();
+            //    $("#errorDiv").html("Select Partner Category Name");
+            //    $('#errorDiv').removeClass().addClass("alert alert-danger");
+            //    return false;
+            //}
+
+            if (!catid.match(DropDownListValidate(catid))) {
+                return false;
+            }
+
+       
+            var partnerName = $("#<%=txtParName.ClientID%>").val();
+           
+            if (!partnerName.match(inputcharacter(partnerName))) {
+                return false;
+            }
+          
+
+            if (!partnerName.match(characterValidation(partnerName))) {
+                return false;
+            }
+
+           
+            
+            //---------------------------Mobile Validation-----------------//
+
+            var partnerMobile = $("#<%=txtParMobile.ClientID%>").val();
+           
+            if (!partnerMobile.match(inputcharacter(partnerMobile))) {
+                return false;
+            }
+            var Mobile = MobileNumberRange(partnerMobile);
+            if (!partnerMobile.match(Mobile)) {
+                     return false; 
+                }
+
+         
+            //------------------------------Phone Validation-------------------------------------//
+           var partnerPhone = $("#<%=txtParPhone.ClientID%>").val();
+        
+
+            if (!partnerPhone.match(inputcharacter(partnerPhone))) {
+                return false;
+            }
+
+           // var Phone = PhoneNumberRange(partnerPhone);
+            if (!partnerPhone.match(PhoneNumberRange(partnerPhone)))
+            {
+             return false;
+            }
+
+           
+         
+    //--------------------Email Validation------------//
+         var partnerEmail = $("#<%=txtParEmail.ClientID%>").val();
+        
+
+         if (!partnerEmail.match(inputcharacter(partnerEmail))) {
+             return false;
+         }
+ 
+         if (!partnerEmail.match(EmailValidation(partnerEmail))) {
+             return false;
+         }
+
+        
+
+            //----------------------Website Validation-------------//
+
+         var partnerWebsite = $("#<%=txtParWebsite.ClientID%>").val();
+         
+            if (!partnerWebsite.match(inputcharacter(partnerWebsite))) {
+             return false;
+         }
+
+            if (!partnerWebsite.match(WebsiteValidation(partnerWebsite))) {
+             return false;
+         }
+
+
+        //---------------------Contect Partner--------------------//
+             var partnerContactPerson = $("#<%=txtParContactPerson.ClientID%>").val();
+            if (!partnerContactPerson.match(inputcharacter(partnerContactPerson))) {
+                    return false;
+                }
+
+        
+
+        //---------------------------Adress Validation-------------------------//
+
+            var partnerAddress = $("#<%=txtAddress.ClientID%>").val();
+            if (!partnerAddress.match(inputcharacter(partnerAddress))) {
+                return false;
+            }
+
+            if (!partnerAddress.match(AddressRange(partnerAddress))) {
+                return false;
+            }
+
+            
+---------------
+ private void CreateFolder()
+    {
+
+        string path = Server.MapPath("~/mImage/" + regno + "");
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+
+
+    }
+---------------
+var loginid = null;
+      jQuery(document).ready(function () {
+          // initiate layout and plugins
+          App.init();
+          loginid = '<%= Session["username"] %>'
+
+      });
+
+-------------------------------
+
+
+            var parm = document.getElementById('<%= ddlcountry.ClientID %>')
+            var Countryid = parm.options[parm.selectedIndex].value;
+            var CountryName = parm.options[parm.selectedIndex].text;
+
+            var parm2 = document.getElementById('<%= ddlstate.ClientID %>');
+            var stateid = parm2.options[parm2.selectedIndex].value;
+            var Statename = parm2.options[parm2.selectedIndex].text;
+
+            var parmD = document.getElementById('<%= ddlDsistrict.ClientID %>');
+            var distID = parmD.options[parmD.selectedIndex].value;
+            var distName = parmD.options[parmD.selectedIndex].text;
+
+
+
+*****************
+
+            var gndr = document.getElementById('<%= ddlgender.ClientID %>')
+            var genderID = gndr.options[gndr.selectedIndex].value;
+            var gendername = gndr.options[gndr.selectedIndex].text;
+*********
+   var Countryid = "0";
+            var CountryName = "";
+
+            if ($("#<%=ddlcountry.ClientID%>").length > 0) {
+                var parm = $("#<%= ddlcountry.ClientID%>").val();
+                var parm = document.getElementById('<%= ddlcountry.ClientID %>')
+
+                  Countryid = parm.options[parm.selectedIndex].value;
+                  CountryName = parm.options[parm.selectedIndex].text;
+            }
+            else {
+                CountryName = $("#<%= txt_country.ClientID%>").val();
+            }
+
+            var stateid = "0";
+            var Statename = "";
+
+            if ($("#<%=ddlstate.ClientID%>").length > 0) {
+                var parm2 = document.getElementById('<%= ddlstate.ClientID %>');
+                  stateid = parm2.options[parm2.selectedIndex].value;
+                  Statename = parm2.options[parm2.selectedIndex].text;
+            }
+            else {
+                Statename = $("#<%= txtState.ClientID%>").val();
+            }
+            var distID = "0";
+            var distName = "";
+            if ($("#<%=ddlDsistrict.ClientID%>").length > 0) {
+                var parmD = document.getElementById('<%= ddlDsistrict.ClientID %>');
+                 distID = parmD.options[parmD.selectedIndex].value;
+                 distName = parmD.options[parmD.selectedIndex].text;
+            }
+            else {
+                distName = $("#<%= txtDistrict.ClientID%>").val();
+            }
+            var CityID = 0;
+            var Cityname = "";
+            if ($("#<%=ddlcity.ClientID%>").length > 0) {
+                var parm3 = document.getElementById('<%= ddlcity.ClientID %>');
+                  CityID = parm3.options[parm3.selectedIndex].value;
+                  Cityname = parm3.options[parm3.selectedIndex].text;
+            }
+            else {
+                Cityname = $("#<%= txtcity.ClientID%>").val();
+            }
+
+-----------

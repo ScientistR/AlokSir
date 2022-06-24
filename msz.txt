@@ -1,0 +1,1144 @@
+public enum MsgType
+{
+
+    INSERT,
+    UPDATE,
+    DELETE,
+    ISEXIST,
+    ERROR,
+    LOGINPASSWORD,
+    SPONSOR,
+    PARENTNOT,
+    PARENTNOTINTREE,
+    PARENTFULL,
+    ASSOCIATE,
+    SPONSOREXIST,
+    BOARD,
+    LOGINALREADY,
+    STATENOT,
+    UNDEFINE,
+    SPONSORLIST,
+    DOWNLINE,
+    ACSTATEMENT,
+    CHILDLIST,
+    Required_emailid,
+    EmailIDExist,
+    CardNoSpace,
+    CardNo,
+    Amount_Zero,
+    Max_Amount,
+    Technical_Error,
+    Request_Incomplete,
+    ID_Deactivate,
+    Max_request,
+    Amount_Invalid,
+    Balance_Zero,
+    BankDtl_Incomplete,
+    Request_Succress,
+    Login_failed,
+    Required_username,
+    Valid_Password,
+    Invalid_DistributorID,
+    valid_NewPassword,
+    Not_ExitEmail,
+    No_Record,
+    Blank_Announcement,
+    Delete_Files,
+    ErrorDelete_files,
+    Add_Announcemnt,
+    News_Blank,
+    Add_News,
+    Delete_News,
+    Generate_Epin,
+    Valid_EpinNo,
+    Search_MemberId,
+    Invalid_UserId,
+    Valid_Name,
+    Valid_Location,
+    Valid_Province,
+    Valid_Address,
+    Valid_KitCode,
+    Valid_Evoucher,
+    Valid_PaymentMode,
+    Valid_PaymentDate,
+    Valid_ReferrenceNo,
+    Valid_BankdetailUpload,
+    Sold_Epin,
+    Sold_EVoucher,
+    Valid_EvoucherNo,
+    Valid_EvocherCode,
+    Valid_Amount,
+    Transaction_Amount,
+    Deactive_Member,
+    Invalid_Norecord,
+    Valid_Title,
+    Valid_FName,
+    Valid_LName,
+    Select_Gender,
+    Valid_DOB,
+    Valid_MobCode,
+    Valid_MobNo,
+    Valid_Country,
+    Valid_State,
+    Valid_Distict,
+    Valid_City,
+    Valid_LadMark,
+    Valid_Pincode,
+    Valid_SecurityQues,
+    Valid_Answer,
+    Valid_BankName,
+    Valid_Bankcode,
+    Valid_IFSC,
+    Valid_BankAddress,
+    Field_Angry,
+    Invalid_UpdateProfile,
+    Valid_UpdateProfile,
+    Remove_Error,
+    Invalid_changes,
+    Invalid_Transchange,
+    Valid_AccountNo,
+    Valid_Deposite,
+    Valid_Deduction,
+    Valid_MemberSelect,
+    Invalid_MemberStatus,
+    Valid_Deactive,
+    Valid_Activation,
+    Member_Deactivation,
+    Notranscation_Found,
+    Valid_Bankdetail,
+    Invalid_bankdetail,
+    Select_Bname,
+    Fill_IFSCCODE,
+    Fill_BranchName,
+    Fill_AccountNo,
+    Fill_BankAddress,
+    Fill_BranchCode,
+    Valid_BranchCode,
+    Fill_Accountholder,
+    Valid_Accountholder,
+    Fill_SponserName,
+    Valid_Sponser,
+    Sponser_EvocherNo,
+    Sponser_EvocherCode,
+    Invalid_Fname,
+    Invalid_Lname,
+    Fill_Pincode,
+    Fill_MobNo,
+    Fill_Address,
+    Invalid_Address,
+    Fill_Password,
+    Fill_Repassword,
+    Valid_Repassword,
+    Fill_Transactioncode,
+    NotExist_Evoucher,
+    NotExist_Evouchercode,
+    Valid_KYC,
+    Fill_Side,
+    Fill_CountryCode,
+    Min_UserName,
+    Exists_UserName,
+    Min_Password,
+    Min_TransCode,
+    Min_IFSCCODE,
+    spacenotallow,
+   spacenotallowpwd,
+   username_alphanumeric,
+    fill_Usergroup,
+   Fill_checkbox,
+   Fill_ComName,
+   Fill_ComMob,
+   Fill_ComPhone,
+   Fill_ComCode,
+   Fill_ComEmail,
+   Fill_ComSemail,
+   Fill_ComAddress,
+   Fill_ComSEmailPass,
+   Fill_ComEmailHost,
+   Fill_KitCode,
+   Fill_KitPv,
+   Fill_KitBV,
+   Fill_KitPrice,
+   Fill_KitDesc,
+   Fill_KitProduct,
+    Fill_City,
+    Fill_State,
+    alreadyexistmobileno
+
+
+
+
+
+
+
+
+
+   
+
+
+
+   
+}
+
+
+
+**************aspx************************
+protected bool Validate()
+    {
+        div_error.Visible = false;
+        div_error1.Visible = false;
+        if (txtfname.Text.Trim() == "")
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.Valid_FName);
+            txtfname.Focus();
+            SetErrror(Message);
+            return false;
+        }
+        if (ddlgender.SelectedIndex == 0)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.Select_Gender);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtdob.Text.Trim() == string.Empty)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.Valid_DOB);
+            SetErrror(Message);
+            return false;
+        }
+        else
+        {
+            string[] s = txtdob.Text.Trim().Split('/');
+            dobdt = s[1] + "/" + s[0] + "/" + s[2];
+            if (Convert.ToInt32(s[2]) < 1900 || Convert.ToInt32(s[2]) > 2015)
+            {
+                Message = "Sorry Invalid Date of Birth";
+                SetErrror(Message);
+                return false;
+            }
+            if (!DateTime.TryParse(dobdt, out Test))
+            {
+                Message = "Sorry Invalid, " + MSG.Show(MsgType.Valid_DOB);
+                SetErrror(Message);
+                return false;
+            }
+        }
+        if (txtmobile.Text.Trim() == string.Empty)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.Fill_MobNo);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtpincode.Text.Trim() == string.Empty)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.Fill_Pincode);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtemail.Text.Trim() == string.Empty)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.Required_emailid);
+            SetErrror(Message);
+            return false;
+        }
+      
+        if (objDUT.IsExist("Select Count(Loginid) from Member_Master where emailid='" + txtemail.Text.Trim() + "'") == true)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.EmailIDExist);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtcardno.Text.Trim() == string.Empty)
+        {
+            Message = "Sorry," + MSG.Show(MsgType.CardNo);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtcardno.Text.Trim().IndexOf(' ') > -1)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.CardNoSpace);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtrecardno.Text.Trim() == string.Empty)
+        {
+            Message = "Sorry," + MSG.Show(MsgType.CardNo);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtrecardno.Text.Trim().IndexOf(' ') > -1)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.CardNoSpace);
+            SetErrror(Message);
+            return false;
+        }
+        int Pcnt = Convert.ToInt32(objDUT.GetScalar("Select count(*) from Epin_master where EpinNumber='" + txtcardno.Text.Trim() + "' and regNo=0 AND sepinid<>0 and eactive=1 "));
+        if (Pcnt == 0)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.NotExist_Evoucher);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtpassword.Text.Trim() == string.Empty)
+        {
+            Message = "Sorry," + MSG.Show(MsgType.Fill_Password);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtpassword.Text.Trim().Length < 4)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.Min_Password);
+            SetErrror(Message);
+            return false;
+        }
+        if (txtpassword.Text.Trim().IndexOf(' ') > -1)
+        {
+            Message = "Sorry, " + MSG.Show(MsgType.spacenotallowpwd);
+            SetErrror(Message);
+            return false;
+        }
+       
+        div_error.Visible = false;
+        return true;
+
+    }
+*************Webconfi**************************
+<?xml version="1.0"?>
+
+<configuration>
+  <appSettings>
+    <add key="Amount_Zero" value="Please enter an amount greater than zero!!  Change" />
+    <add key="Max_Amount" value="Your Request balance is more than available balance. !!" />
+    <add key="Technical_Error" value="There are techinical error please try again. !!  " />
+    <add key="Request_Incomplete" value="your request not comppleted successfully. Please try again." />
+    <add key="ID_Deactivate" value="Your acount has been deactivate or Invalid Userid." />
+    <add key="Max_request" value="Your Request balance is more than available balance.  " />
+    <add key="Amount_Invalid" value="Your amount is invalid.Change" />
+    <add key="Balance_Zero" value="Your account balance is 0." />
+    <add key="BankDtl_Incomplete" value="Incomplete your bank details. Please fill the  properly bank details. thankue" />
+    <add key="Request_Succress" value="Your Request has been send successfully.  " />
+    <add key="Login_failed" value="Wrong User Name or Password !!" />
+    <add key="Required_username" value="Plesase Enter Username. !!" />
+    <add key="Required_emailid" value="Please Enter EmailID. !!" />
+    <add key="Required_All" value="Please Enter Username. Or  GBV !!" />
+    <add key="Invalid_Email" value="Please Enter Valid EmailID. !!" />
+    <add key="Invalid_DistributorID" value="Please Enter Valid Distributor ID.!!" />
+    <add key="valid_NewPassword" value="A new password has been sent to your e-mail address.!!" />
+    <add key="Not_ExitEmail" value=" EmailID Does Not Exists.!!" />
+    <add key="EmailIDExist" value=" EmailID Already Exists.!!" />
+    <add key="CardNo" value="Enter E-Pin No !!" />
+    <add key="CardNoSpace" value="Space not allowed in E-Pin no. !!" />
+    <add key="Valid_Password" value=" Please Enter Valid Password.!!" />
+    <add key="No_Record" value="No Record found.!!" />
+    <add key="Blank_Announcement" value="Announcement cannot be Blank.!!" />
+    <add key="Delete_Files" value="File(s) Deleted successfully.!!" />
+    <add key="ErrorDelete_files" value="There was error deleteing files.!!" />
+    <add key="Add_Announcemnt" value="Add This Annocument.!!" />
+    <add key="News_Blank" value="News can not be Blank.!! " />
+    <add key="Add_News" value="Add this News successfully.!!" />
+    <add key="Delete_News" value="News has deleted successfully.!!" />
+    <add key="Generate_Epin" value="Enter No of E-Pin you want to be generated.!!" />
+    <add key="Valid_EpinNo" value="Please Enter No of E-Pin between 1 to 100.!!" />
+    <add key="Search_MemberId" value="Please Enter Member ID for search.!!" />
+    <add key="Invalid_UserId" value=" This is Invalid User Name.!!" />
+    <add key="Valid_Name" value="Please Enter your Name.!!" />
+    <add key="Valid_Location" value="Please Enter your Location.!!" />
+    <add key="Valid_Province" value="Please Enter your Province.!!" />
+    <add key="Valid_Address" value="Please Enter your Address.!!" />
+    <add key="Valid_KitCode" value="Please Select E-Pin Code.!!" />
+    <add key="Valid_Evoucher" value="Please Enter No. of E-Pin you want to Allot.!! " />
+    <add key="Valid_PaymentMode" value="Please Select Payment Mode.!!" />
+    <add key="Valid_PaymentDate" value="Please Select Payment Date.!!" />
+    <add key="Valid_ReferrenceNo" value="Please Enter your Referrence No.!!" />
+    <add key="Valid_BankDetail" value="Please Enter your Bank Detail.!!" />
+    <add key="Sold_Epin" value="E-Pin has Sold Successfully.!!" />
+    <add key="Sold_EVoucher" value="Congratulations...E-Pin Alloted Successfully.!!" />
+    <add key="Pingenerate" value="Congratulations...E-Pin Generate Successfully.!!" />
+    <add key="Valid_EvoucherNo" value="Please Enter E-Pin No.!!" />
+    <add key="Valid_EvocherCode" value="Please Enter E-Pin Code.!!" />
+    <add key="Valid_Amount" value="Please Enter Valid Amount.!!" />
+    <add key="Transaction_Amount" value="Not found any transaction in your account.!!" />
+    <add key="Deactive_Member" value="This Member is Deactivate.!!" />
+    <add key="Invalid_Norecord" value="No record found because Wrong Distributor ID. or Username. !!" />
+    <add key="Valid_Title" value="Please Select Your Title.!!" />
+    <add key="Valid_FName" value="Please Enter Your First Name.!! " />
+    <add key="Valid_LName" value="Please Enter Your Last Name.!!" />
+    <add key="Select_Gender" value=" Please Select Gender.!!" />
+    <add key="Valid_DOB" value="Please Enter Your valid Date of Birth.!! " />
+    <add key="Valid_MobCode" value="Please Enter Your valid Mobile Code.!!" />
+    <add key="Valid_MobNo" value="Please Enter Your valid Mobile Number.!!" />
+    <add key="Valid_Country" value="Please Select Your Country Name!!" />
+    <add key="Valid_State" value="Please Select Your State Name!!" />
+    <add key="Valid_City" value="Please Select Your City Name!!" />
+    <add key="Valid_LadMark" value="Please Enter Your LandMark.!!" />
+    <add key="Valid_Pincode" value="Please Enter your Valid Post Code.!!" />
+    <add key="Valid_SecurityQues" value="Please Select your Security Question!!" />
+    <add key="Valid_Answer" value="Please Enter Your Valid Answer.!!" />
+    <add key="Valid_pan" value="Please Enter Your Valid Pan No ..!!" />
+    <add key="Valid_BankName" value="Please Enter Your Valid Bank Name!!" />
+    <add key="Valid_Bankcode" value="Please Enter Your Valid Bank Code.!!" />
+    <add key="Valid_IFSC" value="Please Enter Your Valid IFSC Code.!!" />
+    <add key="Valid_BankAddress" value="Please Enter Your Valid Bank Address.!!" />
+    <add key="Field_Angry" value="There are Some Field or Control is angry (Red Color).!!" />
+    <add key="Invalid_UpdateProfile" value=" Your Profile did not Update Successfully." />
+    <add key="Valid_UpdateProfile" value="Congratulations Your Profile had Updated Successfully." />
+    <add key="Remove_Error" value="Please Remove Error and Fill Correct Information. !!" />
+    <add key="Invalid_changes" value="Failed, Password Not Changed. !!" />
+    <add key="Invalid_Transchange" value="Failed, Transaction Password Not Changed. !!" />
+    <add key="Valid_AccountNo" value="Please Enter Your Valid Account No.!!" />
+    <add key="Valid_Deposite" value="Congratulations...you have been deposited successfully in selected member.!!" />
+    <add key="Valid_Deduction" value="Congratulations...your amount have been deducted successfully.!!" />
+    <add key="Valid_MemberSelect" value="Members please select at least one member.!!" />
+    <add key="Invalid_MemberStatus" value="Sorry... Failed, Member Status not Change. !!" />
+    <add key="Valid_Deactive" value="Members Status Deactive Successfully !!" />
+    <add key="Valid_Activation" value="Members Status Activated Successfully !!" />
+    <add key="Member_Deactivation" value="Sorry... This Member is Deactivate.!!" />
+    <add key="Notranscation_Found" value=" No found any transaction in your account." />
+    <add key="Valid_BankdetailUpload" value="Bank Details Updated Successfully.!!" />
+    <add key="Invalid_bankdetail" value=" Sorry Failed !! Not Updated Successfully." />
+    <add key="Fill_Accountholder" value=" Enter Your Account Holder Name.!!" />
+    <add key="Account_Type" value=" Please Select Your Account Type.!!" />
+    <add key="Select_Bname" value="Select Your Bank Name.!!" />
+    <add key="Fill_IFSCCODE" value=" Enter IFSC Code. !!" />
+    <add key="Fill_BranchName" value=" Enter Branch Name. !!" />
+    <add key="Fill_AccountNo" value=" Enter Account Number !!" />
+    <add key="fillremark" value=" Enter Remark !!" />
+    <add key="FillDate" value=" Enter Date !!" />
+    <add key="Fillby" value=" Enter Name Of Receiver !!" />
+    <add key="Fill_BankAddress" value=" Enter Bank Address !!" />
+    <add key="Fill_BranchCode" value="Enter Branch Code" />
+    <add key="Valid_BranchCode" value="Please Enter Valid Branch Code.!!" />
+    <add key="Valid_BranchName" value="Please Enter Valid Branch Name.!!" />
+    <add key="Valid_Accountholder" value="Please Enter Valid Account Holder.!!" />
+    <add key="Fill_SponserName" value="Please Enter Sponser User Name.!!" />
+    <add key="Valid_Sponser" value="Please Enter Valid Sponser User Name.!!" />
+    <add key="Sponser_EvocherNo" value="Please Enter Valid E-Pin No.!!" />
+    <add key="Sponser_EvocherCode" value="Please Enter Valid E-voucher Code.!!" />
+    <add key="Invalid_Fname" value="Please Enter Valid First Name.!! " />
+    <add key="Invalid_Lname" value="Please Enter Valid Last Name.!! " />
+    <add key="Fill_Pincode" value="Please Enter Postal Code.!! " />
+    <add key="Fill_MobNo" value="Please Enter Mobile Number.!!" />
+    <add key="Fill_Address" value="Please Enter H.No./Building/Street" />
+    <add key="Invalid_Address" value="Please Enter Correct Address.!!" />
+    <add key="Fill_Password" value="Please Enter Password.!!" />
+    <add key="Fill_Repassword" value="Please Enter Re-Password.!!" />
+    <add key="Valid_Repassword" value="Please Enter Valid Re-Password.!!" />
+    <add key="Fill_Transactioncode" value="Please Enter Transaction Password" />
+    <add key="NotExist_Evoucher" value="E-Pin No. not Exsits !!" />
+    <add key="NotExist_Evouchercode" value="E-Pin Code does not Exsits !!" />
+    <add key="Valid_KYC" value="You can Join only E-Pin. !!" />
+    <add key="Fill_Side" value="Select Placement Side." />
+    <add key="Fill_CountryCode" value="Please Enter Country Code. !!" />
+    <add key="Min_UserName" value="Please Enter Username minimum 4 character . !!" />
+    <add key="spacenotallow" value="Space is not allowed in user name!!" />
+    <add key="Exists_UserName" value="User Name Already Exists !!" />
+    <add key="Min_Password" value=" Please Enter Password Minimum 4 character . !!" />
+    <add key="spacenotallowpwd" value="Space is not allowed in password!!" />
+    <add key="username_alphanumeric" value=" Please Provide User Name in Alfa numeric Format" />
+    <add key="Min_TransCode" value=" Please Enter Transaction Code Minimum 4 character. !!" />
+    <add key="Min_IFSCCODE" value="Enter Valid IFSC Code Ex-(4 Digit Char and 7 Digit Number) (XXXX#######) !!" />
+    <add key="fill_Usergroup" value="Please Select User Group.!!" />
+    <add key="Fill_checkbox" value="Select Checkbox" />
+    <add key="Fill_ComName" value="Enter Company Name.!!" />
+    <add key="Fill_ComMob" value="Enter Company Mobile no.!!" />
+    <add key="Fill_ComPhone" value="Enter Company Phone no.!!" />
+    <add key="Fill_ComService" value="Enter Service no.!!" />
+    <add key="Fill_ComCode" value="Enter Company Code.!!" />
+    <add key="Fill_ComEmail" value="Enter Company Email.!!" />
+    <add key="Fill_ComSemail" value="Enter Sender Email.!!" />
+    <add key="Fill_ComAddress" value="Enter Company Address.!!" />
+    <add key="Fill_ComSEmailPass" value="Enter Sender Email Password.!!" />
+    <add key="Fill_ComEmailHost" value="Enter Company Email Host.!!" />
+    <add key="Fill_KitCode" value="Please Enter KitCode.!!" />
+    <add key="Fill_KitPv" value="Please Enter Package PV.!!" />
+    <add key="Fill_KitBV" value="Please Enter Package BV.!!" />
+    <add key="Fill_KitPrice" value="Please Enter Package Price.!!" />
+    <add key="Fill_KitDesc" value="Please Enter Package Description.!!" />
+    <add key="Fill_KitProduct" value="Please Enter Package Product.!!" />
+    <add key="Fill_City" value="Please Enter City Name.!!" />
+    <add key="Fill_State" value="Please Enter State Name.!!" />
+    <add key="ActivatedMember" value="Member Already Activated .!!" />
+    <add key="ActivateRequest" value="Request Send Successfully .!!" />
+    <add key="Valid_Pin" value="Please Enter valid E-Pin No. .!!" />
+    <add key="Activated_success" value="Activated Successfully .!!" />
+    <add key="Valid_epincode" value="Please Enter Valid E-Pin Code .!!" />
+
+    <add key="Dispatch_success" value="Dispatched Successfully!!" />
+    <add key="NotDispatch_success" value="Dispatched Not Successfull!!" />
+    <add key="Valid_dispatchDate" value="Please Enter Valid dispatch date!!" />
+    <add key="Valid_dismode" value="Please select dispatch mode.!!" />
+    <add key="Valid_CourierName" value="Please select courier name.!!" />
+    <add key="Valid_AWBNo" value="Please Enter AWB No.!!" />
+    <add key="addCombo_Success" value="Add combo in cart successfully.!!" />
+    <add key="Combo_Success" value="Combo Create Successfully.!!" />
+    <add key="OrderConfirm" value="Order Confirm Successfully !!" />
+    <add key="Combo_Remove" value="Remove category from cart successfully !!" />
+    <add key="Fill_ComboCode" value="Please Enter ComboCode.!!" />
+    <add key="Fill_Comboname" value="Please Enter Combo Name.!!" />
+    <add key="Fill_MRP" value="Please Enter MRP.!!" />
+    <add key="Fill_Discount" value="Please Enter Discount.!!" />
+    <add key="Fill_Profit" value="Please Enter profit.!!" />
+    <add key="Fill_ME" value="Please Enter ME.!!" />
+    <add key="Fill_Status" value="Please Select Status .!!" />
+    <add key="Fill_image" value="Please Upload Image .!!" />
+    <add key="AM" value="You have not authority to generate KYC. Please activate yourself. !!" />
+    <add key="AN" value="No E-Pin Generated Please Try Again. !!" />
+    <add key="Combodetails_Success" value="Combo Details Create Successfully.!!" />
+    <add key="NotCombodetails_success" value="Combo Details Not Create Successfully.!!" />
+    <add key="Payment" value="Payment Transfer successfully !!" />
+    <add key="orderreject" value="Order Reject Successfully!!" />
+    <add key="Received_success" value="Received Successfully!!" />
+    <add key="MerchantRequired" value="Please Enter Merchant ID For Search!!" />
+    <add key="InvalidMerchant" value="Invalid Merchant ID For Search!!" />
+    <add key="QtyoutOfstock" value="Quantity of E-Pin out of stock !!" />
+    <add key="tryAgain" value="Please try Again !!" />
+    <add key="Required_merchantid" value="Plesase Enter Loginid. !!" />
+    <add key="Invalid_Merchantid" value="Please Enter Valid Login ID.!!" />
+    <add key="Valid_MerchantName" value="Please Enter Your  Name.!! " />
+    <add key="Valid_MerchantId" value="Please Enter Your  Merchant Id.!! " />
+    <add key="Valid_zipcode" value="Please Enter your Valid Zip Code.!!" />
+    <add key="Valid_rewardpoints" value="Please Enter your Valid Reward Points.!!" />
+    <add key="Valid_cashback" value="Please Enter your Valid Cash Back.!!" />
+    <add key="Valid_UpdateProfilemerchant" value="Congratulations Your Profile had Updated Successfully." />
+    <add key="MerchantRequired" value="Please Enter Merchant ID For Search!!" />
+    <add key="InvalidMerchant" value="Invalid Merchant ID For Search!!" />
+    <add key="alreadyexistmobileno" value="Mobile Number Already Exist" />
+
+  </appSettings>
+</configuration>
+*********************************
+
+<?xml version="1.0"?>
+
+<configuration>
+  <appSettings>
+    <add key="Amount_Zero" value="Please enter an amount greater than zero!!  Change" />
+    <add key="Max_Amount" value="Your Request balance is more than available balance. !!" />
+    <add key="Technical_Error" value="There are techinical error please try again. !!  " />
+    <add key="Request_Incomplete" value="your request not comppleted successfully. Please try again." />
+    <add key="ID_Deactivate" value="Your acount has been deactivate or Invalid Userid." />
+    <add key="Max_request" value="Your Request balance is more than available balance.  " />
+    <add key="Amount_Invalid" value="Your amount is invalid.Change" />
+    <add key="Balance_Zero" value="Your account balance is 0." />
+    <add key="BankDtl_Incomplete" value="Incomplete your bank details. Please fill the  properly bank details. thankue" />
+    <add key="Request_Succress" value="Your Request has been send successfully.  " />
+    <add key="Login_failed" value="Wrong User Name or Password !!" />
+    <add key="Required_username" value="Plesase Enter Username. !!" />
+    <add key="Required_emailid" value="Please Enter EmailID. !!" />
+    <add key="Required_All" value="Please Enter Username. Or  GBV !!" />
+    <add key="Invalid_Email" value="Please Enter Valid EmailID. !!" />
+    <add key="Invalid_DistributorID" value="Please Enter Valid Distributor ID.!!" />
+    <add key="valid_NewPassword" value="A new password has been sent to your e-mail address.!!" />
+    <add key="Not_ExitEmail" value=" EmailID Does Not Exists.!!" />
+    <add key="EmailIDExist" value=" EmailID Already Exists.!!" />
+    <add key="CardNo" value="Enter E-Pin No !!" />
+    <add key="CardNoSpace" value="Space not allowed in E-Pin no. !!" />
+    <add key="Valid_Password" value=" Please Enter Valid Password.!!" />
+    <add key="No_Record" value="No Record found.!!" />
+    <add key="Blank_Announcement" value="Announcement cannot be Blank.!!" />
+    <add key="Delete_Files" value="File(s) Deleted successfully.!!" />
+    <add key="ErrorDelete_files" value="There was error deleteing files.!!" />
+    <add key="Add_Announcemnt" value="Add This Annocument.!!" />
+    <add key="News_Blank" value="News can not be Blank.!! " />
+    <add key="Add_News" value="Add this News successfully.!!" />
+    <add key="Delete_News" value="News has deleted successfully.!!" />
+    <add key="Generate_Epin" value="Enter No of E-Pin you want to be generated.!!" />
+    <add key="Valid_EpinNo" value="Please Enter No of E-Pin between 1 to 100.!!" />
+    <add key="Search_MemberId" value="Please Enter Member ID for search.!!" />
+    <add key="Invalid_UserId" value=" This is Invalid User Name.!!" />
+    <add key="Valid_Name" value="Please Enter your Name.!!" />
+    <add key="Valid_Location" value="Please Enter your Location.!!" />
+    <add key="Valid_Province" value="Please Enter your Province.!!" />
+    <add key="Valid_Address" value="Please Enter your Address.!!" />
+    <add key="Valid_KitCode" value="Please Select E-Pin Code.!!" />
+    <add key="Valid_Evoucher" value="Please Enter No. of E-Pin you want to Allot.!! " />
+    <add key="Valid_PaymentMode" value="Please Select Payment Mode.!!" />
+    <add key="Valid_PaymentDate" value="Please Select Payment Date.!!" />
+    <add key="Valid_ReferrenceNo" value="Please Enter your Referrence No.!!" />
+    <add key="Valid_BankDetail" value="Please Enter your Bank Detail.!!" />
+    <add key="Sold_Epin" value="E-Pin has Sold Successfully.!!" />
+    <add key="Sold_EVoucher" value="Congratulations...E-Pin Alloted Successfully.!!" />
+    <add key="Pingenerate" value="Congratulations...E-Pin Generate Successfully.!!" />
+    <add key="Valid_EvoucherNo" value="Please Enter E-Pin No.!!" />
+    <add key="Valid_EvocherCode" value="Please Enter E-Pin Code.!!" />
+    <add key="Valid_Amount" value="Please Enter Valid Amount.!!" />
+    <add key="Transaction_Amount" value="Not found any transaction in your account.!!" />
+    <add key="Deactive_Member" value="This Member is Deactivate.!!" />
+    <add key="Invalid_Norecord" value="No record found because Wrong Distributor ID. or Username. !!" />
+    <add key="Valid_Title" value="Please Select Your Title.!!" />
+    <add key="Valid_FName" value="Please Enter Your First Name.!! " />
+    <add key="Valid_LName" value="Please Enter Your Last Name.!!" />
+    <add key="Select_Gender" value=" Please Select Gender.!!" />
+    <add key="Valid_DOB" value="Please Enter Your valid Date of Birth.!! " />
+    <add key="Valid_MobCode" value="Please Enter Your valid Mobile Code.!!" />
+    <add key="Valid_MobNo" value="Please Enter Your valid Mobile Number.!!" />
+    <add key="Valid_Country" value="Please Select Your Country Name!!" />
+    <add key="Valid_State" value="Please Select Your State Name!!" />
+    <add key="Valid_City" value="Please Select Your City Name!!" />
+    <add key="Valid_LadMark" value="Please Enter Your LandMark.!!" />
+    <add key="Valid_Pincode" value="Please Enter your Valid Post Code.!!" />
+    <add key="Valid_SecurityQues" value="Please Select your Security Question!!" />
+    <add key="Valid_Answer" value="Please Enter Your Valid Answer.!!" />
+    <add key="Valid_pan" value="Please Enter Your Valid Pan No ..!!" />
+    <add key="Valid_BankName" value="Please Enter Your Valid Bank Name!!" />
+    <add key="Valid_Bankcode" value="Please Enter Your Valid Bank Code.!!" />
+    <add key="Valid_IFSC" value="Please Enter Your Valid IFSC Code.!!" />
+    <add key="Valid_BankAddress" value="Please Enter Your Valid Bank Address.!!" />
+    <add key="Field_Angry" value="There are Some Field or Control is angry (Red Color).!!" />
+    <add key="Invalid_UpdateProfile" value=" Your Profile did not Update Successfully." />
+    <add key="Valid_UpdateProfile" value="Congratulations Your Profile had Updated Successfully." />
+    <add key="Remove_Error" value="Please Remove Error and Fill Correct Information. !!" />
+    <add key="Invalid_changes" value="Failed, Password Not Changed. !!" />
+    <add key="Invalid_Transchange" value="Failed, Transaction Password Not Changed. !!" />
+    <add key="Valid_AccountNo" value="Please Enter Your Valid Account No.!!" />
+    <add key="Valid_Deposite" value="Congratulations...you have been deposited successfully in selected member.!!" />
+    <add key="Valid_Deduction" value="Congratulations...your amount have been deducted successfully.!!" />
+    <add key="Valid_MemberSelect" value="Members please select at least one member.!!" />
+    <add key="Invalid_MemberStatus" value="Sorry... Failed, Member Status not Change. !!" />
+    <add key="Valid_Deactive" value="Members Status Deactive Successfully !!" />
+    <add key="Valid_Activation" value="Members Status Activated Successfully !!" />
+    <add key="Member_Deactivation" value="Sorry... This Member is Deactivate.!!" />
+    <add key="Notranscation_Found" value=" No found any transaction in your account." />
+    <add key="Valid_BankdetailUpload" value="Bank Details Updated Successfully.!!" />
+    <add key="Invalid_bankdetail" value=" Sorry Failed !! Not Updated Successfully." />
+    <add key="Fill_Accountholder" value=" Enter Your Account Holder Name.!!" />
+    <add key="Account_Type" value=" Please Select Your Account Type.!!" />
+    <add key="Select_Bname" value="Select Your Bank Name.!!" />
+    <add key="Fill_IFSCCODE" value=" Enter IFSC Code. !!" />
+    <add key="Fill_BranchName" value=" Enter Branch Name. !!" />
+    <add key="Fill_AccountNo" value=" Enter Account Number !!" />
+    <add key="fillremark" value=" Enter Remark !!" />
+    <add key="FillDate" value=" Enter Date !!" />
+    <add key="Fillby" value=" Enter Name Of Receiver !!" />
+    <add key="Fill_BankAddress" value=" Enter Bank Address !!" />
+    <add key="Fill_BranchCode" value="Enter Branch Code" />
+    <add key="Valid_BranchCode" value="Please Enter Valid Branch Code.!!" />
+    <add key="Valid_BranchName" value="Please Enter Valid Branch Name.!!" />
+    <add key="Valid_Accountholder" value="Please Enter Valid Account Holder.!!" />
+    <add key="Fill_SponserName" value="Please Enter Sponser User Name.!!" />
+    <add key="Valid_Sponser" value="Please Enter Valid Sponser User Name.!!" />
+    <add key="Sponser_EvocherNo" value="Please Enter Valid E-Pin No.!!" />
+    <add key="Sponser_EvocherCode" value="Please Enter Valid E-voucher Code.!!" />
+    <add key="Invalid_Fname" value="Please Enter Valid First Name.!! " />
+    <add key="Invalid_Lname" value="Please Enter Valid Last Name.!! " />
+    <add key="Fill_Pincode" value="Please Enter Postal Code.!! " />
+    <add key="Fill_MobNo" value="Please Enter Mobile Number.!!" />
+    <add key="Fill_Address" value="Please Enter H.No./Building/Street" />
+    <add key="Invalid_Address" value="Please Enter Correct Address.!!" />
+    <add key="Fill_Password" value="Please Enter Password.!!" />
+    <add key="Fill_Repassword" value="Please Enter Re-Password.!!" />
+    <add key="Valid_Repassword" value="Please Enter Valid Re-Password.!!" />
+    <add key="Fill_Transactioncode" value="Please Enter Transaction Password" />
+    <add key="NotExist_Evoucher" value="E-Pin No. not Exsits !!" />
+    <add key="NotExist_Evouchercode" value="E-Pin Code does not Exsits !!" />
+    <add key="Valid_KYC" value="You can Join only E-Pin. !!" />
+    <add key="Fill_Side" value="Select Placement Side." />
+    <add key="Fill_CountryCode" value="Please Enter Country Code. !!" />
+    <add key="Min_UserName" value="Please Enter Username minimum 4 character . !!" />
+    <add key="spacenotallow" value="Space is not allowed in user name!!" />
+    <add key="Exists_UserName" value="User Name Already Exists !!" />
+    <add key="Min_Password" value=" Please Enter Password Minimum 4 character . !!" />
+    <add key="spacenotallowpwd" value="Space is not allowed in password!!" />
+    <add key="username_alphanumeric" value=" Please Provide User Name in Alfa numeric Format" />
+    <add key="Min_TransCode" value=" Please Enter Transaction Code Minimum 4 character. !!" />
+    <add key="Min_IFSCCODE" value="Enter Valid IFSC Code Ex-(4 Digit Char and 7 Digit Number) (XXXX#######) !!" />
+    <add key="fill_Usergroup" value="Please Select User Group.!!" />
+    <add key="Fill_checkbox" value="Select Checkbox" />
+    <add key="Fill_ComName" value="Enter Company Name.!!" />
+    <add key="Fill_ComMob" value="Enter Company Mobile no.!!" />
+    <add key="Fill_ComPhone" value="Enter Company Phone no.!!" />
+    <add key="Fill_ComService" value="Enter Service no.!!" />
+    <add key="Fill_ComCode" value="Enter Company Code.!!" />
+    <add key="Fill_ComEmail" value="Enter Company Email.!!" />
+    <add key="Fill_ComSemail" value="Enter Sender Email.!!" />
+    <add key="Fill_ComAddress" value="Enter Company Address.!!" />
+    <add key="Fill_ComSEmailPass" value="Enter Sender Email Password.!!" />
+    <add key="Fill_ComEmailHost" value="Enter Company Email Host.!!" />
+    <add key="Fill_KitCode" value="Please Enter KitCode.!!" />
+    <add key="Fill_KitPv" value="Please Enter Package PV.!!" />
+    <add key="Fill_KitBV" value="Please Enter Package BV.!!" />
+    <add key="Fill_KitPrice" value="Please Enter Package Price.!!" />
+    <add key="Fill_KitDesc" value="Please Enter Package Description.!!" />
+    <add key="Fill_KitProduct" value="Please Enter Package Product.!!" />
+    <add key="Fill_City" value="Please Enter City Name.!!" />
+    <add key="Fill_State" value="Please Enter State Name.!!" />
+    <add key="ActivatedMember" value="Member Already Activated .!!" />
+    <add key="ActivateRequest" value="Request Send Successfully .!!" />
+    <add key="Valid_Pin" value="Please Enter valid E-Pin No. .!!" />
+    <add key="Activated_success" value="Activated Successfully .!!" />
+    <add key="Valid_epincode" value="Please Enter Valid E-Pin Code .!!" />
+
+    <add key="Dispatch_success" value="Dispatched Successfully!!" />
+    <add key="NotDispatch_success" value="Dispatched Not Successfull!!" />
+    <add key="Valid_dispatchDate" value="Please Enter Valid dispatch date!!" />
+    <add key="Valid_dismode" value="Please select dispatch mode.!!" />
+    <add key="Valid_CourierName" value="Please select courier name.!!" />
+    <add key="Valid_AWBNo" value="Please Enter AWB No.!!" />
+    <add key="addCombo_Success" value="Add combo in cart successfully.!!" />
+    <add key="Combo_Success" value="Combo Create Successfully.!!" />
+    <add key="OrderConfirm" value="Order Confirm Successfully !!" />
+    <add key="Combo_Remove" value="Remove category from cart successfully !!" />
+    <add key="Fill_ComboCode" value="Please Enter ComboCode.!!" />
+    <add key="Fill_Comboname" value="Please Enter Combo Name.!!" />
+    <add key="Fill_MRP" value="Please Enter MRP.!!" />
+    <add key="Fill_Discount" value="Please Enter Discount.!!" />
+    <add key="Fill_Profit" value="Please Enter profit.!!" />
+    <add key="Fill_ME" value="Please Enter ME.!!" />
+    <add key="Fill_Status" value="Please Select Status .!!" />
+    <add key="Fill_image" value="Please Upload Image .!!" />
+    <add key="AM" value="You have not authority to generate KYC. Please activate yourself. !!" />
+    <add key="AN" value="No E-Pin Generated Please Try Again. !!" />
+    <add key="Combodetails_Success" value="Combo Details Create Successfully.!!" />
+    <add key="NotCombodetails_success" value="Combo Details Not Create Successfully.!!" />
+    <add key="Payment" value="Payment Transfer successfully !!" />
+    <add key="orderreject" value="Order Reject Successfully!!" />
+    <add key="Received_success" value="Received Successfully!!" />
+    <add key="MerchantRequired" value="Please Enter Merchant ID For Search!!" />
+    <add key="InvalidMerchant" value="Invalid Merchant ID For Search!!" />
+    <add key="QtyoutOfstock" value="Quantity of E-Pin out of stock !!" />
+    <add key="tryAgain" value="Please try Again !!" />
+    <add key="Required_merchantid" value="Plesase Enter Loginid. !!" />
+    <add key="Invalid_Merchantid" value="Please Enter Valid Login ID.!!" />
+    <add key="Valid_MerchantName" value="Please Enter Your  Name.!! " />
+    <add key="Valid_MerchantId" value="Please Enter Your  Merchant Id.!! " />
+    <add key="Valid_zipcode" value="Please Enter your Valid Zip Code.!!" />
+    <add key="Valid_rewardpoints" value="Please Enter your Valid Reward Points.!!" />
+    <add key="Valid_cashback" value="Please Enter your Valid Cash Back.!!" />
+    <add key="Valid_UpdateProfilemerchant" value="Congratulations Your Profile had Updated Successfully." />
+    <add key="MerchantRequired" value="Please Enter Merchant ID For Search!!" />
+    <add key="InvalidMerchant" value="Invalid Merchant ID For Search!!" />
+    <add key="alreadyexistmobileno" value="Mobile Number Already Exist" />
+
+  </appSettings>
+</configuration>
+
+
+************aspx mail*******
+<%@ Page Title="" Language="C#" MasterPageFile="~/BOM/CustomerMaster.master" AutoEventWireup="true"
+    CodeFile="Sentmailbox.aspx.cs" Inherits="BOA_mailbox" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <link href="../assets/fancybox/source/jquery.fancybox.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../assets/gritter/css/jquery.gritter.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/uniform/css/uniform.default.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/chosen-bootstrap/chosen/chosen.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/bootstrap-datepicker/css/datepicker.css" />
+    <link rel="stylesheet" href="../assets/data-tables/DT_bootstrap.css" />
+    <script type="text/javascript" src="../assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap-daterangepicker/date.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+    <script>
+
+        // _______________________ Global Variable ______________________
+
+        var PageIndex = 1;
+        var PageSize = 10;
+        //______________________ Document Ready ____________________
+
+        jQuery(document).ready(function () {
+            $('#message_div').html('<img id="ProgressImg" src="../img/progress_loadingText.GIF" />');
+            setTimeout(function () { GetAllMessage(1, PageSize); }, 200);
+
+        });
+
+        //_______________________ Message Box Bind ______________________
+
+        function GetAllMessage(PageIndex_new, PageSize_new) {
+            var _Message = {};
+            _Message.PageIndex = PageIndex_new;
+            _Message.PageSize = PageSize_new;
+            _Message.Regno = '<%= Session["MaxReg"] %>';
+            _Message.Loginid = $('#txtSearc_msg').val();
+            $.ajax({
+                type: "POST",
+                url: "Getdata_member.asmx/GetSentMails_Member",
+                data: "{message:" + JSON.stringify(_Message) + " }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: BuildTable,
+                error: function (xhr, status, error) {
+                    alert(xhr.statusText);
+                }
+            });
+        }
+
+        function BuildTable(msg) {
+            var table = '';
+            var jsonData = msg.d;
+            for (var iCount = 0; iCount < jsonData.length; iCount++) {
+                var row = '<tr>';
+                row += '<td><input type="checkBox" name="check_list2"  value=' + jsonData[iCount].msgID + '></td>';
+                row += '<td onclick="tablerowClick(' + jsonData[iCount].msgID + ')"  >' + jsonData[iCount].fromRegNo + '</td>';
+                row += '<td  onclick="tablerowClick(' + jsonData[iCount].msgID + ')">  <i class="icon ' + jsonData[iCount].Attachments + '"> </i> &nbsp;<strong>' + jsonData[iCount].msgSubject + '</strong>  <small class="info-fade hidden-phone">' + jsonData[iCount].smalltext + '</small></td>';
+                row += '<td onclick="tablerowClick(' + jsonData[iCount].msgID + ')" class="hidden-phone ">' + jsonData[iCount].msgDate + '</td>';
+
+                row += '</tr>';
+
+                table += row;
+            }
+            if (jsonData.length <= 0) {
+                $('#message_table').hide();
+                $('html, body').animate({ scrollTop: 0 }, '0.2');
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button><strong> Warning</strong>, No Record Found. !!");
+                $('#errorDiv').removeClass().addClass("alert alert-info");
+            }
+            else {
+
+                $('#message_table').show();
+                $('#errorDiv').html('');
+                $('#errorDiv').removeClass();
+            }
+            $('#repMsg').html(table);
+            $('#message_div').html('');
+        }
+
+
+        function tablerowClick(msgid) {
+
+            $(location).attr('href', 'MessageDetail.aspx?msgid=' + msgid * 875473534674 + '&redirect=NH&GA&SDGS&GV#@GNDI(DSB');
+
+        }
+
+        //__________________________ Next _______________________________
+
+        function Next() {
+            PageIndex = PageIndex + 1;
+            $('#message_div').html('<img id="ProgressImg" src="../img/progress_loadingText.GIF" />');
+            setTimeout(function Next() { GetAllMessage(PageIndex, PageSize); }, 200);
+
+
+        }
+        //__________________________ Previous _______________________________
+
+        function Previous() {
+            PageIndex = PageIndex - 1;
+            if (PageIndex <= 0) {
+
+                $('#message_div').html('<img id="ProgressImg" src="../img/progress_loadingText.GIF" />');
+                setTimeout(function Previous() { GetAllMessage(1, PageSize); }, 200);
+            }
+            $('#message_div').html('<img id="ProgressImg" src="../img/progress_loadingText.GIF" />');
+            setTimeout(function Previous() { GetAllMessage(PageIndex, PageSize); }, 200);
+
+        }
+        //______________________Delete ______________________________
+
+
+        var noofselectedMember2 = 0
+        function Delete() {
+            var regno = '';
+            for (i = 0; i < document.Activate.check_list2.length; i++) {
+                if (document.Activate.check_list2[i].checked == true) {
+                    regno += document.Activate.check_list2[i].value + ",";
+                    noofselectedMember2 = noofselectedMember2 + 1;
+                }
+            }
+            if (noofselectedMember2 > 0) {
+                ActivateMember2(regno);
+            }
+            else {
+                $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> You have select  <strong>" + noofselectedMember2 + "</strong> Members please select at least one member. !!");
+                $('#errorDiv').removeClass().addClass("alert alert-info");
+                $('#errorDiv').show();
+            }
+
+        }
+        function ActivateMember2(strregno) {
+            $.ajax({
+                type: "POST",
+                url: "Getdata_member.asmx/RemoveSentMessage",
+                data: "{ regnostr:'" + strregno + "',type:'Remove' }",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: MemberDeactiveSuccess,
+                error: function (xhr, status, error) {
+
+                    $('html, body').animate({ scrollTop: 0 }, '0.2');
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button>Sorry, There are techinical error please try again. !!");
+                    $('#errorDiv').addClass("alert alert-error");
+                    $('#errorDiv').show();
+                }
+
+            });
+        }
+        function MemberDeactiveSuccess(updatestatus) {
+            var jsonData = updatestatus.d;
+            switch (updatestatus.d) {
+                case "false":
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> Failed, Message Not Deleted Successfully. !!");
+                    $('#errorDiv').removeClass().addClass("alert alert-error");
+                    $('#errorDiv').show();
+                    break;
+                case "true":
+                    $('#message_div').html('<img id="ProgressImg" src="../img/progress_loadingText.GIF" />');
+                    setTimeout(function MemberDeactiveSuccess(updatestatus) { GetAllMessage(1, PageSize); }, 200);
+                    $('#errorDiv').html("<button data-dismiss='alert' class='close'>×</button> Success, <strong>" + noofselectedMember2 + "</strong> Message Deleted Successfully. !!");
+                    $('#errorDiv').removeClass().addClass("alert alert-success");
+                    $('#errorDiv').show();
+                    break;
+            }
+        }
+        //___________________ Checked Unchecked CheckBox _________________________
+
+        function Check2(chk) {
+            if (document.Activate.Check_ctr2.checked == true) {
+
+                for (i = 0; i < chk.length; i++)
+                    chk[i].checked = true;
+            } else {
+
+                for (i = 0; i < chk.length; i++)
+                    chk[i].checked = false;
+            }
+        }
+        //_______________________________Search ____________________________________
+
+        function Search() {
+            $('#message_divmessage_divmessage_divmessage_div').html('<img id="ProgressImg" src="../img/progress_loadingText.GIF" />');
+            setTimeout(function Search() { GetAllMessage(PageIndex, PageSize) }, 200);
+        }
+    </script>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <!-- BEGIN PAGE -->
+    <div id="main-content">
+        <!-- BEGIN PAGE CONTAINER-->
+        <div class="container-fluid">
+            <!-- BEGIN PAGE HEADER-->
+            <div class="row-fluid">
+            </div>
+            <!-- END PAGE HEADER-->
+            <!-- MAILBOX CONTENT -->
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <h4>
+                                <i class="icon-envelope"></i>Message Center</h4>
+                            <div class="tools pull-right mtop7 mail-btn">
+                                <div class="btn-group">
+                                    <a class="btn btn-small element" data-original-title="Delete" href="#" onclick="Delete();"
+                                        data-toggle="tooltip" data-placement="top"><i class="icon-trash"></i></a>
+                                </div>
+                                <div class="btn-group">
+                                    <a class="btn btn-small element" data-original-title="Compose" href="Composemail.aspx"
+                                        data-toggle="tooltip" data-placement="top"><i class="icon-plus"></i></a>
+                                </div>
+                                <div class="btn-group">
+                                    <a class="btn btn-small element" data-original-title="Prev" href="#" onclick="Previous();"
+                                        data-toggle="tooltip" data-placement="top"><i class="icon-chevron-left"></i>
+                                    </a><a class="btn btn-small element" data-original-title="Next" onclick="Next();"
+                                        data-toggle="tooltip" data-placement="top"><i class="icon-chevron-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                <div class="span12">
+                    <!-- BEGIN THEME CUSTOMIZER
+                   
+                   <!-- END THEME CUSTOMIZER-->
+                    <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                    <ul class="breadcrumb">
+                        <li><a href="default.aspx"><i class="icon-home"></i></a><span class="divider">&nbsp;</span>
+                        </li>
+                        <li><a href="#" id="A1">Message Center</a><span class="divider">&nbsp;</span></li>
+                        <li><a href="Sentmailbox.aspx" id="mBox">Sent Mail</a><span class="divider-last">&nbsp;</span></li>
+                    </ul>
+                    <!-- END PAGE TITLE & BREADCRUMB-->
+                </div>
+                        </div>
+                        <div id="message_div2" class="widget-body">
+                            <form name="Activate">
+                            <table id="message_table" class="table table-condensed table-striped table-hover no-margin"
+                                style="cursor: pointer">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5%">
+                                            <input type="checkbox" name="Check_ctr2" value="yes" onclick="Check2(document.Activate.check_list2)"
+                                                class="no-margin">
+                                        </th>
+                                        <th style="width: 19%">
+                                            Sent To
+                                        </th>
+                                        <th style="width: 46%">
+                                            Subject
+                                        </th>
+                                        <th class="right-align-text hidden-phone" style="width: 17%">
+                                            Date
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="repMsg">
+                                </tbody>
+                            </table>
+                            </form>
+                            <div id="message_div" align="center" class="center">
+                            </div>
+                            <div id="errorDiv">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END MAILBOX CONTENT -->
+        </div>
+        <!-- END PAGE CONTAINER-->
+    </div>
+    <!-- END PAGE -->
+    <!-- END PAGE -->
+    <!-- BEGIN JAVASCRIPTS -->
+    <!-- Load javascripts at bottom, this will reduce page load time -->
+    <!-- ie8 fixes -->
+    <!--[if lt IE 9]>
+   <script src="js/excanvas.js"></script>
+   <script src="js/respond.js"></script>
+   <![endif]-->
+    <!-- END JAVASCRIPTS -->
+</asp:Content>
+*************************web
+    [WebMethod]
+    public List<MemberMail> GetSentMails_Member(Message_Param message)
+    {
+        List<MemberMail> mailList = new List<MemberMail>();
+        try
+        {
+            SqlParameter[] param = new SqlParameter[4];
+            param[0] = new SqlParameter("@PageIndex", SqlDbType.Int);
+            param[0].Value = message.PageIndex;
+            param[1] = new SqlParameter("@PageSize", SqlDbType.Int);
+            param[1].Value = message.PageSize;
+            param[2] = new SqlParameter("@loginid", SqlDbType.VarChar, 500);
+            param[2].Value = message.Loginid;
+            param[3] = new SqlParameter("@regno", SqlDbType.BigInt);
+            param[3].Value = message.Regno;
+            sdr = objDUT.GetDataReaderSP(param, "SP_SentMemberMailbox");
+            while (sdr.Read())
+            {
+                MemberMail mail = new MemberMail();
+                mail.msgID = Convert.ToInt64(sdr["MsgID"].ToString());
+                mail.msgType = sdr["MsgType"].ToString();
+                mail.msgSubject = sdr["MsgSubject"].ToString();
+                mail.fromRegNo = sdr["LoginID"].ToString();
+                mail.toRegNo = sdr["LoginID"].ToString();
+                mail.msgDate = sdr["Date"].ToString();
+                mail.Message = sdr["Message"].ToString();
+                mail.smalltext = sdr["Smalltext"].ToString();
+                mail.seen = sdr["msgseen"].ToString();
+                mail.Regno = sdr["FromRegNo"].ToString();
+                mail.Attachments = sdr["MsgAttachments"].ToString();
+                mailList.Add(mail);
+            }
+        }
+        catch (Exception ex)
+        {
+
+
+        }
+        return mailList;
+    }
+
+
+    [WebMethod]
+    public string RemoveMessage(string regnostr, string type)
+    {
+        string res = "false";
+        try
+        {
+            SqlParameter[] param = new SqlParameter[3];
+            param[0] = new SqlParameter("@Regno", SqlDbType.VarChar, 500);
+            param[0].Value = regnostr;
+            param[1] = new SqlParameter("@type", SqlDbType.VarChar, 100);
+            param[1].Value = type;
+            param[2] = new SqlParameter("@intresult", SqlDbType.Int);
+            param[2].Direction = ParameterDirection.Output;
+            int result = objDUT.ExecuteSqlSP(param, "sp_MemberMessageRemove");
+
+            if (result > 0)
+            {
+                res = "true";
+            }
+            else
+            {
+                res = "false";
+            }
+        }
+        catch (Exception exce)
+        {
+            res = "false";
+        }
+        return res;
+    }
+
+
+
+    /// <summary>
+    ///  Delete sent message from member_mailbox
+    /// </summary>
+    /// <param name="regnostr"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    [WebMethod]
+    public string RemoveSentMessage(string regnostr, string type)
+    {
+        string res = "false";
+        try
+        {
+            SqlParameter[] param = new SqlParameter[3];
+            param[0] = new SqlParameter("@Regno", SqlDbType.VarChar, 500);
+            param[0].Value = regnostr;
+            param[1] = new SqlParameter("@type", SqlDbType.VarChar, 100);
+            param[1].Value = type;
+            param[2] = new SqlParameter("@intresult", SqlDbType.Int);
+            param[2].Direction = ParameterDirection.Output;
+            int result = objDUT.ExecuteSqlSP(param, "sp_MemberSentMessageRemove");
+
+            if (result > 0)
+            {
+                res = "true";
+            }
+            else
+            {
+                res = "false";
+            }
+        }
+        catch (Exception exce)
+        {
+            res = "false";
+        }
+        return res;
+    }
+***********
+                    Label10.ForeColor = System.Drawing.Color.Red;
+  int ICount = Convert.ToInt32(objDUT.GetScalar("Select dbo.UDF_CheckVoucher('" + txt_evoucherno.Text.Trim() + "'," + Amount + ")"));
+                if (ICount == -1)
+                {
+                    Div22.Visible = true;
+                    txt_evoucherno.Focus();
+                    Label10.Text = "Invalid Activation Pin Number!!";
+                    Label10.ForeColor = System.Drawing.Color.Red; //
+                    return;
+                }
+                if (ICount == -2)
+                {
+                    Div22.Visible = true;
+                    txt_evoucherno.Focus();
+                    Label10.Text = "Activation Pin Already Used!!";
+                    Label10.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+                if (ICount == -3)
+                {
+                    Div22.Visible = true;
+                    txt_evoucherno.Focus();
+                    Label10.Text = "Expired Activation Pin Number!!";
+                    Label10.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+                if (ICount == -4)
+                {
+                    Div22.Visible = true;
+                    txt_evoucherno.Focus();
+                    Label10.Text = "Insufficial Activation Pin Amount!!";
+                    Label10.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+*******************

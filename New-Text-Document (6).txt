@@ -1,0 +1,224 @@
+ // [WebMethod]
+   // public List<RechargeShop> ListShopRecharge(string ShopId, string DateFrom, string DateTO)
+   // {
+   //     List<RechargeShop> RechargeList = new List<RechargeShop>();
+   //     try
+   //     {
+   //         string[] fromdates, todates;
+   //
+   //         string datefrom = "", dateto = "";
+   //         if (DateFrom != "" && DateTO != "")
+   //         {
+   //             fromdates = DateFrom.Split('/');
+   //             todates = DateTO.Split('/');
+   //             datefrom = fromdates[1] + "/" + fromdates[0] + "/" + fromdates[2];
+   //
+   //             dateto = todates[1] + "/" + todates[0] + "/" + todates[2];
+   //             DateTime dttodate = Convert.ToDateTime(dateto).AddDays(1);
+   //             dateto = dttodate.ToString();
+   //         }
+   //        
+   //         sdr = null;
+   //         SqlParameter[] p = new SqlParameter[3];
+   //       
+   //
+   //         p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+   //         p[0].Value = Convert.ToInt32(ShopId);
+   //
+   //         p[1] = new SqlParameter("@fromDate", SqlDbType.DateTime);
+   //         p[1].Value = datefrom;
+   //
+   //
+   //
+   //         p[2] = new SqlParameter("@toDate", SqlDbType.DateTime);
+   //         p[2].Value = dateto;
+   //         
+   //  
+   //
+   //         sdr = objDUT.GetDataReaderSP(p, "usp_rechargeShop_trHistory");
+   //         while (sdr.Read())
+   //         {
+   //             RechargeShop listv = new RechargeShop();
+   //             listv.ShopCode = sdr["shopCode"].ToString();
+   //             listv.Amount = string.Format("{0:f}", sdr["rechargeAmount"]); 
+   //             listv.RefNo = sdr["paymentrefNo"].ToString();
+   //             listv.PayMode = sdr["paymentMode"].ToString();
+   //             listv.EntryDate = string.Format("{0:dd/MM/yyyy}", sdr["entryDate"]);
+   //             listv.bankName = sdr["paymentBank"].ToString();
+   //             string Active = sdr["rechargestatus"].ToString();
+   //             string sta = "", staClass = "";
+   //             if (Active == "Completed") 
+   //             {
+   //                 sta = "Completed";
+   //                 staClass = "alert alert-success";
+   //             }
+   //             if (Active == "Processing")
+   //             {
+   //                 sta = "Proccessing";
+   //                 staClass = "alert alert-warring";
+   //             }
+   //
+   //             if (Active == "Declined")
+   //             {
+   //                 sta = "Declined";
+   //                 staClass = "alert alert-error";
+   //             }
+   //             listv.status = sta;
+   //             listv.StatusClass = staClass;
+   //
+   //             RechargeList.Add(listv);
+   //         }
+   //         sdr.Close();
+   //         sdr.Dispose();
+   //     }
+   //     catch (Exception exc)
+   //     {
+   //     }
+   //     return RechargeList;
+   // }
+-----------------------
+
+   // [WebMethod]
+   // public List<RechargeShop> ListShopRecharge(string ShopId, string DateFrom, string DateTO)
+   //    {
+   //        List<RechargeShop> RechargeList = new List<RechargeShop>();
+   //        try
+   //        {
+   //            SqlParameter[] p;
+   //            sdr = null;
+   //            if (DateFrom == "" || DateTO == "")
+   //            {
+   //                p =new SqlParameter[1];
+   //                p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+   //                p[0].Value = Convert.ToInt32(ShopId);
+   //               
+   //            }
+   //            else {
+   //                p = new SqlParameter[3];
+   //                string[] fromdates, todates;
+   //                string datefrom = "", dateto = "";
+   //                fromdates = DateFrom.Split('/');
+   //                todates = DateTO.Split('/');
+   //                datefrom = fromdates[1] + "/" + fromdates[0] + "/" + fromdates[2];
+   //                dateto = todates[1] + "/" + todates[0] + "/" + todates[2];
+   //                DateTime dttodate = Convert.ToDateTime(dateto).AddDays(1);
+   //                dateto = dttodate.ToString();
+   //                p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+   //                p[0].Value = Convert.ToInt32(ShopId);
+   //                p[1] = new SqlParameter("@fromDate", SqlDbType.DateTime);
+   //                p[1].Value = datefrom;
+   //                p[2] = new SqlParameter("@toDate", SqlDbType.DateTime);
+   //                p[2].Value = dateto;
+   //            }
+   //         sdr = objDUT.GetDataReaderSP(p, "usp_rechargeShop_trHistory");
+   //         while (sdr.Read())
+   //         {
+   //             RechargeShop listv = new RechargeShop();
+   //             listv.ShopCode = sdr["shopCode"].ToString();
+   //             listv.Amount = string.Format("{0:f}", sdr["rechargeAmount"]);
+   //             listv.RefNo = sdr["paymentrefNo"].ToString();
+   //             listv.PayMode = sdr["paymentMode"].ToString();
+   //             listv.EntryDate = string.Format("{0:dd/MM/yyyy}", sdr["entryDate"]);
+   //             listv.bankName = sdr["paymentBank"].ToString();
+   //             string Active = sdr["rechargestatus"].ToString();
+   //             string sta = "", staClass = "";
+   //             if (Active == "Completed")
+   //             {
+   //                 sta = "Completed";
+   //                 staClass = "alert alert-success";
+   //             }
+   //             if (Active == "Processing")
+   //             {
+   //                 sta = "Proccessing";
+   //                 staClass = "alert alert-warring";
+   //             }
+   //
+   //             if (Active == "Declined")
+   //             {
+   //                 sta = "Declined";
+   //                 staClass = "alert alert-error";
+   //             }
+   //             listv.status = sta;
+   //             listv.StatusClass = staClass;
+   //
+   //             RechargeList.Add(listv);
+   //         }
+   //         sdr.Close();
+   //         sdr.Dispose();
+   //     }
+   //     catch (Exception exc)
+   //     {
+   //     }
+   //     return RechargeList;
+   // }
+---------------------------------------------------
+  [WebMethod]
+    public List<RechargeShop> ListShopRecharge(string ShopId, string DateFrom, string DateTO)
+    {
+        List<RechargeShop> RechargeList = new List<RechargeShop>();
+        try
+        {
+            string[] fromdates, todates;
+
+            string datefrom = null, dateto = null;
+            
+            if (DateFrom != "" && DateTO != "")
+            {
+                fromdates = DateFrom.Split('/');
+                todates = DateTO.Split('/');
+                datefrom = fromdates[1] + "/" + fromdates[0] + "/" + fromdates[2];
+           
+                dateto = todates[1] + "/" + todates[0] + "/" + todates[2];
+                DateTime dttodate = Convert.ToDateTime(dateto).AddDays(1);
+                dateto = dttodate.ToString();
+            }
+            sdr = null;
+            SqlParameter[] p = new SqlParameter[3];
+            p[0] = new SqlParameter("@shopID", SqlDbType.Int);
+            p[0].Value = Convert.ToInt32(ShopId);
+            p[1] = new SqlParameter("@fromDate", SqlDbType.DateTime);
+            p[1].Value = datefrom;
+            p[2] = new SqlParameter("@toDate", SqlDbType.DateTime);
+            p[2].Value = dateto;
+            sdr = objDUT.GetDataReaderSP(p, "usp_rechargeShop_trHistory");
+            while (sdr.Read())
+            {
+                RechargeShop listv = new RechargeShop();
+                listv.ShopCode = sdr["shopCode"].ToString();
+                listv.Amount = string.Format("{0:f}", sdr["rechargeAmount"]);
+                listv.RefNo = sdr["paymentrefNo"].ToString();
+                listv.PayMode = sdr["paymentMode"].ToString();
+                listv.EntryDate = string.Format("{0:dd/MM/yyyy}", sdr["entryDate"]);
+                listv.bankName = sdr["paymentBank"].ToString();
+                string Active = sdr["rechargestatus"].ToString();
+                string sta = "", staClass = "";
+                if (Active == "Completed")
+                {
+                    sta = "Completed";
+                    staClass = "alert alert-success";
+                }
+                if (Active == "Processing")
+                {
+                    sta = "Proccessing";
+                    staClass = "alert alert-warring";
+                }
+
+                if (Active == "Declined")
+                {
+                    sta = "Declined";
+                    staClass = "alert alert-error";
+                }
+                listv.status = sta;
+                listv.StatusClass = staClass;
+
+                RechargeList.Add(listv);
+            }
+            sdr.Close();
+            sdr.Dispose();
+        }
+        catch (Exception exc)
+        {
+        }
+        return RechargeList;
+    }
+-------------------
