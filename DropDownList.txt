@@ -1,0 +1,25 @@
+@model BigOptic.Models.Custumer// Table (property)
+
+@Html.DropDownListFor(M => M.Country, ViewBag.CounrtyList as SelectList,"---Select Country---");
+//Country :- fiel h customer table m
+
+ public ActionResult ViewProfile()
+        {
+           
+****Json File m se Liya gya h*****
+                string file = Server.MapPath("~/Anglur/JSON/StateJson.json");
+                //deserialize JSON from file  
+                string Json1 = System.IO.File.ReadAllText(file);
+                JavaScriptSerializer ser = new JavaScriptSerializer();
+                var personlist = ser.Deserialize<List<StateData>>(Json1).ToList(); 
+
+                ViewBag.CounrtyList = new SelectList(personlist, "SID", "name");
+
+******Data se liya gya h *******
+               var List =DB.Custumers.ToList();
+		ViewBag.CounrtyList =new SelectList(List,"CID","Cname")
+                return View();
+            }
+// CID & Cname Field Counrty Table se Liya gya h
+
+--------------------------------------------------------------------------------
