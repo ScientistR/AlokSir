@@ -1,0 +1,155 @@
+@{
+ 
+ViewBag.Title = "Index";
+
+}
+
+
+
+<h2>Index</h2>
+<table>
+   
+ <tr>
+
+ <td>Name :</td>
+ 
+ <td> <input type="text" id="txtname" /></td>
+ 
+</tr>
+
+    
+
+<tr>
+<td>Age :</td>
+        
+<td>
+<input type="text" id="txtage" /></td>
+</tr>
+
+    
+<tr><td>City :</td>
+        
+<td><input type="text" id="txtcity" /></td>
+
+</tr>
+
+    
+
+<tr>
+
+<td></td>
+        
+<td>
+<input type="button" id="btnsave" value="Save" onclick="SaveData()" /></td>
+
+</tr>
+
+
+
+</table>
+
+<table id="tbl" border="1">
+    
+<tr>
+<th>Name :</th>
+        
+<th>Age :</th>
+        
+<th>City :</th>
+    
+</tr>
+
+</table>
+
+
+
+<script src="~/jquery.js">
+</script>
+<script type="text/javascript">
+    
+
+$(document).ready(function () 
+{
+       
+ BindData();
+   
+});
+
+    
+
+function BindData() 
+{
+        
+  $.ajax({
+            
+  url: 'EMP/get',
+            
+  type: 'post',
+            
+  data: "{}",
+            
+  success: function (p) 
+  {
+                
+   $("#tbl").find("tr:gt(0)").remove();
+                
+   	for (var i = 0; i < p.length; i++) 
+    	{
+                    
+     	$("#tbl").append('<tr> <td>' + p[i].name + '</td> <td>' + p[i].age + '</td> <td>' + p[i].city + '</td> </tr>');
+                
+      	}
+            
+    },
+            
+
+   error: function () 
+   {
+                
+   alert('data not found !!!');
+            
+   }
+        
+ });
+    
+}
+
+
+    
+
+
+
+function SaveData() 
+{
+        
+	$.ajax({
+            
+	url: 'EMP/Index1',
+            	
+	type: 'post',
+            
+	data: { Name: $("#txtname").val(), Age: $("#txtage").val(), City: $("#txtcity").val() },
+            
+	success: function () 
+	{
+                
+	  alert('Record Saved!!!');
+                
+	  BindData();
+           
+	},
+            
+
+	error: function () 
+	{
+                
+	 alert('Record not saved!!!');
+            
+	}
+        
+    });
+    
+}
+
+
+</script>

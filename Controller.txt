@@ -1,0 +1,68 @@
+using MVC1519.Models;
+
+using System;
+
+using System.Collections.Generic;
+
+using System.Linq;
+using System.Web;
+
+using System.Web.Mvc;
+
+
+namespace MVC1519.Controllers
+
+{
+  
+  public class EMPController : Controller
+  
+  {
+   
+
+     MVC1519Entities1 _db = new MVC1519Entities1();
+   
+     employee _emp = new employee();
+
+    
+     
+
+	public ActionResult Index()
+        
+	{
+       
+	     return View();
+   
+        }
+
+        
+
+
+
+	public void Index1(employee p)
+    
+	{
+           
+	_db.employees.Add(p);
+            
+	_db.SaveChanges();
+            
+       
+	 }
+
+       
+
+
+	public ActionResult get()
+        
+	{
+            
+	 var p = _db.employees.ToList();
+            
+	 return Json(p, JsonRequestBehavior.AllowGet);
+        
+	}
+
+    
+   }
+
+}
