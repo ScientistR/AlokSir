@@ -1,0 +1,73 @@
+create database mvc14220
+use
+ mvc14220
+create table 
+
+Emp
+(
+empid int primary key identity(1,1),
+
+name varchar(50),
+countryid int
+)
+
+
+create proc usp_emp_insert
+@name varchar(50), 
+@countryid int
+as
+begin
+insert into Emp(name,countryid)
+values(@name,@countryid)
+end
+
+create proc usp_emp_get
+as
+begin
+select * from Emp inner join country on Emp.countryid=country.cid
+end
+
+create proc usp_emp_delete
+@empid int
+as
+begin
+delete from Emp where EmpID=@empid
+end
+
+create proc usp_emp_edit
+@empid int
+as
+begin
+select * from Emp where EmpID=@empid
+end
+
+create proc usp_emp_update
+@empid int,
+@name varchar(50),
+@countryid int
+as
+begin
+update Emp set Name=@name,countryid=@countryid where EmpID=@empid
+end
+
+
+
+
+
+create table country
+(
+cid int primary key identity,
+cname varchar(50)
+)
+insert into country(cname)values('india')
+insert into country(cname)values('pakistan')
+insert into country(cname)values('usa')
+insert into country(cname)values('australia')
+
+
+
+create proc usp_country_get
+as
+begin
+select * from country
+end
