@@ -1,0 +1,121 @@
+<TextBox
+--join--
+use Db5319
+create table country
+(
+cid int primary key identity,
+cname varchar(50)
+)
+insert into country(cname)values('india'),('pakistan'),('usa')
+create table Emp
+(
+empid int primary key identity,
+name varchar(50),
+salary int,
+gender varchar(50),
+ctr int
+)
+--------------------------------------
+select Emp.*,Country.* from Emp inner join country
+on country.cid=Emp.ctr
+
+select * from Emp inner join country
+on country.cid=Emp.ctr
+
+select Emp.name,Emp.salary,Country.cname from Emp inner join country
+on country.cid=Emp.ctr
+
+select E.name,E.salary,C.cname 
+from Emp E inner join country C
+on C.cid=E.ctr
+
+select E.name,E.salary,C.cname countryname
+from Emp E inner join country C
+on C.cid=E.ctr
+
+select E.name,E.salary,C.cname as countryname
+from Emp as E inner join country as C
+on C.cid=E.ctr
+
+select *
+from Emp inner join country 
+on country.cid=Emp.ctr
+
+select *
+from Emp left join country 
+on country.cid=Emp.ctr
+
+select *
+from Emp right join country 
+on country.cid=Emp.ctr
+
+select *
+from Emp full join country 
+on country.cid=Emp.ctr
+
+select *
+from Emp cross join country 
+--on country.cid=Emp.ctr
+
+select *
+from Emp left outer join country 
+on country.cid=Emp.ctr
+---------------------------------------------
+
+select *
+from Emp full join country 
+on country.cid=Emp.ctr
+where cid is null or empid is null
+--------------------------------------------
+
+select *
+from DB5319.dbo.Emp inner join DB_Emp_Textbox.dbo.country 
+on country.cid=Emp.ctr
+
+select * from DB5319.dbo.Emp
+----------------------------------------------
+--SELF JOIN--
+create table Users
+(
+uid int primary key identity,
+name varchar(50),
+manager int
+)
+
+
+
+
+select E.name,E.salary,C.cname 
+from Emp E inner join country C
+on C.cid=E.ctr
+
+select u2.name emp,u1.name manager
+from Users u1 inner join Users u2
+on u1.uid=u2.manager
+
+select u2.name emp,u1.name manager
+from Users u1 full join Users u2
+on u1.uid=u2.manager
+-------------------------------------------
+select * from Emp
+select name from Emp
+select 'alok'
+select REVERSE(name)from Emp
+select UPPER(name)from Emp
+select LOWER(name)from Emp
+select REVERSE('alok')
+select REPLICATE('jai hanuman  ',400)
+select REPLACE('alok srivastava','tava','kooker')
+select STUFF('9911522747',1,8,'**********')
+select LEFT(name,3) from Emp
+select RIGHT(name,3) from Emp
+select RIGHT('alok sriavstava',3)
+select SUBSTRING('alok srivastava',7,4)
+----------------------------------------------
+insert into country(cname)select name from Emp
+select * into pp from Emp
+select * from Emp
+----------------------------------------------
+select LTRIM(name) from Emp
+select RTRIM(name) from Emp
+select LTRIM(RTRIM(name)) from Emp

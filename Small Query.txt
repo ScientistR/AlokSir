@@ -1,0 +1,3 @@
+select name,address,age from Emp
+group by name,address,age
+having count(name) > 1

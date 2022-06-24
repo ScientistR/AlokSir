@@ -1,0 +1,57 @@
+use DB5319
+
+select * from Emp
+
+---------------------------------------------
+
+create trigger trg
+ 
+on emp for insert
+
+as 
+
+begin
+ 
+select * from country
+ 
+end
+
+
+insert into Emp(name,salary)values('kk',100)
+
+----------------------------------------------
+
+
+alter trigger trg 
+
+on emp instead of insert 
+
+as
+
+begin
+
+select * from country
+
+end
+
+
+insert into Emp(name,salary)values('nnn',333)
+
+-----------------------------------------------
+
+
+alter trigger trg
+ 
+on country for delete
+
+as
+
+begin
+
+delete from Emp 
+where ctr=(select cid from deleted)
+
+end
+
+
+delete from country where cid=2

@@ -1,0 +1,112 @@
+select * from emp
+create function fn_table_get(@gnd varchar(50))
+returns table
+as
+return (select * from Emp where gender=@gnd)
+
+select * from dbo.fn_table_get('female')
+insert into dbo.fn_table_get('female')(name,gender,age)
+values('yyyy','male',44)
+
+
+select * from Emp
+
+alter function fn_country_get(@ctr int)
+returns varchar(50)
+as
+begin
+	declare @cname varchar(100)
+	if(@ctr=1)
+		begin
+			set @cname='India'
+		end
+	else if(@ctr=2)
+		begin
+			set @cname='Pakistan'
+		end
+	else if(@ctr=3)
+		begin
+			set @cname='USA'
+		end
+	else
+		begin
+			set @cname='UNKNOWN'
+		end
+	return @cname
+end
+
+
+
+select *,dbo.fn_country_get(ctr)cname from Emp
+
+
+
+
+
+
+create function fn_grade(@slr int)
+returns varchar(50)
+as
+begin
+	declare @grade varchar(50)
+	if(@slr < 100)
+		begin
+		set @grade='C Grade'
+		end
+	else if(@slr > 99 and @slr < 300)
+		begin
+			set @grade = 'B Grade'
+		end
+	else	
+		begin
+			set @grade = 'A Grade'
+		end
+	return @grade
+end
+
+select name,dbo.fn_grade(salary)Grade from Emp
+------------------------------------------------
+select * from Emp
+select * from Emp order by name
+select * from Emp order by name desc
+select * from Emp order by salary desc
+select distinct * from Emp
+select top(2)* from Emp
+select top(2)* from Emp order by empid desc
+
+select max(salary) from Emp
+
+select * from Emp 
+where salary=(select max(salary) from Emp)
+
+select min(salary) from Emp
+select avg(salary) from Emp
+select sum(salary) from Emp
+select count(salary) from Emp
+
+
+
+
+
+select max(name) from Emp
+select avg(name) from Emp
+---------------------------------------------
+select min(salary)from
+(select top(3)salary from Emp 
+order by salary desc)A
+
+
+select max(salary)from
+(select top(2)salary from Emp 
+order by salary)A
+
+
+
+
+select top(1) salary from
+(select top(3)salary from Emp 
+order by salary desc)A order by salary asc
+
+select top(1) salary from
+(select top(3)salary from Emp 
+order by salary asc)A order by salary desc

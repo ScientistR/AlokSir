@@ -1,0 +1,84 @@
+create database DB5319
+use DB5319
+create table country
+(
+cid int primary key identity,
+cname varchar(50)
+)
+insert into country(cname)values('india')
+insert into country(cname)values('pakistan')
+insert into country(cname)values('usa')
+insert into country(cname)values('australia')
+
+create table Emp
+(
+empid int primary key identity,
+name varchar(50)unique,
+gender varchar(50),
+salary int,
+ctr int foreign key references country(cid)
+)
+---------------------------------------------
+--KEYS--
+--1.Primary key
+----------------------------------------------
+create table tbl
+(
+tid int not null,
+tname varchar(50)not null
+)
+insert into tbl(tid,tname)values(3,'alok')
+insert into tbl(tid,tname)values(1,'aditya')
+insert into tbl(tid,tname)values(5,'rajesh')
+insert into tbl(tid,tname)values(2,'archna')
+insert into tbl(tid,tname)values(4,'pp')
+
+select * from tbl
+
+delete from country where cid=3
+-----------------------------------------------
+alter table tbl add constraint a
+primary key(tid)
+------------------------
+alter table Emp add constraint b
+default 'unknown' for gender
+------------------------
+alter table Emp add constraint c
+check (salary > 99)
+--------------------------------------------
+alter table tbl add constraint d
+primary key(tid,tname)
+--------------------------------------------
+select CHAR(66)
+select ASCII('A')
+--------------------------------------------
+declare @start int
+set @start=65
+while(@start < 91)
+begin
+	print CHAR(@start)
+	set @start=@start+1
+end
+----------------------------------------------
+update Emp set gender=
+case when gender='male' then 'female'
+when gender='female' then 'male'
+end
+
+update Emp set gender=
+case when gender='male' then 'female'
+when gender='female' then 'male'
+else gender
+end
+
+
+Select name, AVG_MARKS=
+CASE
+when AVG_MARKS >=60 then 'First Class'
+when AVG_MARKS >=45 then 'Second Class'
+when AVG_MARKS >=33 then 'Third Class'
+else
+'Fail'
+End
+from Emp
+-----------------------------------------------

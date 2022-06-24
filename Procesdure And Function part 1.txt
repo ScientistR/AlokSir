@@ -1,0 +1,96 @@
+use DB5319
+select * from emp
+---------------------------------------
+alter proc usp_salary_get
+@empid int
+as
+begin
+declare @p int
+select @p=salary from Emp where empid=@empid
+return @p
+end
+
+declare @k int
+exec @k=usp_salary_get 2
+print @k
+------------------------------------------
+
+
+alter proc usp_name_get
+@empid int,
+@mm varchar(50) output
+as
+begin
+select @mm=name from Emp where empid=@empid
+end
+
+declare @k varchar(50)
+exec usp_name_get 2,@k output
+print @k
+------------------------------------------------
+-------------------------------------------------
+--FUNCTION--
+select GETDATE()
+select DATEADD(DAY,7,GETDATE())// show  date after 7 days from today
+select DATEADD(DAY,-1,GETDATE())// show date from yesterday 
+select DATEADD(DAY,7,DATEADD(DAY,-1,GETDATE()))
+select DATEADD(MONTH,7,GETDATE())
+
+select DATEPART(HOUR,GETDATE())
+select DATEDIFF(MINUTE,'03-10-1996',GETDATE())
+
+select * from Emp
+alter table Emp add dob datetime
+
+
+
+
+
+
+
+
+
+
+alter proc usp_age_get(@dob datetime)
+as
+begin
+declare @age int
+select @age=DATEDIFF(YEAR,@dob,GETDATE())
+return @age
+end
+
+declare @p int
+exec @p=usp_age_get '08-15-1947'
+print @p
+
+create function fn_age_get(@dob datetime)
+returns int
+as
+begin
+declare @age int
+select @age=DATEDIFF(YEAR,@dob,GETDATE())
+return @age
+end
+
+
+select name from Emp
+select dbo.fn_age_get('08-15-1947')
+
+select name,salary,dbo.fn_age_get(dob)age from Emp
+select name,salary,usp_age_get(dob)age from Emp
+
+
+
+create proc pppp
+as
+begin
+select name,salary,dbo.fn_age_get(dob)age from Emp
+end
+
+
+
+
+
+
+
+

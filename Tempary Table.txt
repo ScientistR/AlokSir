@@ -1,0 +1,69 @@
+use DB5319
+select * from Emp
+select (name+space(5)+gender+space(5)+CONVERT(varchar(10),salary))fullname 
+from Emp
+
+select (name+space(5)+gender+space(5)+CAST(salary as varchar(10)))fullname 
+from Emp
+
+
+select CONVERT(varchar(10),salary) from Emp
+select CAST(salary as varchar(10)) from Emp
+
+select Convert(varchar(30),GETDATE())
+select CAST(GETDATE()as varchar(30))
+select Convert(varchar(30),GETDATE(),106)
+-----------------------------------------------
+create table pp
+(
+id int primary key identity,
+name nvarchar(10),
+age int
+)
+----------------------------------------------
+--TEMPORARY TABLE--
+create table #Student
+(
+sid int primary key identity,
+sname varchar(50),
+age int
+)
+insert into #student(sname,age)values('alok',33)
+insert into #student(sname,age)values('rajesh',22)
+
+select * from #student
+
+
+create table ##kk
+(
+sid int primary key identity,
+sname varchar(50),
+age int
+)
+insert into ##kk(sname,age)values('ppp',99)
+select * from ##kk
+
+
+insert into #student(sname,age)
+select name,salary from Emp
+
+select * into ##ff from Emp
+select * from ##ff
+----------------------------------------------
+select GENDER,SUM(SALARY)[Sum salary] from emp
+group by gender
+
+select COUNT(name),GENDER,SUM(SALARY)[Sum salary] from emp
+group by gender
+
+select name,GENDER,SUM(SALARY)[Sum salary] from emp
+group by gender,name
+
+
+
+
+
+select GENDER,SUM(SALARY)[Sum salary] from emp
+where salary >299
+group by gender
+having SUM(salary) > 999

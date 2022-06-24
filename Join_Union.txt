@@ -1,0 +1,189 @@
+use db5220
+select * from Emp
+select * from country
+update Emp set ctr=3 where id in(16,17)
+insert into country(cname)values('india')
+insert into country(cname)values('pakistan')
+insert into country(cname)values('usa')
+insert into country(cname)values('australia')
+--------------------------------------------------------
+create table Item
+(
+itemid int primary key identity,
+iname varchar(50),
+price int,
+qty int
+)
+insert into Item(iname,price,qty)values('Mobile',22000,70)
+insert into Item(iname,price,qty)values('LED',35000,60)
+insert into Item(iname,price,qty)values('Charger',600,100)
+
+create table SoldItem
+(
+sid int primary key identity,
+itemid int,
+qty int
+)
+
+insert into SoldItem(itemid,qty)values(2,20)
+insert into SoldItem(itemid,qty)values(1,10)
+insert into SoldItem(itemid,qty)values(1,20)
+insert into SoldItem(itemid,qty)values(2,20)
+
+select * from Item
+select * from Solditem
+------------------------------------------------------
+alter proc usp_transaction --1,10
+@iid int,
+@qt int
+as
+begin
+declare @count int
+select @count=qty from Item where itemid=@iid
+if(@count > @qt)
+begin
+	begin try
+		begin transaction
+		insert into solditem(itemid,qty)values(@iid,@qt)
+		update Item set qty=qty-@qt where itemid='alok'
+		commit transaction
+		print 'TRANSACTION COMPLETE !!'
+	end try
+
+	begin catch
+		rollback transaction
+		print 'TRANSACTION FAILED !!'
+	end catch
+end
+end
+------------------------------------------------------------------
+--JOINS--
+select * from Emp inner join country 
+on Emp.ctr=Country.cid
+
+select id,name,salary,cname,dob 
+from Emp inner join country 
+on Emp.ctr=Country.cid
+
+select Emp.id,Emp.name,Emp.salary,country.cname,Emp.dob 
+from Emp inner join country 
+on Emp.ctr=Country.cid
+
+select Emp.id,Emp.name as name1,Emp.salary,country.cname as name2,Emp.dob 
+from Emp inner join country 
+on Emp.ctr=Country.cid
+
+select E.id,E.name as name1,E.salary,C.cname as name2,E.dob 
+from Emp as E inner join country as C
+on E.ctr=C.cid
+
+select E.id,E.name name1,E.salary,C.cname name2,E.dob 
+from Emp E inner join country C
+on E.ctr=C.cid
+
+
+
+---------------------------------------------------------------
+
+insert into country(cname)values('canada')
+
+select * from Emp inner join country 
+on Emp.ctr=Country.cid
+
+select * from Emp join country 
+on Emp.ctr=Country.cid
+
+select * from Emp left join country 
+on Emp.ctr=Country.cid
+
+select * from Emp left outer join country 
+on Emp.ctr=Country.cid
+
+select * from Emp right join country 
+on Emp.ctr=Country.cid
+
+select * from Emp full join country 
+on Emp.ctr=Country.cid
+
+select * from Emp cross join country 
+
+--------------------------------
+
+select * from Emp left outer join country 
+on Emp.ctr=Country.cid
+where cid is null
+
+select * from Emp full join country 
+on Emp.ctr=Country.cid
+where cid is null or id is null
+
+select * from db5220.dbo.Emp E inner join db021219.dbo.country C
+on E.ctr=C.cid
+
+select * from country
+select * from db021219.dbo.country
+-----------------------------------------------------------------
+--SELF JOIN--
+
+
+create table Users
+(
+uid int primary key identity,
+uname varchar(50),
+mname int
+)
+insert into Users(uname,mname)values('alok',3)
+insert into Users(uname,mname)values('zahoor',4)
+insert into Users(uname,mname)values('pavnesh',6)
+insert into Users(uname,mname)values('rajat',1)
+insert into Users(uname,mname)values('gaurav',1)
+insert into Users(uname,mname)values('amit',1)
+insert into Users(uname,mname)values('rajesh',7)
+
+select * from Users
+select * from Emp
+
+
+
+
+select E.id,E.name as name1,E.salary,C.cname as name2,E.dob 
+from Emp as E inner join country as C
+on E.ctr=C.cid
+
+select u2.uname as Employee,u1.uname as manager
+from Users as u1 inner join Users as u2
+on u1.uid=u2.mname
+
+select u2.uname as Employee,u1.uname as manager
+from Users as u1 full join Users as u2
+on u1.uid=u2.mname
+------------------------------------------------------------------
+--UNION--
+select uid,uname from Users
+union
+select cid,cname from country
+
+select uid,uname from Users
+union
+select cid,cname from country
+union
+select id,name from Emp
+
+select uid,uname from Users
+union all
+select cid,cname from country
+union all
+select id,name from Emp
+
+
+select ('Emp'+convert(varchar(10),id))as empid,name from Emp
+select name from Emp
+select LEFT(name,1) from Emp
+
+
+
+select ('Emp'+convert(varchar(10),id))as empid,name from Emp
+
+select name from Emp
+
+select LEFT(name,1) from Emp
