@@ -1,0 +1,143 @@
+  app.controller("ctrl", function ($scope, $http, $window) { 
+
+ $scope.load = function ()//page load
+        {
+            $scope.IndiaStates();
+        };
+
+$scope.IndiaStates = function () {
+
+            $http({
+                method: 'get',
+                url: '../Customer/getState'
+
+            }).then(function (d) {
+                $scope.recordState = d.data;
+
+
+            }, function (error) {
+
+                alert("fail States");
+            });
+        }
+});
+
+
+<select class="" id="ddlState" ng-model="States">
+    <option value="">----Select----- </option>
+    <option ng-repeat="x in recordState" >{{x.name}}</option>
+</select>
+
+ public JsonResult getState()
+        {
+ ****Json File ka use kiya gya h*****
+            //get the Json filepath  
+            string file = Server.MapPath("~/Anglur/JSON/StateJson.json");
+            //deserialize JSON from file  
+            string Json1 = System.IO.File.ReadAllText(file);
+            JavaScriptSerializer ser = new JavaScriptSerializer();
+            var personlist = ser.Deserialize<List<StateData>>(Json1);
+
+            return Json(personlist, JsonRequestBehavior.AllowGet);
+
+        }
+
+------------------------------*********Cascading**************--------------------------------------
+ app.controller("ctrl", function ($scope, $http, $window) { 
+
+ $scope.load = function ()//page load
+        {
+            $scope.IndiaStates();
+        };
+
+ $scope.IndiaStates = function () {
+
+            $http({
+                method: 'get',
+                url: '../Customer/getState'
+
+            }).then(function (d) {
+                $scope.recordState = d.data;
+
+
+            }, function (error) {
+
+                alert("fail States");
+            });
+        }
+
+
+        //---******India City***********-----
+        $scope.City = function (SID) {          
+
+            $http({
+                method: 'post',
+                url: '../Customer/getCity',
+                data: { SID: $scope.States }//Yaha SID property h
+                //  data:SID
+
+
+            }).then(function (d) {
+                $scope.record = d.data;
+                $scope.CityText = "---Select City---";
+            }, function (error) {
+                alert("fail city");
+            });
+        }
+
+});
+
+ 	<select class="" id="ddlState" ng-model="States" ng-change="City(States)">
+                    <option value="">----Select----- </option>
+                    <option ng-repeat="x in recordState" value="{{x.SID}}">{{x.name}}</option>
+                </select>
+
+
+
+
+                
+
+                <select class="" id="ddlCity" ng-model="CustCity">
+                    <option>--Select City--</option>
+                    <option ng-repeat="x in record">{{x.name}}</option>
+
+
+
+ public JsonResult getCity(JsonData City)
+        {
+            try
+            {
+
+                //get the Json filepath  
+                string file = Server.MapPath("~/Anglur/JSON/CityJson.json");
+                //deserialize JSON from file  
+                string Json1 = System.IO.File.ReadAllText(file);
+                JavaScriptSerializer ser = new JavaScriptSerializer();
+                var personlist = ser.Deserialize<List<JsonData>>(Json1);
+                var data = (from list in personlist where City.SID == list.SID select list);
+                // var data = (from list in personlist where City.name == list.state select list).ToList();
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+
+
+        public JsonResult getState()
+        {
+            //get the Json filepath  
+            //string file = Server.MapPath("~/Anglur/JSON/Fakejson.json");
+            string file = Server.MapPath("~/Anglur/JSON/StateJson.json");
+            //deserialize JSON from file  
+            string Json1 = System.IO.File.ReadAllText(file);
+            JavaScriptSerializer ser = new JavaScriptSerializer();
+            var personlist = ser.Deserialize<List<StateData>>(Json1);
+
+            return Json(personlist, JsonRequestBehavior.AllowGet);
+
+        }
